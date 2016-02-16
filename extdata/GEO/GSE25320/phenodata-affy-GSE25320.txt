@@ -1,0 +1,9 @@
+CEL	rna_source	cell_line	CEL	title
+GSM622845	exosome	mast cell line HMC-1	GSM622845	HMC-1_exosome_RNA_1
+GSM622846	exosome	mast cell line HMC-1	GSM622846	HMC-1_exosome_RNA_2
+GSM622847	exosome	mast cell line HMC-1	GSM622847	HMC-1_exosome_RNA_3
+GSM622848	exosome	mast cell line HMC-1	GSM622848	HMC-1_exosome_RNA_4
+GSM622849	cell	mast cell line HMC-1	GSM622849	HMC-1_cell_RNA_1
+GSM622850	cell	mast cell line HMC-1	GSM622850	HMC-1_cell_RNA_2
+GSM622851	cell	mast cell line HMC-1	GSM622851	HMC-1_cell_RNA_3
+GSM622852	cell	mast cell line HMC-1	GSM622852	HMC-1_cell_RNA_4

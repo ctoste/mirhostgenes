@@ -1,0 +1,51 @@
+import(methods)
+import(BiocGenerics)
+import(S4Vectors)
+import(RSQLite)
+importFrom(Biobase, createPackage)
+importFrom(AnnotationDbi, dbconn)
+import(GenomicFeatures)
+import(IRanges)
+import(GenomicRanges)
+importFrom(GenomeInfoDb, Seqinfo)
+importFrom(DBI, dbDriver)
+importClassesFrom(ensembldb, BasicFilter, EntrezidFilter, GeneidFilter,
+                  GenebiotypeFilter, GenenameFilter,TxidFilter, TxbiotypeFilter,
+                  ExonidFilter, SeqnameFilter, SeqstartFilter,
+                  SeqendFilter, SeqstrandFilter)
+importMethodsFrom(ensembldb, ensemblVersion, where, column, listColumns, listTables,
+                  condition, listGenebiotypes, listTxbiotypes, value, "value<-",
+                  "condition<-")
+importFrom(ensembldb, EntrezidFilter, GeneidFilter, GenebiotypeFilter,
+           GenenameFilter, TxidFilter, TxbiotypeFilter, ExonidFilter,
+           SeqnameFilter, SeqstartFilter, SeqendFilter, SeqstrandFilter)
+
+## classes:
+exportClasses(MirhostDb, AlignmentidFilter, ArrayFilter, DatabaseFilter,
+              PositionFilter, PremirnaFilter, PremirnaidFilter,
+              PremirnaConfidence, ProbesetidFilter, MatmirnaFilter, MatmirnaidFilter,
+              MatmirnaConfidence, MirfamFilter, MirfamidFilter, ReadCountFilter)
+## constructors for Filters
+export(AlignmentidFilter, ArrayFilter, DatabaseFilter,
+       ProbesetidFilter, PositionFilter, PremirnaFilter, PremirnaidFilter,
+       PremirnaConfidence, MatmirnaConfidence, MatmirnaFilter, MatmirnaidFilter,
+       MirfamFilter, MirfamidFilter, ReadCountFilter)
+## export utils to fetch the data.
+export(MirhostDb, downloadMirbase,
+       defineMirhostgenes, fetchAdditionalInformation, getArrayFeaturesForTx,
+       makeHostgeneSQLiteFromTables, makeMirhostgenesPackage)
+## export matching related stuff:
+export(chooseAll, chooseClosestForEach, chooseOrderedValue,
+       doSelectData, doPairData)
+## methods:
+exportMethods(column, dbconn, hostgenes, hostgenesBy, hosttx,
+              hosttxBy, listArrays, listColumns, listDatabases, listTables,
+              matmirnas, matmirnasBy, metadata, mirbaseVersion,
+              organism, premirnas, premirnasBy, show, where, version,
+              listGenebiotypes, listTxbiotypes, probesets, probesetsBy,
+              value, "value<-", "condition<-")
+## summary methods:
+exportMethods(matmirnasInMultiplePremirnas, premirnasWithMultipleAlignments)
+## pairing values
+exportMethods(transferValues)
+

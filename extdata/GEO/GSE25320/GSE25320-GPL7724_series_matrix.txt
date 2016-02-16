@@ -1,0 +1,251 @@
+!Series_title	"Characterisation of mRNA and microRNA in human mast cell exosomes and their transfer to other mast cells and blood CD34 progenitor cells"
+!Series_geo_accession	"GSE25320"
+!Series_status	"Public on Apr 16 2012"
+!Series_submission_date	"Nov 12 2010"
+!Series_last_update_date	"Mar 20 2015"
+!Series_summary	"Background: Exosomes are nanovesicles of endocytic origin believed to be involved in communication between cells. Recently, it has been shown that mast cell exosomes contain RNA named ""exosomal shuttle RNA"". The aim of this study was to evaluate whether exosomal shuttle RNA could play a role in the communication between human mast cells and between human mast cells and human CD34 positive progenitor cells. Results: Exosomes from the human mast cell line HMC-1 contain RNA. The exosomes contain no or very little ribosomal RNA compared to their donor cells. The mRNA and microRNA content in exosomes and their donor cells was examined using microarray analyses. We found 116 microRNA in the exosomes and 134 microRNA in the cells, from which some were expressed at different level. DNA microarray experiments revealed the presence of approximately 1800 mRNAs in the exosomes, which represent 15% of the donor cell mRNA content. Transfer experiments revealed that exosomes and their RNA can transfer to other HMC-1 cells and to CD34 positive progenitors.  Conclusions: To conclude, HMC-1 exosomes contain mRNA and microRNA that can be transferred to other mast cells and to CD34 progenitors. This shuttle of exosomal RNA may represent a powerful mode of communication between cells where cells send genetic information to other cells over a distance via exosomes."
+!Series_summary	""
+!Series_summary	"[miRNA profiling] Identification of microRNA was performed by Exiqon (www.exiqon.com). Briefly, the quality of the total RNA was verified by an Agilent 2100 Bioanalyzer. Total RNA from the exosome and the HMC-1 cell samples were labelled with Hy3 and Hy5 fluorescent stain, respectively, using the miRCURY Hy3/Hy5 power labelling kit. The Hy3-labelled exosome samples and a Hy5-labeled mast cells were mixed pair-wise and hybridized to the miRCURY? LNA array (v9.2). The hybridization was performed according to the miRCURY? LNA array manual using a Tecan HS4800 hybridization station (Tecan Systems, Inc. San Jose, CA). The miRCURY? LNA array microarray slides were scanned by a ScanArray 4000 XL scanner (Packard Biochip Technologies, Billerica, MA ,USA) and the image analysis was carried out using the ImaGene 6.1.0 software (BioDiscovery, Inc, El Segundo, CA USA). The quantified signals were normalized using the global Lowess (LOcally WEighted Scatterplot Smoothing) regression algorithm. MicroRNA with signals equal to or below the background signal in 2 or more of the 4 replicate measurements were identified as absent in that slide. The limit for a miRNA to be listed as detectable was set to signal intensities higher than 3 x background (3 x median Hy3 or Hy5 for the total slide). In addition, where signals were detected for <3 of the slides, they were considered unreliable and excluded from sets of detected miRNAs. The experiment was performed in triplicate samples. The signal was calculated as the mean value of the log2MeanRatio Hy3/Hy5 for the triplicates ± SD."
+!Series_overall_design	"[mRNA profiling] Exosomes were prepared from the supernatant of HMC-1 cells by differential centrifugations and filtration. RNA was isolated from the exosomes and their parental cells using Trizol . The microarray experiments were performed by SweGene (www.swegene.org/) according to Affymetrix microarray DNA chip analysis (n=4). p0739_E1, p0739_ E2, p0739_E3 and p0739_E4 for the exosomes samples and p0739_C1, p0739_C2, p0739_C3, and p0739_C4 for the HMC-1 cells."
+!Series_overall_design	""
+!Series_overall_design	"[miRNA profiling] Exosomes were prepared from the supernatant of HMC-1 cells by differential centrifugations and filtration. RNA was isolated from the exosomes and their parental cells using Trizol followed by RNeasy clean-up. The microarray experiments were performed by Exiqon."
+!Series_type	"Expression profiling by array"
+!Series_type	"Non-coding RNA profiling by array"
+!Series_contributor	"Karin,,Ekström"
+!Series_contributor	"Hadi,,Valadi"
+!Series_contributor	"Jan,,Lötvall"
+!Series_sample_id	"GSM622845 GSM622846 GSM622847 GSM622848 GSM622849 GSM622850 GSM622851 GSM622852 GSM623441 GSM623442 GSM623443 "
+!Series_contact_name	"Karin,,Ekström"
+!Series_contact_email	"karin.ekstrom@biomaterials.gu.se"
+!Series_contact_institute	"Krefting Research Centre"
+!Series_contact_address	"Medicinaregatan 1G"
+!Series_contact_city	"Gothenburg"
+!Series_contact_zip/postal_code	"40530 "
+!Series_contact_country	"Sweden"
+!Series_supplementary_file	"ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/series/GSE25320/GSE25320_RAW.tar"
+!Series_supplementary_file	"ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/series/GSE25320/GSE25320_miRNA_results.txt.gz"
+!Series_citation	"Journal of Extracellular Vesicles 2012, 1: 18389 - DOI: 10.3402/jev.v1i0.18389. Karin Ekström, Hadi Valadi, Margareta Sjöstrand, Carina Malmhäll, Apostolos Bossios, Maria Eldh, Jan Lötvall. Characterization of mRNA and microRNA in human mast cell-derived exosomes and their transfer to other mast cells and blood CD34 progenitor cells."
+!Series_platform_id	"GPL570"
+!Series_platform_id	"GPL7724"
+!Series_platform_taxid	"9606"
+!Series_platform_taxid	"10090"
+!Series_platform_taxid	"10116"
+!Series_platform_taxid	"10298"
+!Series_platform_taxid	"10359"
+!Series_platform_taxid	"10376"
+!Series_platform_taxid	"10629"
+!Series_platform_taxid	"10632"
+!Series_platform_taxid	"10633"
+!Series_platform_taxid	"11676"
+!Series_platform_taxid	"37296"
+!Series_sample_taxid	"9606"
+!Series_relation	"BioProject: http://www.ncbi.nlm.nih.gov/bioproject/PRJNA134841"
+
+!Sample_title	"HMC-1_exosome_RNA_1 vs. HMC-1_cell_RNA_1"	"HMC-1_exosome_RNA_2 vs. HMC-1_cell_RNA_2"	"HMC-1_exosome_RNA_3 vs. HMC-1_cell_RNA_3"
+!Sample_geo_accession	"GSM623441"	"GSM623442"	"GSM623443"
+!Sample_status	"Public on Apr 16 2012"	"Public on Apr 16 2012"	"Public on Apr 16 2012"
+!Sample_submission_date	"Nov 15 2010"	"Nov 15 2010"	"Nov 15 2010"
+!Sample_last_update_date	"Apr 16 2012"	"Apr 16 2012"	"Apr 16 2012"
+!Sample_type	"RNA"	"RNA"	"RNA"
+!Sample_channel_count	"2"	"2"	"2"
+!Sample_source_name_ch1	"exosomes isolated from the supernatant of HMC-1 cells"	"exosomes isolated from the supernatant of HMC-1 cells"	"exosomes isolated from the supernatant of HMC-1 cells"
+!Sample_organism_ch1	"Homo sapiens"	"Homo sapiens"	"Homo sapiens"
+!Sample_characteristics_ch1	"cell line: HMC-1 cells"	"cell line: HMC-1 cells"	"cell line: HMC-1 cells"
+!Sample_characteristics_ch1	"total rna source: exosome"	"total rna source: exosome"	"total rna source: exosome"
+!Sample_treatment_protocol_ch1	"Growth under normal conditions"	"Growth under normal conditions"	"Growth under normal conditions"
+!Sample_growth_protocol_ch1	"Cell culture and exosome release  The human mast cell line HMC-1 (Dr Joseph Butterfield, Mayo Clinic, USA), was cultured in IMDM containing 10% depleted fetal bovine serum (FBS), 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1.2 mM alpha-thioglycerol (all from Sigma-Aldrich). To eliminate exosomes present in serum, FBS was ultracentrifuged at 120 000 g for 90 min using a Ti70 rotor (Beckman optima LE-80k Ultracentrifuge). Peripheral blood mononuclear cells (PBMC) were prepared from peripheral blood of healthy subjects by Ficoll-Plaque density separation. The CD34 cells were obtained from the PBMC by positive isolation using magnetic separation according to the manufacturer’s instruction (Miltenyi Biotec, Germany). CD34 cells were cultured in IMDM (Sigma-Aldrich) containing 10% FBS, 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1mM sodium pyruvate. The purity of the separations ranged between 60-85%, as analyzed by flow cytometry using antibody against CD34 (BD Biosciences) in combination with 7-AAD for viability. Exosomes were isolated according to Valadi et al., 2007. Briefly, cells were stimulated with 1 µM calcium ionophore (Sigma-Aldrich) for 30 min, centrifuged at 500 g for 10 min to eliminate cells and at 16 500 g for 20 min, followed by filtration through 0.22 µm filter to remove cell debris. Exosomes were pelleted by ultracentrifugation (Beckman Ti70 rotor) at 120 000 g for 70 min. For PKH67 transfer experiments, exosomes were washed once in a large volume PBS. For electron microscopy, the exosome pellet was diluted in a large volume PBS, filtrated through 0.1 µm filters and pelleted by ultracentrifugation. Exosomes were measured for their protein content using BCA™ Protein Assay Kit (Pierce). Cell viability was assessed using trypan blue exclusion or 7-AAD."	"Cell culture and exosome release  The human mast cell line HMC-1 (Dr Joseph Butterfield, Mayo Clinic, USA), was cultured in IMDM containing 10% depleted fetal bovine serum (FBS), 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1.2 mM alpha-thioglycerol (all from Sigma-Aldrich). To eliminate exosomes present in serum, FBS was ultracentrifuged at 120 000 g for 90 min using a Ti70 rotor (Beckman optima LE-80k Ultracentrifuge). Peripheral blood mononuclear cells (PBMC) were prepared from peripheral blood of healthy subjects by Ficoll-Plaque density separation. The CD34 cells were obtained from the PBMC by positive isolation using magnetic separation according to the manufacturer’s instruction (Miltenyi Biotec, Germany). CD34 cells were cultured in IMDM (Sigma-Aldrich) containing 10% FBS, 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1mM sodium pyruvate. The purity of the separations ranged between 60-85%, as analyzed by flow cytometry using antibody against CD34 (BD Biosciences) in combination with 7-AAD for viability. Exosomes were isolated according to Valadi et al., 2007. Briefly, cells were stimulated with 1 µM calcium ionophore (Sigma-Aldrich) for 30 min, centrifuged at 500 g for 10 min to eliminate cells and at 16 500 g for 20 min, followed by filtration through 0.22 µm filter to remove cell debris. Exosomes were pelleted by ultracentrifugation (Beckman Ti70 rotor) at 120 000 g for 70 min. For PKH67 transfer experiments, exosomes were washed once in a large volume PBS. For electron microscopy, the exosome pellet was diluted in a large volume PBS, filtrated through 0.1 µm filters and pelleted by ultracentrifugation. Exosomes were measured for their protein content using BCA™ Protein Assay Kit (Pierce). Cell viability was assessed using trypan blue exclusion or 7-AAD."	"Cell culture and exosome release  The human mast cell line HMC-1 (Dr Joseph Butterfield, Mayo Clinic, USA), was cultured in IMDM containing 10% depleted fetal bovine serum (FBS), 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1.2 mM alpha-thioglycerol (all from Sigma-Aldrich). To eliminate exosomes present in serum, FBS was ultracentrifuged at 120 000 g for 90 min using a Ti70 rotor (Beckman optima LE-80k Ultracentrifuge). Peripheral blood mononuclear cells (PBMC) were prepared from peripheral blood of healthy subjects by Ficoll-Plaque density separation. The CD34 cells were obtained from the PBMC by positive isolation using magnetic separation according to the manufacturer’s instruction (Miltenyi Biotec, Germany). CD34 cells were cultured in IMDM (Sigma-Aldrich) containing 10% FBS, 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1mM sodium pyruvate. The purity of the separations ranged between 60-85%, as analyzed by flow cytometry using antibody against CD34 (BD Biosciences) in combination with 7-AAD for viability. Exosomes were isolated according to Valadi et al., 2007. Briefly, cells were stimulated with 1 µM calcium ionophore (Sigma-Aldrich) for 30 min, centrifuged at 500 g for 10 min to eliminate cells and at 16 500 g for 20 min, followed by filtration through 0.22 µm filter to remove cell debris. Exosomes were pelleted by ultracentrifugation (Beckman Ti70 rotor) at 120 000 g for 70 min. For PKH67 transfer experiments, exosomes were washed once in a large volume PBS. For electron microscopy, the exosome pellet was diluted in a large volume PBS, filtrated through 0.1 µm filters and pelleted by ultracentrifugation. Exosomes were measured for their protein content using BCA™ Protein Assay Kit (Pierce). Cell viability was assessed using trypan blue exclusion or 7-AAD."
+!Sample_molecule_ch1	"total RNA"	"total RNA"	"total RNA"
+!Sample_extract_protocol_ch1	"Extraction of total RNA was performed using Trizol followed by Rneasy clean-up according to the manufacturer's instructions."	"Extraction of total RNA was performed using Trizol followed by Rneasy clean-up according to the manufacturer's instructions."	"Extraction of total RNA was performed using Trizol followed by Rneasy clean-up according to the manufacturer's instructions."
+!Sample_label_ch1	"Cy3"	"Cy3"	"Cy3"
+!Sample_label_protocol_ch1	"Total RNA from the exosome and the HMC-1 cell samples were labelled with Hy3™ and Hy5™ fluorescent stain, respectively, using the miRCURY™ Hy3™/Hy5™ power labelling kit."	"Total RNA from the exosome and the HMC-1 cell samples were labelled with Hy3™ and Hy5™ fluorescent stain, respectively, using the miRCURY™ Hy3™/Hy5™ power labelling kit."	"Total RNA from the exosome and the HMC-1 cell samples were labelled with Hy3™ and Hy5™ fluorescent stain, respectively, using the miRCURY™ Hy3™/Hy5™ power labelling kit."
+!Sample_taxid_ch1	"9606"	"9606"	"9606"
+!Sample_source_name_ch2	"HMC-1 cells"	"HMC-1 cells"	"HMC-1 cells"
+!Sample_organism_ch2	"Homo sapiens"	"Homo sapiens"	"Homo sapiens"
+!Sample_characteristics_ch2	"cell line: HMC-1 cells"	"cell line: HMC-1 cells"	"cell line: HMC-1 cells"
+!Sample_characteristics_ch2	"total rna source: whole cell"	"total rna source: whole cell"	"total rna source: whole cell"
+!Sample_treatment_protocol_ch2	"Growth under normal conditions"	"Growth under normal conditions"	"Growth under normal conditions"
+!Sample_growth_protocol_ch2	"Cell culture and exosome release  The human mast cell line HMC-1 (Dr Joseph Butterfield, Mayo Clinic, USA), was cultured in IMDM containing 10% depleted fetal bovine serum (FBS), 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1.2 mM alpha-thioglycerol (all from Sigma-Aldrich). To eliminate exosomes present in serum, FBS was ultracentrifuged at 120 000 g for 90 min using a Ti70 rotor (Beckman optima LE-80k Ultracentrifuge). Peripheral blood mononuclear cells (PBMC) were prepared from peripheral blood of healthy subjects by Ficoll-Plaque density separation. The CD34 cells were obtained from the PBMC by positive isolation using magnetic separation according to the manufacturer’s instruction (Miltenyi Biotec, Germany). CD34 cells were cultured in IMDM (Sigma-Aldrich) containing 10% FBS, 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1mM sodium pyruvate. The purity of the separations ranged between 60-85%, as analyzed by flow cytometry using antibody against CD34 (BD Biosciences) in combination with 7-AAD for viability. Exosomes were isolated according to Valadi et al., 2007. Briefly, cells were stimulated with 1 µM calcium ionophore (Sigma-Aldrich) for 30 min, centrifuged at 500 g for 10 min to eliminate cells and at 16 500 g for 20 min, followed by filtration through 0.22 µm filter to remove cell debris. Exosomes were pelleted by ultracentrifugation (Beckman Ti70 rotor) at 120 000 g for 70 min. For PKH67 transfer experiments, exosomes were washed once in a large volume PBS. For electron microscopy, the exosome pellet was diluted in a large volume PBS, filtrated through 0.1 µm filters and pelleted by ultracentrifugation. Exosomes were measured for their protein content using BCA™ Protein Assay Kit (Pierce). Cell viability was assessed using trypan blue exclusion or 7-AAD."	"Cell culture and exosome release  The human mast cell line HMC-1 (Dr Joseph Butterfield, Mayo Clinic, USA), was cultured in IMDM containing 10% depleted fetal bovine serum (FBS), 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1.2 mM alpha-thioglycerol (all from Sigma-Aldrich). To eliminate exosomes present in serum, FBS was ultracentrifuged at 120 000 g for 90 min using a Ti70 rotor (Beckman optima LE-80k Ultracentrifuge). Peripheral blood mononuclear cells (PBMC) were prepared from peripheral blood of healthy subjects by Ficoll-Plaque density separation. The CD34 cells were obtained from the PBMC by positive isolation using magnetic separation according to the manufacturer’s instruction (Miltenyi Biotec, Germany). CD34 cells were cultured in IMDM (Sigma-Aldrich) containing 10% FBS, 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1mM sodium pyruvate. The purity of the separations ranged between 60-85%, as analyzed by flow cytometry using antibody against CD34 (BD Biosciences) in combination with 7-AAD for viability. Exosomes were isolated according to Valadi et al., 2007. Briefly, cells were stimulated with 1 µM calcium ionophore (Sigma-Aldrich) for 30 min, centrifuged at 500 g for 10 min to eliminate cells and at 16 500 g for 20 min, followed by filtration through 0.22 µm filter to remove cell debris. Exosomes were pelleted by ultracentrifugation (Beckman Ti70 rotor) at 120 000 g for 70 min. For PKH67 transfer experiments, exosomes were washed once in a large volume PBS. For electron microscopy, the exosome pellet was diluted in a large volume PBS, filtrated through 0.1 µm filters and pelleted by ultracentrifugation. Exosomes were measured for their protein content using BCA™ Protein Assay Kit (Pierce). Cell viability was assessed using trypan blue exclusion or 7-AAD."	"Cell culture and exosome release  The human mast cell line HMC-1 (Dr Joseph Butterfield, Mayo Clinic, USA), was cultured in IMDM containing 10% depleted fetal bovine serum (FBS), 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1.2 mM alpha-thioglycerol (all from Sigma-Aldrich). To eliminate exosomes present in serum, FBS was ultracentrifuged at 120 000 g for 90 min using a Ti70 rotor (Beckman optima LE-80k Ultracentrifuge). Peripheral blood mononuclear cells (PBMC) were prepared from peripheral blood of healthy subjects by Ficoll-Plaque density separation. The CD34 cells were obtained from the PBMC by positive isolation using magnetic separation according to the manufacturer’s instruction (Miltenyi Biotec, Germany). CD34 cells were cultured in IMDM (Sigma-Aldrich) containing 10% FBS, 100 U ml-1 penicillin, 100 µg ml-1 streptomycin, 2 mM L-glutamine and 1mM sodium pyruvate. The purity of the separations ranged between 60-85%, as analyzed by flow cytometry using antibody against CD34 (BD Biosciences) in combination with 7-AAD for viability. Exosomes were isolated according to Valadi et al., 2007. Briefly, cells were stimulated with 1 µM calcium ionophore (Sigma-Aldrich) for 30 min, centrifuged at 500 g for 10 min to eliminate cells and at 16 500 g for 20 min, followed by filtration through 0.22 µm filter to remove cell debris. Exosomes were pelleted by ultracentrifugation (Beckman Ti70 rotor) at 120 000 g for 70 min. For PKH67 transfer experiments, exosomes were washed once in a large volume PBS. For electron microscopy, the exosome pellet was diluted in a large volume PBS, filtrated through 0.1 µm filters and pelleted by ultracentrifugation. Exosomes were measured for their protein content using BCA™ Protein Assay Kit (Pierce). Cell viability was assessed using trypan blue exclusion or 7-AAD."
+!Sample_molecule_ch2	"total RNA"	"total RNA"	"total RNA"
+!Sample_extract_protocol_ch2	"Extraction of total RNA was performed using Trizol followed by Rneasy clean-up according to the manufacturer's instructions."	"Extraction of total RNA was performed using Trizol followed by Rneasy clean-up according to the manufacturer's instructions."	"Extraction of total RNA was performed using Trizol followed by Rneasy clean-up according to the manufacturer's instructions."
+!Sample_label_ch2	"Cy5"	"Cy5"	"Cy5"
+!Sample_label_protocol_ch2	"Total RNA from the exosome and the HMC-1 cell samples were labelled with Hy3™ and Hy5™ fluorescent stain, respectively, using the miRCURY™ Hy3™/Hy5™ power labelling kit."	"Total RNA from the exosome and the HMC-1 cell samples were labelled with Hy3™ and Hy5™ fluorescent stain, respectively, using the miRCURY™ Hy3™/Hy5™ power labelling kit."	"Total RNA from the exosome and the HMC-1 cell samples were labelled with Hy3™ and Hy5™ fluorescent stain, respectively, using the miRCURY™ Hy3™/Hy5™ power labelling kit."
+!Sample_taxid_ch2	"9606"	"9606"	"9606"
+!Sample_hyb_protocol	"The Hy3™-labelled exosome samples and a Hy5™-labeled mast cells were mixed pair-wise and hybridized to the miRCURY™ LNA array (v9.2). The hybridization was performed according to the miRCURY™ LNA array manual using a Tecan HS4800 hybridization station (Tecan Systems, Inc. San Jose, CA)."	"The Hy3™-labelled exosome samples and a Hy5™-labeled mast cells were mixed pair-wise and hybridized to the miRCURY™ LNA array (v9.2). The hybridization was performed according to the miRCURY™ LNA array manual using a Tecan HS4800 hybridization station (Tecan Systems, Inc. San Jose, CA)."	"The Hy3™-labelled exosome samples and a Hy5™-labeled mast cells were mixed pair-wise and hybridized to the miRCURY™ LNA array (v9.2). The hybridization was performed according to the miRCURY™ LNA array manual using a Tecan HS4800 hybridization station (Tecan Systems, Inc. San Jose, CA)."
+!Sample_scan_protocol	"The miRCURY™ LNA array microarray slides were scanned by a ScanArray 4000 XL scanner (Packard Biochip Technologies, Billerica, MA ,USA) and the image analysis was carried out using the ImaGene 6.1.0 software (BioDiscovery, Inc, El Segundo, CA  USA)."	"The miRCURY™ LNA array microarray slides were scanned by a ScanArray 4000 XL scanner (Packard Biochip Technologies, Billerica, MA ,USA) and the image analysis was carried out using the ImaGene 6.1.0 software (BioDiscovery, Inc, El Segundo, CA  USA)."	"The miRCURY™ LNA array microarray slides were scanned by a ScanArray 4000 XL scanner (Packard Biochip Technologies, Billerica, MA ,USA) and the image analysis was carried out using the ImaGene 6.1.0 software (BioDiscovery, Inc, El Segundo, CA  USA)."
+!Sample_description	"miRCURY™ LNA array (v9.2)"	"miRCURY™ LNA array (v9.2)"	"miRCURY™ LNA array (v9.2)"
+!Sample_data_processing	"MicroRNA profiling of exosomes (Hy3) and donor HMC-1 cells (Hy5) using the miRCURY™ LNA array (v9.2). The quantified signals were normalized using the global Lowess (LOcally WEighted Scatterplot Smoothing) regression algorithm. MicroRNA with signals equal to or below the background signal in 2 or more of the 4 replicate measurements were identified as absent in that slide. The limit for a miRNA to be listed as detectable was set to signal intensities higher than 3 x background (3 x median Hy3 or Hy5 for the total slide). In addition, where signals were detected for <3 of the slides, they were considered unreliable and excluded from sets of detected miRNAs. The experiment was performed in triplicate samples. The signal was calculated as the mean value of the log2MeanRatio Hy3/Hy5 for the triplicates ± SD. MicroRNA that were detected in all three slides were considered as present, indicated as exo or cell in slide 1-3. Full results file containing the replicate data analysis is provided as a supplementary file on the Series record."	"MicroRNA profiling of exosomes (Hy3) and donor HMC-1 cells (Hy5) using the miRCURY™ LNA array (v9.2). The quantified signals were normalized using the global Lowess (LOcally WEighted Scatterplot Smoothing) regression algorithm. MicroRNA with signals equal to or below the background signal in 2 or more of the 4 replicate measurements were identified as absent in that slide. The limit for a miRNA to be listed as detectable was set to signal intensities higher than 3 x background (3 x median Hy3 or Hy5 for the total slide). In addition, where signals were detected for <3 of the slides, they were considered unreliable and excluded from sets of detected miRNAs. The experiment was performed in triplicate samples. The signal was calculated as the mean value of the log2MeanRatio Hy3/Hy5 for the triplicates ± SD. MicroRNA that were detected in all three slides were considered as present, indicated as exo or cell in slide 1-3. Full results file containing the replicate data analysis is provided as a supplementary file on the Series record."	"MicroRNA profiling of exosomes (Hy3) and donor HMC-1 cells (Hy5) using the miRCURY™ LNA array (v9.2). The quantified signals were normalized using the global Lowess (LOcally WEighted Scatterplot Smoothing) regression algorithm. MicroRNA with signals equal to or below the background signal in 2 or more of the 4 replicate measurements were identified as absent in that slide. The limit for a miRNA to be listed as detectable was set to signal intensities higher than 3 x background (3 x median Hy3 or Hy5 for the total slide). In addition, where signals were detected for <3 of the slides, they were considered unreliable and excluded from sets of detected miRNAs. The experiment was performed in triplicate samples. The signal was calculated as the mean value of the log2MeanRatio Hy3/Hy5 for the triplicates ± SD. MicroRNA that were detected in all three slides were considered as present, indicated as exo or cell in slide 1-3. Full results file containing the replicate data analysis is provided as a supplementary file on the Series record."
+!Sample_platform_id	"GPL7724"	"GPL7724"	"GPL7724"
+!Sample_contact_name	"Karin,,Ekström"	"Karin,,Ekström"	"Karin,,Ekström"
+!Sample_contact_email	"karin.ekstrom@biomaterials.gu.se"	"karin.ekstrom@biomaterials.gu.se"	"karin.ekstrom@biomaterials.gu.se"
+!Sample_contact_institute	"Krefting Research Centre"	"Krefting Research Centre"	"Krefting Research Centre"
+!Sample_contact_address	"Medicinaregatan 1G"	"Medicinaregatan 1G"	"Medicinaregatan 1G"
+!Sample_contact_city	"Gothenburg"	"Gothenburg"	"Gothenburg"
+!Sample_contact_zip/postal_code	"40530 "	"40530 "	"40530 "
+!Sample_contact_country	"Sweden"	"Sweden"	"Sweden"
+!Sample_supplementary_file	"ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/samples/GSM623nnn/GSM623441/GSM623441_Cy3_US45103009_SLOT19_S01_Cropped.txt.gz"	"ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/samples/GSM623nnn/GSM623442/GSM623442_Cy3_US45103009_SLOT20_S01_Cropped.txt.gz"	"ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/samples/GSM623nnn/GSM623443/GSM623443_Cy3_US45103009_SLOT21_S01_Cropped.txt.gz"
+!Sample_supplementary_file	"ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/samples/GSM623nnn/GSM623441/GSM623441_Cy5_US45103009_SLOT19_S01_Cropped.txt.gz"	"ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/samples/GSM623nnn/GSM623442/GSM623442_Cy5_US45103009_SLOT20_S01_Cropped.txt.gz"	"ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/samples/GSM623nnn/GSM623443/GSM623443_Cy5_US45103009_SLOT21_S01_Cropped.txt.gz"
+!Sample_data_row_count	"161"	"161"	"161"
+!series_matrix_table_begin
+"ID_REF"	"GSM623441"	"GSM623442"	"GSM623443"
+4610	2.6	2.9	2.5
+4890	-0.2	0.2	0.1
+5560	-2.1	-2.0	-1.9
+5740	-0.6	-0.5	-0.6
+7190	2.5	2.6	2.5
+10306	-1.2	-1.2	-1.2
+10586	-3.0	-3.6	-3.2
+10919	0.6	0.8	0.7
+10928	-2.0	-2.2	-2.1
+10934	-2.6	-2.8	-2.5
+10936	1.8	2.1	1.8
+10947	-2.0	-2.3	-2.3
+10952	-1.1	-0.8	-0.9
+10955	-1.0	-0.9	-0.9
+10967	-0.4	-0.4	-0.5
+10978	-0.14	-0.3	-0.2
+10983	2.1	2.5	2.2
+10985	-1.6	-1.3	-1.4
+10986	0.4	0.1	0.2
+10987	-1.3	-1.1	-1.3
+10997	-1.1	-1.0	-1.0
+10999	2.0	2.1	2.1
+11009	1.9	2.3	2.2
+11020	-2.9	-3.0	-2.8
+11022	-2.2	-2.3	-2.2
+11023	-1.2	-0.8	-0.9
+11024	2.5	2.4	2.3
+11027	1.9	1.9	1.7
+11030	-2.0	-2.5	-2.3
+11031	-0.5	-0.3	-0.5
+11039	-1.7	-1.5	-1.6
+11040	-0.5	-0.5	-0.6
+11041	-2.1	-2.2	-2.1
+11048	-2.4	-2.5	-2.4
+11053	1.6	2.0	1.9
+11067	0.6	0.5	0.4
+11078	0.2	0.4	0.1
+11087	4.3	4.3	4.2
+11124	-2.9	-3.3	-3.0
+11130	-2.9	-2.8	-2.7
+11135	-2.8	-2.9	-2.8
+11145	-1.7	-1.4	-1.6
+11151	-1.8	-1.8	-1.9
+11163	1.3	1.4	1.5
+11175	-2.9	-2.8	-2.7
+11177	-0.9	-0.8	-0.9
+11182	0.9	1.0	0.8
+11184	3.3	3.2	3.1
+11185	0.9	1.3	0.7
+11201	-0.6	-0.5	-0.6
+11224	3.5	3.9	3.7
+11248	-4.3	-4.7	-4.0
+11260	0.9	1.0	1.1
+13131	-1.7	-1.4	-1.7
+13132	-1.2	-1.4	-1.3
+13137	-2.0	-1.9	-1.9
+13141	1.3	1.7	1.6
+13143	4.9	5.3	5.3
+13148	-1.0	-0.9	-1.0
+13174	1.2	1.4	1.4
+13175	-2.4	-2.6	-2.5
+13180	-1.5	-1.5	-1.6
+13485	4.4	4.34	4.2
+13511	-2.1	-2.2	-2.3
+14284	-1.5	-1.5	-1.5
+14285	1.0	1.2	1.1
+14287	0.9	1.2	1.0
+14301	-2.1	-2.6	-2.2
+14302	1.8	2.1	1.8
+17280	-0.5	-0.4	-0.3
+17295	-2.1	-2.1	-2.0
+17309	-1.6	-1.8	-1.6
+17327	-2.5	-2.6	-2.5
+17354	-0.4	-0.2	-0.3
+17376	-2.8	-3.0	-2.9
+17471	-1.3	-1.2	-1.3
+17502	1.7	2.0	1.7
+17506	3.1	3.1	2.9
+17510	2.3	2.2	2.2
+17522	-2.4	-2.3	-2.4
+17552	-4.0	-3.7	-3.7
+17558	-0.6	-1.1	-0.6
+17565	1.7	1.5	1.4
+17608	3.1	3.4	3.0
+17611	3.1	2.9	2.7
+17718	-1.3	-1.2	-1.1
+17748	-0.9	-1.1	-1.1
+17749	-2.5	-2.4	-2.4
+17750	-3.0	-2.6	-2.6
+17752	0.8	1.0	1.0
+17832	-1.2	-1.2	-1.1
+17836	-2.8	-2.8	-2.7
+17861	1.1	1.3	1.1
+17863	3.0	2.9	3.0
+17865	0.0	0.2	0.1
+17869	3.4	3.6	3.4
+17876	-1.4	-1.3	-1.5
+17878	-2.7	-2.4	-2.5
+17882	0.3	0.3	0.2
+17890	-2.8	-2.7	-2.7
+17894	-3.0	-3.0	-2.8
+17896	-2.3	-2.0	-2.1
+17900	-2.9	-3.4	-3.2
+17904	-1.7	-1.7	-1.7
+17915	-2.0	-1.9	-1.8
+17919	-1.5	-1.6	-1.6
+17921	-2.5	-2.5	-2.5
+17927	1.1	1.5	1.0
+17945	-2.0	-1.8	-2.0
+17950	-2.0	-1.7	-1.8
+17952	-1.6	-1.3	-1.4
+17953	-2.7	-2.7	-2.5
+18739	2.2	2.4	2.4
+19004	4.0	4.1	3.7
+19580	-1.8	-1.7	-1.8
+19582	2.7	2.9	3.0
+19583	3.1	2.8	2.9
+19585	2.2	2.2	1.8
+19592	2.7	3.0	3.1
+19593	0.5	0.7	0.7
+19594	-2.8	-2.6	-2.6
+19596	0.4	0.5	0.4
+21472	-2.5	-2.4	-2.5
+21753	1.2	1.8	1.4
+21757	-1.2	-1.0	-1.1
+27217	-0.9	-1.0	-1.1
+27533	1.2	1.4	1.1
+27540	-2.4	-2.3	-2.4
+27559	2.3	2.0	2.1
+27560	-1.2	-0.8	-0.7
+27561	-1.2	-1.1	-1.0
+27564	-2.8	-3.0	-2.9
+27565	-1.4	-1.3	-1.4
+27566	-1.4	-1.2	-1.3
+27720	-1.7	-1.5	-1.6
+27740	-1.5	-1.5	-1.5
+27839	-1.8	-1.7	-1.9
+27898	2.7	2.7	2.8
+28107	3.7	3.4	3.4
+28150	-2.6	-2.6	-2.5
+28232	1.6	1.6	1.5
+28336	-3.3	-3.1	-3.1
+28399	-1.9	-1.9	-1.9
+28431	-3.0	-3.2	-3.0
+28481	-1.9	-2.0	-1.8
+28575	3.6	3.2	3.1
+28736	-2.1	-2.4	-2.3
+28737	-1.2	-1.2	-1.2
+28883	-1.5	-1.5	-1.5
+28993	-2.9	-2.8	-2.9
+29204	3.2	3.4	3.2
+29575	2.5	2.8	2.8
+29871	1.5	1.8	1.8
+29872	2.7	3.0	2.7
+30532	0.2	0.5	0.5
+30687	-0.7	-0.5	-0.6
+31026	1.4	1.7	1.8
+31809	2.6	2.9	2.6
+32789	-0.3	0.2	0.2
+32883	2.0	1.9	1.6
+32884	3.5	3.8	3.7
+!series_matrix_table_end

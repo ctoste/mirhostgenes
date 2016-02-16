@@ -1,0 +1,378 @@
+#+TITLE:Comparison of mature miRNA and miRNA host gene expression
+#+AUTHOR: Johannes Rainer
+#+email: johannes.rainer@eurac.edu
+#+OPTIONS: ^:{}
+#+PROPERTY: exports code
+#+PROPERTY: session *R*
+#+PROPERTY: noweb yes
+#+PROPERTY: results output
+#+PROPERTY: tangle yes
+#+STARTUP: overview
+#+INFOJS_OPT: view:t toc:t ltoc:t mouse:underline buttons:0 path:http://thomasf.github.io/solarized-css/org-info.min.js
+#+HTML_HEAD: <link rel='stylesheet' type='text/css' href='http://thomasf.github.io/solarized-css/solarized-light.min.css' />
+#+LATEX_HEADER: \usepackage[backend=bibtex,style=nature,hyperref=true]{biblatex}
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage{tabu}
+#+LATEX_HEADER: \setlength{\textwidth}{17.0cm}
+#+LATEX_HEADER: \setlength{\hoffset}{-2.5cm}
+#+LATEX_HEADER: \setlength{\textheight}{22cm}
+#+LATEX_HEADER: \setlength{\voffset}{-1.5cm}
+#+LATEX_HEADER: \addbibresource{~/Documents/Unison/bib/references.bib}
+# #+LATEX_HEADER: \usepackage{verbatim}
+#+LATEX_HEADER: \usepackage{inconsolata}
+#+LATEX_HEADER: \definecolor{lightgrey}{HTML}{F0F0F0}
+#+LATEX_HEADER: \definecolor{solarizedlightbg}{HTML}{FCF4DC}
+#+LATEX_HEADER: \makeatletter
+# #+LATEX_HEADER: \def\verbatim@font{\scriptsize\ttfamily}
+#+LATEX_HEADER: \makeatother
+-----
+
+* Comparison of mature miRNA and miRNA host gene expression
+
+In this document we analyze gene and (mature) miRNA expression data and correlate the expression levels of mature miRNAs with those of their putative host gene/transcripts.
+
+** Gene expression data pre-processing
+
+The gene expression data (Affymetrix GeneChips) is pre-processed in this section using the GCRMA method.
+
+#+NAME: src.affy.preprocessing
+#+BEGIN_SRC R :results silent :exports code
+  library(Biobase)
+  library(affy)
+  library(gcrma)
+  ## reading the phenodata file
+  pd <- read.AnnotatedDataFrame("extdata/txt/phenoData.txt")
+  ## reading the raw data
+  Chips.raw <- ReadAffy(filenames=paste0("extdata/CEL/", sampleNames(pd), ".gz"), phenoData=pd)
+  ## performing the GCRMA pre-processing
+  Chips.norm <- gcrma(Chips.raw, fast=FALSE, GSB.adjust=TRUE)
+  ## save
+  save(Chips.norm, file="extdata/RData/Chips.norm.RData", compress="xz")
+#+END_SRC
+
+
+** Differentially expressed host transcripts
+
+The aim of this analysis is to infer a potential de-regulation of miRNAs by GC treatment by evaluating the GC-regulation of miRNA host transcripts.
+As a first step we sub-set the whole genome gene expression dataset to probe sets that eventually target miRNA host transcripts. To this end we use the information provided by the =MirhostDb.Hsapiens.v75.v20= and the functionality from the =mirhostgenes=.
+
+#+NAME: src.affy.subset
+#+BEGIN_SRC R :results silent :exports code
+  library(MirhostDb.Hsapiens.v75.v20)
+  ## just making a short cut for convenience
+  MhDb <- MirhostDb.Hsapiens.v75.v20
+  ## getting probe sets for the Affymetrix GeneChip used; getting also additional
+  ## annotations we might need later.
+  Chips.norm@annotation
+  hosttx.ps <- probesets(MhDb,
+                         columns=c("probeset_id", "tx_id", "gene_name",
+                                   "gene_biotype", "pre_mirna_name"),
+                         filter=list(ArrayFilter("HG-U133_Plus_2")))
+  ## subsetting the gene expression dataset
+  Chips.norm <- Chips.norm[ unique(hosttx.ps$probeset_id), ]
+#+END_SRC
+
+#+NAME: src:affy.subset.save
+#+BEGIN_SRC R :results silent :exports none
+  save(Chips.norm, file="extdata/RData/Chips.mirna.RData", compress="xz")
+#+END_SRC
+
+Now we perform a differential expression analysis to identify significantly differentially expressed genes between GC-treated and control samples for each time point.
+
+#+NAME: src.affy.diffexp
+#+BEGIN_SRC R :results silent :exports code
+  library(limma)
+  ## define the design matrix
+  treat <- paste(Chips.norm$treatment, Chips.norm$time, sep=".")
+  desgn <- model.matrix(~0 + treat)
+  fit <- lmFit(exprs(Chips.norm), design=desgn)
+  ## define the contrasts of interest
+  contr.mat <- makeContrasts(GCvsEtOH.6h=treatGC.6h-treatEtOH.6h,
+                             GCvsEtOH.24=treatGC.24h-treatEtOH.24h,
+                             levels=desgn)
+  fit <- contrasts.fit(fit, contrasts=contr.mat)
+  fit <- eBayes(fit)
+
+  TopT <- topTable(fit, number=15)
+  ## get pre-miRNA annotations
+  Pby <- premirnasBy(MhDb, by="probeset",
+                     filter=list(ProbesetidFilter(rownames(TopT))))
+  TopT <- cbind(premirs=unlist(lapply(Pby[rownames(TopT)],
+                    function(x){
+                        return(paste(x$pre_mirna_name, collapse=";"))
+                    }
+                                      )),
+                TopT)
+  TopT
+#+END_SRC
+
+There seem to be quite some significantly differentially expressed miRNA host transcripts.
+
+What is the evidence for the miRNAs?
+
+
+** Correlation of mature miRNA and host transcript GC-regulation
+
+Comparisons of differential expression between gene expression microarrays and mature miRNA real time and miRNA microarrays have the advantage that they are for the most part independent of the technology by which they are measured.
+Thus we compare in this section the differential expression of mature miRNAs and host transcripts between samples treated with glucocorticoid (GC) and control samples. RNA for the miRNA and gene expression profiling was extracted from CCRF-CEM-C7H2 childhood acute lymphoblastic leukemia (ALL) cells treated in 3 independent experiments with either GC or ethanol (EtOH; empty carrier control).
+
+First of all we load the (normalized) Ambion miRNA microarray data from \cite{Rainer:2009jb}.
+Each of the employed microarrays contains two sub-arrays with identical spot/feature composition. The experiment was thus set up using a dye-swap layout in which each condition (treatment and time point) was hybridized wit swapped dyes on each of the two sub-arrays. The final set of microarrays thus consisted of 4 microarrays, one for each time point (2, 6, 12, and 24 hours) and with RNA from GC- and EtOH-treated CCRF-CEM-C7H2 cells.
+The microarray data set was normalized using a dye-swap normalization procedure assuming similar optical background signals between the dye-swap pairs (which were located on the same microarray).
+This data set is reduced below to measurements for human miRNAs. Subsequently, replicated spots on each microarray were averaged.
+
+#+NAME: src.mhg.setup
+#+BEGIN_SRC R :results silent :exports code
+  MatMir <- read.table("extdata/ambion/NormalizedData-AllFeatures-04.07.2006.txt",
+                       sep="\t", as.is=TRUE, header=TRUE)
+  AmbiAnnot <- read.table("extdata/ambion/Bioarray_1566_Sept05.txt",
+                          sep="\t", as.is=TRUE, header=TRUE)
+  rownames(AmbiAnnot) <- AmbiAnnot$BioarrayID
+  ## add that information too...
+  MatMir <- cbind(MatMir,
+                  pre_mirna_acc=AmbiAnnot[ MatMir$ID, "Human.Sanger.Accession.Number.s." ],
+                  stringsAsFactors=FALSE)
+
+  ## subsetting to those with a mapping to at least one human pre-miRNA:
+  MatMir <- MatMir[MatMir$pre_mirna_acc!="", ]
+  ## subset to interesting columns.
+  MatMir <- MatMir[ , c(4:13, 22) ]
+  colnames(MatMir) <- c("ID", "Name", "M.2h", "M.6h", "M.12h", "M.24h",
+                        "A.2h", "A.6h", "A.12h", "A.24h", "pre_mirna_acc")
+  MatMir.annot <- unique(MatMir[ , c("ID", "Name", "pre_mirna_acc") ])
+  rownames(MatMir.annot) <- MatMir.annot$ID
+  ## processing the data, i.e. averaging replicates...
+  MatMir.data <- as.matrix(MatMir[ ,3:10 ])
+  rownames(MatMir.data) <- MatMir$ID
+  MatMir.data <- aggregate(MatMir.data, by=list(rownames(MatMir.data)), FUN=mean)
+  rownames(MatMir.data) <- MatMir.data[, 1]
+  MatMir.data <- as.matrix(MatMir.data[, -1])
+  ## make sure we have the same ordering
+  MatMir.data <- MatMir.data[MatMir.annot$ID, ]
+
+#+END_SRC
+
+Mapping Bioarray IDs to mature miRNA accessions /via/ their mature sequence:
+
+#+NAME: src.map.mmacc
+#+BEGIN_SRC R :results silent :exports code
+  Seqs <- AmbiAnnot[ , c("BioarrayID", "Mature.miRNA.Sequence")]
+  colnames(Seqs) <- c("ID", "sequence")
+  Seqs <- Seqs[Seqs$sequence!="",]
+
+  MatSeqs <- readLines(gzfile("~/tmp/mirnahostgenes/new/20/mature.fa.gz"))
+  ## now looping through the guys...
+  Seqs <- cbind(Seqs, mature_acc=rep(NA, nrow(Seqs)),
+                mature_name=rep(NA, nrow(Seqs)))
+  for(i in 1:nrow(Seqs)){
+      idx <- which(MatSeqs==Seqs[i, "sequence"])
+      if(length(idx)>0){
+          accs <- MatSeqs[idx-1]
+          humans <- grep(accs, pattern=">hsa")
+          if(length(humans)>0){
+              vals <- unlist(strsplit(accs[humans], split=" ", fixed=TRUE))
+              Seqs[i, "mature_acc"] <- vals[2]
+              Seqs[i, "mature_name"] <- vals[length(vals)]
+          }
+      }
+  }
+
+  MatMir.annot <- cbind(MatMir.annot, Seqs[ rownames(MatMir.annot), -1 ])
+
+  ## what the? Why don't I have miR-101?
+
+  sum(is.na(MatMir.annot$mature_acc))
+  nrow(MatMir.annot)
+
+
+#+END_SRC
+
+For those that still don't have a mature miRNA accession use their name and the aliases file from miRBase.
+
+#+NAME: src.map.mmacc.alias
+#+BEGIN_SRC R :results silent :exports code
+  Aliases <- read.table(gzfile("~/tmp/mirnahostgenes/new/20/aliases.txt.gz"),
+                        sep="\t", as.is=TRUE)
+  colnames(Aliases) <- c("mature_acc", "alias")
+  ## using a loop ...
+  for(i in 1:nrow(MatMir.annot)){
+      if(is.na(MatMir.annot[i, "mature_acc"])){
+          Name <- gsub(MatMir.annot[i, "Name"], pattern="_", replacement="-")
+          idx <- grep(Aliases$alias, pattern=paste0("(^|;)", Name, "(;|$)"))
+          if(length(idx)>0){
+              if(length(idx)==1){
+                  MatMir.annot[i, "mature_acc"] <- Aliases[idx, "mature_acc"]
+              }else{
+                  cat("got", paste(Aliases[idx, "alias"], collapse=","),
+                      "for miRNA", Name, "\n")
+              }
+          }else{
+              cat("miRNA ", Name, " not found!\n")
+          }
+      }
+  }
+
+
+#+END_SRC
+
+OK, now we've got mature miRNA accessions for most miRNAs. Adding also the read count per mature miRNA as a sort of evidence grade.
+
+#+NAME: src.map.mmacc.add
+#+BEGIN_SRC R :results silent :exports code
+  MirCounts <- read.table(gzfile("~/tmp/mirnahostgenes/new/20/database_files/mature_read_count.txt.gz"),
+                          sep="\t", as.is=TRUE)
+  colnames(MirCounts) <- c("auto_id", "mature_acc", "read_count", "experiment_count")
+  MatMir.annot <- cbind(MatMir.annot, read_count=rep(NA, nrow(MatMir.annot)))
+  rownames(MirCounts) <- MirCounts$mature_acc
+
+  ## adding the MirCounts...
+  MatMir.annot[, "read_count"] <- MirCounts[MatMir.annot$mature_acc, "read_count"]
+
+  ## can I get that from mirbase.db?
+  library(mirbase.db)
+  mirbase()
+  ## Nope
+
+#+END_SRC
+
+The annotation from Ambion provides a mapping of microarray features to pre-miRNA accession IDs, thus, for mature miRNAs encoded in several pre-miRNAs, multiple identifiers are available. We are next using the =mirhostgenes= package to establish the connection between mature miRNAs and host transcripts. With the exception of MI0000297 (miR-220a, which has been retired from miRBase) all accession IDs are still valid in miRBase version 20.
+
+#+NAME: src.mhg.probesets
+#+BEGIN_SRC R :results silent :exports code
+
+  library(MirhostDb.Hsapiens.v75.v20)
+  MhDb <- MirhostDb.Hsapiens.v75.v20
+  ## exclude MI0000297
+  MatMir.annot <- MatMir.annot[-which(rownames(MatMir.annot)=="BA10211"),]
+
+  ## now get the host transcripts and probe sets for the pre-miRNA accession IDs
+  add.annot <- sapply(MatMir.annot$pre_mirna_acc, function(x){
+      pres <- unlist(strsplit(x, split=","))
+      Res <- premirnas(MhDb, columns=c("pre_mirna_name", "tx_id", "gene_name",
+                                 "gene_biotype", "database", "probeset_id" ),
+                       filter=list(PremirnaidFilter(pres),
+                           ArrayFilter("HG-U133_Plus_2")))
+      Res <- Res[ !is.na(Res$probeset_id), ]
+      return(Res)
+  })
+  length(add.annot)
+
+  ## remove those without mapping to host transcripts:
+  add.annot <- add.annot[unlist(lapply(add.annot, nrow))>0]
+  length(add.annot)
+
+  MatMir.annot <- MatMir.annot[MatMir.annot$pre_mirna_acc %in% names(add.annot), ]
+  MatMir.annot <- cbind(MatMir.annot,
+                        pre_mirna_count=sapply(MatMir.annot$pre_mirna_acc,
+                            function(x){
+                                return(length(unlist(strsplit(x, split=","))))
+                            })
+                        )
+  ## subsetting the mature miRNA data
+  MatMir.data <- MatMir.data[rownames(MatMir.annot), ]
+
+#+END_SRC
+
+Next we are sub-setting the gene expression data to those probe sets targeting host transcripts of mature miRNAs that could be detected with the Ambion miRVana microarray.
+
+#+NAME: src.mhg.affy.subset
+#+BEGIN_SRC R :results silent :exports code
+  ## We run in the problem to have multiple probe sets targeting the same miRNA. We will select for each
+  ## one the probe set with the smallest raw p-value.
+
+  add.annot.sub <- lapply(add.annot, function(x){
+      ps <- x$probeset_id
+      return(ps[order(fit$p.value[ps, "GCvsEtOH.24"])][1])
+  })
+
+  M.hosttx <- fit$coefficients[unlist(add.annot.sub), "GCvsEtOH.24"]
+  M.mature <- MatMir.data[ , "M.24h"]
+
+  X <- M.hosttx
+  Y <- M.mature
+  plot(X, Y, col=ifelse(MatMir.annot$pre_mirna_count>1, yes="red", no="black"))
+  bm <- is.na(MatMir.annot$mature_acc)
+  points(X[bm], Y[bm], pch=4, col="red")
+  LM <- lm(Y~X)
+  abline(LM, col="grey")
+  summary(LM)
+
+  X <- X[!bm]
+  Y <- Y[!bm]
+  LM <- lm(Y~X)
+  abline(LM, col="blue")
+  summary(LM)
+
+
+  ## highlight those with few read counts
+  X <- M.hosttx
+  Y <- M.mature
+  plot(X, Y, col=ifelse(MatMir.annot$pre_mirna_count>1, yes="red", no="black"))
+
+  low.counts <- which(MatMir.annot[names(Y), "read_count"] < 1000)
+  points(X[low.counts], Y[low.counts], col="red", pch=16)
+
+
+#+END_SRC
+
+What with those that don't fit??? For the down-regulated: doesn't fit here because mature miRNAs are believed to be /stable/! What might be a problem is a miRNA that is encoded by several pre-cursors.
+
+#+NAME: src:mhg.affy.notfit
+#+BEGIN_SRC R :results silent :exports code
+  Diffs <- (M.hosttx - M.mature)
+  Diffs.table <- data.frame( ID=names(M.mature), probeset_id=names(M.hosttx), diff=Diffs )
+  Diffs.table <- Diffs.table[order(abs(Diffs.table$diff), decreasing=TRUE), ]
+
+  ## defining cluster: a host transcript/probe set targeting multiple miRNAs... though, that should be OK.
+
+  ## check if a mature miRNA might be encoded in several loci:
+  MMby <- matmirnasBy
+
+
+#+END_SRC
+
+*Limitations and caveats!*
+
+- I did oversee that miRBase defines a mirbaseCONTEXT table! That is equivalent to my host_tx table!
+- Correlation is not that nice!
+
+
+** Correlation of mature miRNA and host transcript expression
+
+Expression values are not expected to be correlated directly, as expression estimates from the various platforms are also not directly comparable.
+
+* Correlation notes
+
++ Usually only one of the mature miRNAs encoded in a pre-miRNA is expressed,
+  thus, when correlating host transcript expression with mature miRNA expression
+  this should also be considered.
+
++ Correlation is expected mostly for intronic miRNAs, given that the transcript
+  encoding the pre-miRNA is expressed. The mRNA for transcripts encoding miRNAs
+  in one of their exons might eventually never be generated, since Drosha
+  cleavage of the transcript's exon is supposed to destabilize the RNA
+  \cite{Han:2009jl}. Thus, for host transcripts with exonic miRNAs, the mRNA
+  might only be detectable if a) not all of the transcribed RNAs are processed
+  by Drosha (actually, only if up to 50% is processed), or if the splicesome
+  is still able to process the truncated RNA to produce a mature mRNA.
+
+
+* TODOs								   :noexport:
+
+
+** TODO How to handle miRNA clusters?
+** TODO How to handle mature miRNAs encoded in several pre-miRNAs?
+** TODO How to handle the two mature miRNA sequences encoded in a pre-miRNA?
+
++ For correlation analysis, use the one that best fits OR
++ Use the one with the highest evidence (by mature miRNA counts).
+
+** TODO Define the analysis... do that with some red line!
+
++ Input: gene expression data of probe sets targeting host tx.
++ Ambion data: including annotation and only needed time points.
+** TODO Search for alternative data sets!
+
++ GSE53384: Affymetrix GeneST and Exiqon miRNA expression.
++ GSE25320: Affymetrix HGU133plus2 and Exiqon v9.2. PMID: 24009880.
++ GSE47379: Affymetrix HGU133plus2 and Exiqon v11.0.

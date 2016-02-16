@@ -1,0 +1,1229 @@
+#+TITLE:Analysis of GSE25320 GEO data set
+#+AUTHOR: Johannes Rainer
+#+email: johannes.rainer@eurac.edu
+#+OPTIONS: ^:{}
+#+PROPERTY: exports code
+#+PROPERTY: session *R_geo*
+#+PROPERTY: noweb yes
+#+PROPERTY: results output
+#+PROPERTY: tangle yes
+#+STARTUP: overview
+#+INFOJS_OPT: view:t toc:t ltoc:t mouse:underline buttons:0 path:http://thomasf.github.io/solarized-css/org-info.min.js
+#+HTML_HEAD: <link rel='stylesheet' type='text/css' href='http://thomasf.github.io/solarized-css/solarized-light.min.css' />
+#+LATEX_HEADER: \usepackage[backend=bibtex,style=nature,hyperref=true]{biblatex}
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage{tabu}
+#+LATEX_HEADER: \setlength{\textwidth}{17.0cm}
+#+LATEX_HEADER: \setlength{\hoffset}{-2.5cm}
+#+LATEX_HEADER: \setlength{\textheight}{22cm}
+#+LATEX_HEADER: \setlength{\voffset}{-1.5cm}
+#+LATEX_HEADER: \addbibresource{~/Documents/Unison/bib/references.bib}
+# #+LATEX_HEADER: \usepackage{verbatim}
+#+LATEX_HEADER: \usepackage{inconsolata}
+#+LATEX_HEADER: \definecolor{lightgrey}{HTML}{F0F0F0}
+#+LATEX_HEADER: \definecolor{solarizedlightbg}{HTML}{FCF4DC}
+#+LATEX_HEADER: \makeatletter
+# #+LATEX_HEADER: \def\verbatim@font{\scriptsize\ttfamily}
+#+LATEX_HEADER: \makeatother
+-----
+
+#+NAME: src.init
+#+BEGIN_SRC R :results silent :exports none
+  rm(list=ls())
+
+  options(stringsAsFactors=FALSE)
+  options(useFancyQuotes=FALSE)
+  ## path where images should be saved to
+  IMAGE_PATH <- paste("images/" , sep="")
+  if(!file.exists(IMAGE_PATH)){ dir.create(IMAGE_PATH, recursive=TRUE) }
+  RDATA_PATH <- paste("RData/" , sep="")
+  if(!file.exists(RDATA_PATH)){ dir.create(RDATA_PATH, recursive=TRUE) }
+
+  ## other settings
+  PS <- 6
+  set.seed(18011977)
+  options(mc.cores=1)
+
+#+END_SRC
+
+* Analysis of the gene and miRNA expression data set GSE25320
+
+** What do we have:
+
+The data from \cite{Ekstrom:2012fn}:
+
+[mRNA profiling] Exosomes were prepared from the supernatant of HMC-1 cells by
+differential centrifugations and filtration. RNA was isolated from the exosomes
+and their parental cells using Trizol . The microarray experiments were
+performed by SweGene (www.swegene.org/) according to Affymetrix microarray DNA
+chip analysis (n=4). p0739_E1, p0739_ E2, p0739_E3 and p0739_E4 for the exosomes
+samples and p0739_C1, p0739_C2, p0739_C3, and p0739_C4 for the HMC-1 cells.
+
+[miRNA profiling] Exosomes were prepared from the supernatant of HMC-1 cells by
+differential centrifugations and filtration. RNA was isolated from the exosomes
+and their parental cells using Trizol followed by RNeasy clean-up. The
+microarray experiments were performed by Exiqon.
+
+
+** Affymetrix data analysis
+
+First of all we read the raw data, perform some quality checks and run the
+pre-processing. We've got HG-U133 plus 2 arrays.
+
+#+NAME: src.affy.read
+#+BEGIN_SRC R :results silent :exports code
+  library(affy)
+  library(RColorBrewer)
+  library(ascii)
+  library(affyPLM)
+  source("../plot-utils.R")
+  pd.affy <- read.AnnotatedDataFrame("phenodata-affy-GSE25320.txt")
+  Chips.raw <- ReadAffy(filenames=paste0(sampleNames(pd.affy), ".CEL.gz"),
+                        phenoData=pd.affy)
+#+END_SRC
+
+
+#+NAME: src.affy.sample.table
+#+BEGIN_SRC R :results outout raw :exports results
+  T <- cbind(CEL=sampleNames(Chips.raw), title=Chips.raw$title,
+             rna_source=Chips.raw$rna_source, cell_line=Chips.raw$cell_line)
+  suppressWarnings(
+      print(ascii(T, include.rownames=TRUE, include.colnames=TRUE, header = TRUE, caption="Microarrays and samples.") ,type="org")
+     )
+#+END_SRC
+
+#+ATTR_HTML: :border 2 :rules all :frame border
+#+ATTR_LATEX: :center :environment longtable :placement [H] :font \scriptsize
+#+NAME: table.affy.sample.table
+#+RESULTS: src.affy.sample.table
+
+So, we've got 4 replicates for each condition.
+
+#+NAME: src.affy.preprocessing
+#+BEGIN_SRC R :results silent :exports code
+  Chips.bgadj <- bg.adjust.gcrma(Chips.raw, fast=FALSE, GSB.adjust=FALSE)
+  PLM <- fitPLM(Chips.bgadj, background=FALSE)
+  Chips.norm <- PLMset2exprSet(PLM)
+  save(Chips.norm, file="GSE25320-Affy-Chips.norm.RData", compress="xz")
+#+END_SRC
+
+*** Quality controls
+
+#+NAME: src.affy.rawdata.density
+#+BEGIN_SRC R :results graphics :file (concat (org-sbe imagepath) "affy-rawdata-density.png") :exports results :width 16 :height 8 :units cm :res 600 :pointsize 6
+  GroupColors <- brewer.pal(3, "Set1")[1:2]
+  names(GroupColors) <- unique(Chips.raw$rna_source)
+  par(mar=c(4.5, 4.5, 3, 1), cex.lab=1.5, cex.axis=1.5, mfrow=c(1, 2))
+  plotDensity(log2(pm(Chips.raw)), main="PM probes", xlab=expression(log[2]~expression),
+              col=paste0(GroupColors[Chips.raw$rna_source], "80"), lwd=1, lty=1, xlim=c(4, 15))
+  plotDensity(log2(mm(Chips.raw)), main="MM probes", xlab=expression(log[2]~expression),
+              col=paste0(GroupColors[Chips.raw$rna_source], "80"), lwd=1, lty=1, xlim=c(4, 15))
+  legend("topright", lwd=2, col=GroupColors, legend=names(GroupColors))
+#+END_SRC
+#+ATTR_HTML: :width 600px
+#+ATTR_LATEX: :center :placement [H] :width 16cm
+#+NAME: fig.affy.rawdata.density
+#+CAPTION: Raw intensity distribution for all microarrays in the experiment (each line represents one microarray). Shown are signal distribution of perfect match (left) and mis-match (right) probes.
+#+RESULTS: src.affy.rawdata.density
+[[file:images/affy-rawdata-density.png]]
+
+Oh man, we do have lower signal intensities in the exosome samples... talking about bias...
+
+#+NAME: src.affy.NUSE
+#+BEGIN_SRC R :results graphics :exports results :file (concat (org-sbe imagepath) "preprocessing-NUSE.png") :width 16 :height 8 :res 600 :units cm :pointsize 6
+  NUSE(PLM, col=GroupColors[Chips.raw$rna_source], xaxt="n")
+  axis(side=1, at=1:length(Chips.norm$CEL), labels=Chips.norm$CEL, las=2)
+#+END_SRC
+
+#+ATTR_LATEX: :center :placement [H] :width 12cm
+#+NAME: fig.affy.NUSE
+#+CAPTION: NUSE plot for the microarrays.
+#+RESULTS: src.affy.NUSE
+[[file:images/preprocessing-NUSE.png]]
+
+Doesn't get better... think here we might have a problem!
+
+
+** Exiqon data analysis
+
+According to the information provided, the Exiqon microarrays used are miRCURY LNA arrays (v9.2).
+We are reading the files (scanned by an ImaGene scanner) and performing the pre-processing, most likely lowess, or vsn.
+
+#+NAME: src.array.read
+#+BEGIN_SRC R :results silent :exports code
+  library(limma)
+  library(vsn)
+
+  pd.exiqon <- read.AnnotatedDataFrame("phenodata-exiqon-GSE25320.txt")
+  Arrays <- cbind(FileNameCy3=paste0(sampleNames(pd.exiqon), ".txt.gz")[pd.exiqon$channel=="Cy3"],
+                  FileNameCy5=paste0(sampleNames(pd.exiqon), ".txt.gz")[pd.exiqon$channel=="Cy5"])
+  Slides.raw <- read.maimages(files=Arrays, source="imagene")
+  ## there's still the Name missing.
+  Gal <- readGAL(gzfile("GSM623441_Cy3_US45103009_SLOT19_S01_Cropped.txt.gz"),
+                 nrows=9792)
+  Genes <- cbind(Slides.raw$genes, Name=Gal$Name)
+  Slides.raw$genes <- Genes
+#+END_SRC
+
+Next we are background adjusting and normalizing the microarrays. For background adjustment we're using the =normexp= method from limma.
+
+#+NAME: src.array.preprocess
+#+BEGIN_SRC R :results silent :exports code
+  Slides.nobg <- backgroundCorrect(Slides.raw, method="none")
+  Slides.min <- backgroundCorrect(Slides.raw, method="minimum", offset=1)
+  Slides.normexp <- backgroundCorrect(Slides.raw, method="normexp", offset=1, normexp.method="mle")
+
+  ## normalization
+  Slides.normexp.loess <- normalizeWithinArrays(Slides.normexp, method="loess")
+  Slides.min.loess <- normalizeWithinArrays(Slides.min, method="loess")
+  Slides.normexp.ptloess <- normalizeWithinArrays(Slides.normexp, method="printtiploess")
+  tmp <- justvsn(Slides.normexp, backgroundsubtract=FALSE)
+  Slides.vsn <- Slides.normexp
+  Slides.vsn$R <- 2^(assayData(tmp)$R)
+  Slides.vsn$G <- 2^(assayData(tmp)$G)
+#+END_SRC
+
+The data does not look good at all, similar to the gene expression data there seems to be huge differences here. For pre-processing method, that best removed most of the difference, we will use the =normexp= background adjustment and the global loess normalization.
+
+Next we perform a replicate handling step, i.e. we are averaging the values for the replicated spots on the microarray.
+
+#+NAME: src.array.rep.handling
+#+BEGIN_SRC R :results silent :exports code
+  Slides.norm <- averageReps(Slides.normexp.loess)
+  save(Slides.norm, file="GSE25320-Exiqon-Slides.norm.RData", compress="xz")
+#+END_SRC
+
+Pre-processing did not remove the huge difference in signals between the red and green channel (i.e. total cell RNA and exosome RNA) completely.
+
+*** Quality controls
+
+#+NAME: src.array.rawdata.density
+#+BEGIN_SRC R :results graphics :file (concat (org-sbe imagepath) "array-rawdata-density.png") :exports results :width 16 :height 8 :units cm :res 600 :pointsize 6
+  GroupColors <- brewer.pal(3, "Set1")[1:2]
+  names(GroupColors) <- unique(Chips.raw$rna_source)
+  par(mar=c(4.5, 4.5, 3, 1), cex.lab=1.5, cex.axis=1.5, mfrow=c(1, 2))
+  ## foreground
+  plotDensity(log2(cbind(Slides.raw$R, Slides.raw$G)), main="foreground",
+              xlab=expression(log[2]~expression),
+              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=3), "80"),
+              lwd=1, lty=1, xlim=c(4, 15))
+  ## background
+  plotDensity(log2(cbind(Slides.raw$Rb, Slides.raw$Gb)), main="background",
+              xlab=expression(log[2]~expression),
+              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=3), "80"),
+              lwd=1, lty=1, xlim=c(4, 15))
+
+#+END_SRC
+
+#+ATTR_HTML: :width 600px
+#+ATTR_LATEX: :center :placement [H] :width 16cm
+#+NAME: fig.array.rawdata.density
+#+CAPTION: Raw intensity distribution for all microarrays in the experiment (each line representing one channel of a microarray).
+#+RESULTS: src.array.rawdata.density
+[[file:images/array-rawdata-density.png]]
+
+Apparently the red signal channel yields higher signals than the green signal channel.
+
+#+NAME: src.array.ma.plot.raw
+#+BEGIN_SRC R :results graphics :exports results :file (concat (org-sbe imagepath) "array-rawdata-maplots.png") :width 16 :height 8 :units cm :res 600 :pointsize 6
+  source("../plot-utils.R")
+  par(mfrow=c(1, 3), cex.lab=1.4, cex.axis=1.4)
+  for(i in 1:ncol(Slides.raw$R)){
+      MA(Slides.raw, slide=i)
+  }
+#+END_SRC
+#+ATTR_HTML: :width 600px
+#+ATTR_LATEX: :center :placement [H] :width 16cm
+#+NAME: fig.array.ma.plot.raw
+#+CAPTION: MA plots for the raw data of the microarrays.
+#+RESULTS: src.array.ma.plot.raw
+[[file:images/array-rawdata-maplots.png]]
+
+Oh man, again, there seem to be huge differences between the samples.
+
+#+NAME: src.array.hidden.plots
+#+BEGIN_SRC R :results silent :exports none
+  par(mfrow=c(1, 3))
+  plotDensity(log2(cbind(Slides.nobg$R, Slides.nobg$G)), main="no bg adjustment",
+              xlab=expression(log[2]~expression),
+              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=3), "80"),
+              lwd=1, lty=1)
+  plotDensity(log2(cbind(Slides.min$R, Slides.min$G)), main="bg adjustment: min",
+              xlab=expression(log[2]~expression),
+              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=3), "80"),
+              lwd=1, lty=1)
+  plotDensity(log2(cbind(Slides.normexp$R, Slides.normexp$G)), main="bg adjustment: normexp",
+              xlab=expression(log[2]~expression),
+              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=3), "80"),
+              lwd=1, lty=1)
+
+  par(mfrow=c(3, 3))
+  for(i in 1:3){
+      MA(Slides.nobg, main="no bg adjustment")
+  }
+  for(i in 1:3){
+      MA(Slides.min, main="bg adjustment: min")
+  }
+  for(i in 1:3){
+      MA(Slides.normexp, main="bg adjustment: minexp")
+  }
+
+  ## the same plot for the normalized data.
+  par(mfrow=c(3, 3))
+  for(i in 1:3){
+      MA(Slides.min.loess, main="min, loess")
+  }
+  for(i in 1:3){
+      MA(Slides.normexp.loess, main="normexp, loess")
+  }
+  ## for(i in 1:3){
+  ##     MA(Slides.normexp.ptloess, main="normexp, ptloess")
+  ## }
+  for(i in 1:3){
+      MA(Slides.vsn, main="normexp, vsn")
+  }
+#+END_SRC
+
+Something is strange with the =min= background adjustment method. In the end we will stick to the =normexp= bg adjustment and the loess normalization.
+
+At last plotting the MA-plots after averaging of replicates.
+
+#+NAME: src.array.ma.plot.norm
+#+BEGIN_SRC R :results graphics :exports results :file (concat (org-sbe imagepath) "array-norm-maplots.png") :width 16 :height 8 :units cm :res 600 :pointsize 6
+  par(mfrow=c(1, 3), cex.lab=1.4, cex.axis=1.4)
+  for(i in 1:ncol(Slides.norm$M)){
+      MA(Slides.norm, slide=i)
+  }
+#+END_SRC
+#+ATTR_HTML: :width 600px
+#+ATTR_LATEX: :center :placement [H] :width 16cm
+#+NAME: fig.array.ma.plot.norm
+#+CAPTION: MA plots for the normalized Exiqon microarray data.
+#+RESULTS: src.array.ma.plot.norm
+[[file:images/array-norm-maplots.png]]
+
+Well, the data still doesn't look perfect.
+
+#+NAME: imagepath
+: images/
+
+** Preparing the data set
+
+In this section we establish the mapping between mature miRNAs and miRNA host
+transcripts. There are however some problems that need to be solved:
+1) Select a single probe set for the host transcript.
+   - Select the probe set with the highest average expression; presumably the
+     /best/ probe set.
+   - Select the probe set with the largest differential expression. This might
+     however be one affected by technical biases.
+   - We can accomplish this task using the =transferValues= method from the
+     =mirhostgenes= package specifying =chooseOrderedValue= for argument
+     =solveFun=.
+
+2) Select the mature miRNA (-3p or 5p) from the same pre-miRNA.
+   - Select the mature miRNA with the highest average expression. This seems to
+     be reasonable, since only one is expected to be expressed, or at least
+     higher expressed than the other.
+   - Same as above, we will use the =transferValues= method for that.
+   - The only problem might arise from mature miRNAs encoded in more than one
+     pre-miRNA. We will not be able to fix that independently of expression
+     information from host genes, but could use the
+     =matmirnasInMultiplePremirnas= method to indicate which mappings might be
+     problematic.
+
+3) How to deal with mature miRNAs encoded in several pre-miRNAs/host
+   transcripts?
+   - First check this using the number of pre-miRNAs (actually pre-miRNA
+     alignments) we get for a mature miRNA from the =mirhostgenes= package.
+   - At first, just highlight those miRNAs in the plots.
+   - Solutions might be: sum up the host transcript expression values.
+
+Next we have to map the IDs we've got from the Exiqon microarrays to mature
+miRNA names (or better, mature miRNA accessions) from miRBase version 20. We're
+using here the platform annotation file downloaded (or rather copied and pasted)
+from GEO.
+
+#+NAME: src.mapping.exiqon
+#+BEGIN_SRC R :results silent :exports code
+  ## loading the datasets...
+  load("GSE25320-Affy-Chips.norm.RData")
+  load("GSE25320-Exiqon-Slides.norm.RData")
+  library(ascii)
+  library(mirhostgenes)
+  ## source("../plot-utils.R")
+  ## oh man, in Slides.norm$genes$Name we've got all strange combinations, also
+  ## miRNAs separated by / ! these measure several miRNAs.
+  ## Note: we're loading the GPL file downloaded from GEO or, rather copied
+  ## and pasted using mc
+  Exiqon.annot <- read.table("GPL7724.txt", sep="\t", as.is=TRUE, header=TRUE)
+  rownames(Exiqon.annot) <- Exiqon.annot$ID
+  ## processing this file and removing miRBase accessions for non-human miRNAs
+  for(i in 1:nrow(Exiqon.annot)){
+      if(length(grep(Exiqon.annot[i, "miRNA_ID_LIST"], pattern="hsa")) > 0){
+          Names <- unlist(strsplit(Exiqon.annot[i, "miRNA_ID_LIST"], split="/ ",
+                                   fixed=TRUE))
+          Accs <- unlist(strsplit(Exiqon.annot[i, "Accession"], split="/",
+                                  fixed=TRUE))
+          if(length(Names)!=length(Accs))
+              stop("What? something strange going on...")
+          idx <- grep(Names, pattern="hsa")
+          Exiqon.annot[i, "miRNA_ID_LIST"] <- paste(Names[idx], collapse=";")
+          Exiqon.annot[i, "Accession"] <- paste(Accs[idx], collapse=";")
+      }
+  }
+  ## check if some of the IDs in $genes do not match
+  Have <- as.character(Slides.norm$genes[, "Gene ID"]) %in% rownames(Exiqon.annot)
+  Genes <- cbind(Slides.norm$genes,
+                 Exiqon.annot[as.character(Slides.norm$genes[, "Gene ID"]),
+                              c("miRNA_ID_LIST", "Accession", "SEQUENCE")]
+                 )
+  Slides.norm$genes <- Genes
+  ## OK, now we've got (hopefully) the correct miRNA accessions...
+#+END_SRC
+
+Next we're subsetting both the gene and miRNA expression data to miRNAs,
+respectively host transcripts for which we do have probe sets defined.
+
+#+NAME: src.mapping.subset.new
+#+BEGIN_SRC R :results silent :exports code
+  ## First subset the data to HUMAN mature miRNAs.
+  Slides.norm.sub <- Slides.norm[grep(Slides.norm$genes[ , "miRNA_ID_LIST"], pattern="hsa-"), ]
+
+  ## load the MirhostDb package
+  library(MirhostDb.Hsapiens.v75.v20)
+  mhg <- MirhostDb.Hsapiens.v75.v20
+
+  ## get the complete mapping mature-miRNA -> probe set.
+  ## note that only mature miRNAs for which a host gene and probe set was defined are returned!
+  af <- ArrayFilter("HG-U133_Plus_2")
+  mir2ps <- matmirnas(mhg, filter=af, columns=c(listColumns(mhg, "mat_mirna"), "gene_id",
+                                                "pre_mirna_name", "pre_mirna_algn_id", "seq_name",
+                                                "tx_id", "in_exon", "in_intron", "is_outside",
+                                                "database", "pre_mirna_confidence",
+                                                "pre_mirna_read_count", "probeset_id"))
+  ## that's the full data, now sub set to the mature miRNAs in Slides.norm.sub
+  ## Note that this way we also exclude mature miRNAs with the same sequence.
+  mir2ps <- mir2ps[mir2ps$mat_mirna_id %in% Slides.norm.sub$genes$Accession, ]
+
+  ## subset the mature miRNA data.
+  Slides.norm.sub <- Slides.norm.sub[Slides.norm.sub$genes$Accession %in%
+                                     mir2ps$mat_mirna_id, ]
+  ## solve multi accessions.
+  multis <- table(Slides.norm.sub$genes$Accession)
+  multis <- names(multis)[multis > 1]
+  Slides.norm.sub <- Slides.norm.sub[!(Slides.norm.sub$genes$Accession %in% multis), ]
+  rownames(Slides.norm.sub$genes) <- Slides.norm.sub$genes$Accession
+  rownames(Slides.norm.sub$M) <- Slides.norm.sub$genes$Accession
+  rownames(Slides.norm.sub$A) <- Slides.norm.sub$genes$Accession
+  mir2ps <- mir2ps[mir2ps$mat_mirna_id %in% rownames(Slides.norm.sub$genes), ]
+
+  ## subset the Affymetrix data.
+  Chips.norm.sub <- Chips.norm[featureNames(Chips.norm) %in% mir2ps$probeset_id, ]
+  mir2ps <- mir2ps[mir2ps$probeset_id %in% featureNames(Chips.norm.sub), ]
+
+#+END_SRC
+
+Note that with the sub-setting above we also excluded mature miRNAs with the
+same sequence (in total =SRC_R[:exports results :results output raw]{cat(length(grep(Slides.norm.sub$genes$Accession, pattern = ';')), '\n')}=).
+Also, we excluded some individual miRNAs measured by multiple different features
+on the array.
+
+#+NAME: src.mapping.subset
+#+BEGIN_SRC R :results silent :exports none :eval never
+  ## first subset for those that are human! miRNAs.
+  Slides.norm.sub <- Slides.norm[grep(Slides.norm$genes[ , "miRNA_ID_LIST"], pattern="hsa-"), ]
+  rownames(Slides.norm.sub$genes) <- Slides.norm.sub$genes[, "Gene ID"]
+  rownames(Slides.norm.sub$M) <- Slides.norm.sub$genes[, "Gene ID"]
+  rownames(Slides.norm.sub$A) <- Slides.norm.sub$genes[, "Gene ID"]
+  ## generating a mapping data.frame...
+  miRNA.mapping <- Slides.norm.sub$genes
+
+  library(MirhostDb.Hsapiens.v75.v20)
+  MhDb <- MirhostDb.Hsapiens.v75.v20
+  ## getting pre-miRNA alignments for mature miRNAs...
+  miRNA.mapping.premirnas <- sapply(miRNA.mapping$Accession,
+                                    function(x){
+                                        accs <- unique(unlist(strsplit(x, split=";")))
+                                        pres <- premirnas(MhDb,
+                                                          filter=list(MatmirnaidFilter(accs)))
+                                        return(pres)
+                                    })
+  ## calculating for each array feature the number of mature miRNAs they detect.
+  miRNA.mapping <- cbind(miRNA.mapping,
+                         mat_mirna_count=sapply(miRNA.mapping$Accession,
+                             function(x){
+                                 return(length(unlist(strsplit(x, split=";"))))
+                             }))
+  ## now counting for each mature miRNA the number of pre-miRNAs in which they
+  ## are encoded
+  miRNA.mapping <- cbind(miRNA.mapping,
+                         pre_mirna_count=unlist(lapply(miRNA.mapping.premirnas,
+                             function(x){
+                                 return(nrow(x))
+                             })))
+  ## adding the pre-miRNA info
+  miRNA.mapping <- cbind(miRNA.mapping,
+                         pre_mirna=unlist(lapply(miRNA.mapping.premirnas,
+                             function(x){
+                                 return(paste(unique(x$pre_mirna_name), collapse=";"))
+                             })))
+  ## OK, now getting the probe sets for the mature miRNAs.
+  miRNA.mapping.ps <- sapply(miRNA.mapping$Accession,
+                             function(x){
+                                 accs <- unique(unlist(strsplit(x, split=";")))
+                                 ps <- probesets(MhDb,
+                                                 columns=c("probeset_id", "pre_mirna_name"),
+                                                 filter=list(MatmirnaidFilter(accs),
+                                                     ArrayFilter("HG-U133_Plus_2")))
+                                 return(ps)
+                             })
+  miRNA.mapping <- cbind(miRNA.mapping,
+                         ps_count=unlist(lapply(miRNA.mapping.ps,
+                             function(x){
+                                 return(nrow(x))
+                             })))
+
+#+END_SRC
+
+The table below gives an overview of the data aggregation and mapping above.
+
+#+NAME: src.mapping.table
+#+BEGIN_SRC R :results output raw :exports results
+  T <- matrix(ncol=1, nrow=12)
+  rownames(T) <- c(
+      "Array features",
+      "Mat-miRNAs",
+      "Pre-miRNAs",
+      "Mat-miRNAs encoded in multiple pre-miRNAs",
+      "Host genes defined in Ensembl core",
+      "Host genes defined in Ensembl vega",
+      "Host genes defined in Ensembl otherfeatues",
+      "Affymetrix probe sets",
+      "Affymetrix probe sets with multiple pre-miRNAs",
+      "Probe sets targeting tx with exonic pre-miRNAs",
+      "Probe sets targeting tx with intronic pre-miRNAs",
+      "Probe sets targeting tx with mixed pre-miRNAs"
+      )
+  colnames(T) <- "Count"
+  T[1, 1] <- length(unique(Slides.norm.sub$genes$Accession))
+  T[2, 1] <- length(unique(mir2ps$mat_mirna_id))
+  T[3, 1] <- length(unique(mir2ps$pre_mirna_name))
+  ## mature miRNAs encoded in multiple pre-miRNAs.
+  matMulti <- unique(mir2ps[, c("mat_mirna_id", "pre_mirna_name")])
+  matMulti <- split(matMulti, f=matMulti$mat_mirna_id)
+  T[4, 1] <- sum(unlist(lapply(matMulti, nrow)) > 1)
+  ## number of host genes in Ensembl
+  T[5, 1] <- length(unique(mir2ps$gene_id[mir2ps$database == "core"]))
+  ## number of host genes in Vega
+  T[6, 1] <- length(unique(mir2ps$gene_id[mir2ps$database == "vega"]))
+  ## number of host genes in other features
+  T[7, 1] <- length(unique(mir2ps$gene_id[mir2ps$database == "otherfeatures"]))
+  ## number of unique probe sets.
+  T[8, 1] <- length(unique(mir2ps$probeset_id))
+  ## number of probe sets with multiple pre-miRNAs.
+  tmp <- unique(mir2ps[, c("pre_mirna_name", "probeset_id")])
+  tmp <- split(tmp, tmp$probeset_id)
+  T[9, 1] <- sum(unlist(lapply(tmp, nrow)) > 1)
+  ## number exonic miRNAs.
+  tmp <- unique(mir2ps[, c("pre_mirna_name", "in_exon", "in_intron", "probeset_id")])
+  tmp <- split(tmp, tmp$probeset_id)
+  exonic <- unlist(lapply(tmp, function(z){
+      return(all(z$in_exon > 0 & z$in_intron == 0))
+  }))
+  T[10, 1] <- sum(exonic)
+  ## number intronic miRNAs.
+  intronic <- unlist(lapply(tmp, function(z){
+      return(all(z$in_exon == 0 & z$in_intron > 0))
+  }))
+  T[11, 1] <- sum(intronic)
+  ## number mixed miRNAs.
+  mixed <- unlist(lapply(tmp, function(z){
+      return((any(z$in_exon > 0) & any(z$in_intron > 0)))
+  }))
+  T[12, 1] <- sum(mixed)
+  suppressWarnings(
+      print(
+          ascii(T, header=TRUE, include.rownames=TRUE, include.colnames=TRUE,
+                digits=0)
+          , type="org")
+      )
+#+END_SRC
+#+ATTR_HTML: :border 2 :rules all :frame border
+#+ATTR_LATEX: :center :environment longtable :placement [H] :font \scriptsize
+#+NAME: table.mapping.table
+#+CAPTION: Summary of miRNAs, probe sets and host genes which are detectable both on mature miRNA and host gene levels based on the given data and platforms.
+#+RESULTS: src.mapping.table
+ |                                                  | Count |
+ |--------------------------------------------------+-------|
+ | Array features                                   |   317 |
+ | Mat-miRNAs                                       |   317 |
+ | Pre-miRNAs                                       |   263 |
+ | Mat-miRNAs encoded in multiple pre-miRNAs        |    19 |
+ | Host genes defined in Ensembl core               |   209 |
+ | Host genes defined in Ensembl vega               |   209 |
+ | Host genes defined in Ensembl otherfeatues       |   390 |
+ | Affymetrix probe sets                            |   479 |
+ | Affymetrix probe sets with multiple pre-miRNAs   |    61 |
+ | Probe sets targeting tx with exonic pre-miRNAs   |    74 |
+ | Probe sets targeting tx with intronic pre-miRNAs |   379 |
+ | Probe sets targeting tx with mixed pre-miRNAs    |    26 |
+
+Based on the summary given in Table [[table.mapping.table]] we can correlate about
+200 mature miRNAs with their potential host transcripts.
+The largest part of probe sets targets host transcripts which encode miRNAs in
+their introns and only few target host transcripts with exonic miRNAs. Detection
+of host transcripts encoding miRNAs in their exons is less likely as exonic Drosha
+processing of the primary transcript is supposed to destabilize the primary
+transcript \cite{Han:2009jl}\cite{Ha:2014ek}.
+
+** Correlation of expression
+
+In the present data set we should have mature miRNA and gene expression data
+from both sample types. For gene expression analysis, 4 RNA samples per group
+were processed, for miRNA profiling 3 samples per group. The manuscript does not
+specify that miRNA and mRNA profiles were extracted/performed on the same cells.
+
+We will thus calculate the average expression for each probe set respectively
+mature miRNA across the available HMC-1 exosome or HMC-1 donor cell replicates.
+Average expression levels are then compared between mature miRNA and gene
+expression data for HMC-1 donor cells and exosomes.
+
+Note that we will /background/ adjust the mature miRNA expression data and the
+microarray expression data, i.e. subtract from each expression value the
+smallest value (in natural scale!). The reason being that the GCRMA
+pre-processing of the Affymetrix gene expression analysis performed already such
+a background adjustment, while the Exiqon microarrays were pre-processed without
+background adjustment, thus resulting in /a priori/ higher expression estimates.
+
+#+NAME: src.correlation.average
+#+BEGIN_SRC R :results silent :export code
+  ## re-loading the phenodata and sample description
+  pd.exiqon <- read.AnnotatedDataFrame("phenodata-exiqon-GSE25320.txt")
+  pd.affy <- read.AnnotatedDataFrame("phenodata-affy-GSE25320.txt")
+
+  ## calculate average across replicates in gene expression data.
+  exoSamples <- paste0(sampleNames(pd.affy)[pd.affy$rna_source == "exosome"],
+                       ".CEL.gz")
+  ctrlSamples <- paste0(sampleNames(pd.affy)[pd.affy$rna_source == "cell"],
+                        ".CEL.gz")
+  ## performing a fake background normalization for affy data:
+  exprs(Chips.norm.sub) <- log2(2^exprs(Chips.norm.sub) - min(2^exprs(Chips.norm.sub)) + 1)
+  ## averaging
+  mRNA.mean.exprs <- cbind(
+      exosome=rowMeans(exprs(Chips.norm.sub)[, exoSamples]),
+      cell=rowMeans(exprs(Chips.norm.sub)[, ctrlSamples])
+  )
+  mRNA.sd.exprs <- cbind(
+      exosome=apply(exprs(Chips.norm.sub)[, exoSamples], MARGIN=1, sd),
+      cell=apply(exprs(Chips.norm.sub)[, ctrlSamples], MARGIN=1, sd)
+  )
+
+  ## calculate average across miRNA data.
+  ## according to pd.exiqon$rna_source and ps.exiqon$channel,
+  ## we've got exosome in Cy3 (green), cell in Cy5 (red)
+  ma2r <- function(m, a){
+      return(((m/2)+a))
+  }
+  ma2g <- function(m, a){
+      return((a-(m/2)))
+  }
+  miRNA.R <- ma2r(Slides.norm.sub$M, Slides.norm.sub$A)
+  miRNA.G <- ma2g(Slides.norm.sub$M, Slides.norm.sub$A)
+  ## perform a fake background adjustment:
+  miRNA.R <- 2^miRNA.R
+  miRNA.R <- miRNA.R - min(miRNA.R) + 1
+  miRNA.G <- 2^miRNA.G
+  miRNA.G <- miRNA.G - min(miRNA.G) + 1
+  miRNA.R <- log2(miRNA.R)
+  miRNA.G <- log2(miRNA.G)
+  ## calculate average
+  miRNA.mean.exprs <- cbind(
+      exosome=rowMeans(miRNA.G),
+      cell=rowMeans(miRNA.R)
+  )
+  miRNA.sd.exprs <- cbind(
+      exosome=apply(miRNA.G, MARGIN=1, sd),
+      cell=apply(miRNA.R, MARGIN=1, sd)
+  )
+
+
+#+END_SRC
+
+
+#+NAME: src.correlation.mean.sd.plot
+#+BEGIN_SRC R :results graphics :file (concat (org-sbe imagepath) "correlation-mean-sd-mRNA-miRNA.png") :exports results :width 12 :height 12 :units cm :res 600 :pointsize 6
+  par(mfrow=c(2, 2))
+  library(RColorBrewer)
+  COL <- paste0(brewer.pal(9, "Greys")[7], 80)
+  ## mRNA
+  plot(mRNA.mean.exprs[, 1], mRNA.sd.exprs[, 1], main="mRNA exosome",
+       xlab="mean expression", ylab="sd expression", pch=16, cex=0.8, col=COL)
+  lines(lowess(mRNA.mean.exprs[, 1], mRNA.sd.exprs[, 1]),
+        col=paste0(brewer.pal(3, "Set1")[2], 80), lwd=2)
+  plot(mRNA.mean.exprs[, 2], mRNA.sd.exprs[, 2], main="mRNA cell",
+       xlab="mean expression", ylab="sd expression", pch=16, cex=0.8, col=COL)
+  lines(lowess(mRNA.mean.exprs[, 2], mRNA.sd.exprs[, 2]),
+        col=paste0(brewer.pal(3, "Set1")[2], 80), lwd=2)
+  ## miRNA
+  ## get miRNAs with less than 50 counts
+  matmirCounts <- unique(mir2ps[, c("mat_mirna_id", "mat_mirna_read_count")])
+  lowCountMirs <- matmirCounts[matmirCounts[, 2] < 50, 1]
+  plot(miRNA.mean.exprs[, 1], miRNA.sd.exprs[, 1], main="miRNA exosome",
+       xlab="mean expression", ylab="sd expression", pch=16, cex=0.8, col=COL)
+  points(miRNA.mean.exprs[lowCountMirs, 1], miRNA.sd.exprs[lowCountMirs, 1],
+         cex=0.8, pch=16, col=paste0(brewer.pal(3, "Set1")[1], 80))
+  lines(lowess(mRNA.mean.exprs[, 2], mRNA.sd.exprs[, 2]),
+        col=paste0(brewer.pal(3, "Set1")[2], 80), lwd=2)
+  plot(miRNA.mean.exprs[, 2], miRNA.sd.exprs[, 2], main="miRNA cell",
+       xlab="mean expression", ylab="sd expression", pch=16, cex=0.8, col=COL)
+  points(miRNA.mean.exprs[lowCountMirs, 2], miRNA.sd.exprs[lowCountMirs, 2],
+         cex=0.8, pch=16, col=paste0(brewer.pal(3, "Set1")[1], 80))
+  lines(lowess(mRNA.mean.exprs[, 2], mRNA.sd.exprs[, 2]),
+        col=paste0(brewer.pal(3, "Set1")[2], 80), lwd=2)
+
+#+END_SRC
+#+ATTR_HTML: :width 600px
+#+ATTR_LATEX: :center :placement [H] :width 12cm
+#+NAME: fig.correlation.mean.sd.plot
+#+CAPTION: Mean against variance of expression for mRNAs and miRNAs calculated across exosome and donor cell samples. miRNAs highlighted in red represent miRNAs with less than 50 read counts in the miRBase database.
+#+RESULTS: src.correlation.mean.sd.plot
+[[file:images/correlation-mean-sd-mRNA-miRNA.png]]
+
+Both, average expression and variance of expression across replicates looks
+reasonable for mRNA and miRNA values from donor cells (see Figure
+[[fig.correlation.mean.sd.plot]]). mRNA expression data from exosomes yields however
+low signal with a relatively high variance, while the miRNA expression data
+seems to be of higher quality.
+Thus we might get problems comparing miRNA and mRNA expression profiles from
+exosomes or also differential expression between cell and exosome samples. We
+will therefor focus first on correlating the cell expression profiles.
+
+Not unexpectedly, we see that most of the mature miRNAs with relatively few read
+counts reported in the miRBase have low expression values, suggesting that some
+of these might indeed not exist.
+
+Next we select for each pre-miRNA the mature miRNA with the highest expression
+value. In addition, we select for each pre-miRNA the probe set with the highest
+expression value.
+
+#+NAME: src.correlation.select.values
+#+BEGIN_SRC R :results silent :exports code
+  ## select for each pre-miRNA the mature miRNA yielding the highest expression value.
+  ## tmp <- unique(mir2ps[, c("mat_mirna_id", "pre_mirna_name")])
+  ## tmp.exprs <- miRNA.mean.exprs[tmp$mat_mirna_id, "cell"]
+  ## names(tmp.exprs) <- tmp$pre_mirna_name
+  ## miRNA.cells.premiRNA <- doSelectData(tmp.exprs, chooseFunX=chooseOrderedValue)
+
+  ## use the transferValues method. We might get some pre-miRNAs for which we don't have any
+  ## host gene/probe set, but we can subset there later.
+  miRNA.cells.premiRNA <- transferValues(miRNA.mean.exprs[, "cell"], mhg,
+                                         solveFun=chooseOrderedValue,
+                                         xNamesAre="mat_mirna_id", toNames="pre_mirna_name")
+
+  ## map the probe sets to pre-miRNAs, select for each pre-miRNA the probe set with the highest
+  ## expression. Setting filter to list() prevents that we exclude host genes defined in
+  ## databases other than core.
+  mRNA.cells.premiRNA <- transferValues(mRNA.mean.exprs[, "cell"], mhg,
+                                        solveFun=chooseOrderedValue, xNamesAre="probeset_id",
+                                        toNames="pre_mirna_name", filter=list())
+
+  ## subset the table to those that are in common and order them like that.
+  rownames(miRNA.cells.premiRNA) <- miRNA.cells.premiRNA$pre_mirna_name
+  rownames(mRNA.cells.premiRNA) <- mRNA.cells.premiRNA$pre_mirna_name
+  commonPres <- intersect(miRNA.cells.premiRNA$pre_mirna_name, mRNA.cells.premiRNA$pre_mirna_name)
+  miRNA.cells.premiRNA <- miRNA.cells.premiRNA[commonPres, ]
+  mRNA.cells.premiRNA <- mRNA.cells.premiRNA[commonPres, ]
+
+
+
+#+END_SRC
+
+Correlating the host gene expression with mature miRNA expression values.
+
+#+NAME: src.correlation.cells.probeset.mature.premirna
+#+BEGIN_SRC R :results graphics :file (concat (org-sbe imagepath) "correlation-mean-cells-probeset-mature-miRNA-via-pre.png") :exports results :width 16 :height 8 :units cm :res 600 :pointsize 6
+  par(mfrow=c(1, 2), cex.axis=1.5, cex.lab=1.5, mar=c(4.5, 4.5, 1, 1))
+  X <- miRNA.cells.premiRNA$x
+  names(X) <- miRNA.cells.premiRNA$pre_mirna_name
+  Y <- mRNA.cells.premiRNA$x
+  names(Y) <- mRNA.cells.premiRNA$pre_mirna_name
+  ## plot.
+  plot(X, Y, xlab="miRNA expression", ylab="host gene expression", main="RNA from HMC-1 cells",
+       pch=16, cex=0.8, col=COL)
+  LM <- lm(Y~X)
+  abline(0, 1, col="blue", lty=2)
+  abline(LM, col="blue")
+
+  ## highlight stuff based on genomic thingys...
+  ## highlight...
+  multis <- matmirnasInMultiplePremirnas(mhg)
+  multis <- multis[multis$pre_mirna_name %in% names(X), ]
+  points(X[multis$pre_mirna_name], Y[multis$pre_mirna_name], col=brewer.pal(3, "Set1")[1])
+  ## encoding of the pre-miRNA
+  encoding <- unique(mir2ps[, c("pre_mirna_name", "in_exon", "in_intron")])
+  encoding <- split(encoding, encoding$pre_mirna_name)
+  ## intronic, label green.
+  intronic <- unlist(lapply(encoding, function(z){
+      return(all(z$in_intron > 0 & z$in_exon == 0))
+  }))
+  intronic <- intronic[intronic]
+  intronic <- intronic[names(intronic) %in% names(X)]
+  points(X[names(intronic)], Y[names(intronic)], col=paste0(brewer.pal(3, "Set1")[3], 80), pch=16)
+  ## exonic
+  exonic <- unlist(lapply(encoding, function(z){
+      return(all(z$in_intron == 0 & z$in_exon > 0))
+  }))
+  exonic <- exonic[exonic]
+  exonic <- exonic[names(exonic) %in% names(X)]
+  points(X[names(exonic)], Y[names(exonic)], col=paste0(brewer.pal(3, "Set1")[1], 80), pch=16)
+  ## host genes encoding several pre-miRNAs.
+  prePs <- unique(mir2ps[mir2ps$probeset_id %in% mRNA.cells.premiRNA$probeset_id,
+                         c("pre_mirna_name", "probeset_id")])
+  prePs <- split(prePs, prePs$probeset_id)
+  preCount <- unlist(lapply(prePs, function(z){
+      return(nrow(z) > 1)
+  }))
+  preCount <- preCount[preCount]
+  multiPrePs <- mRNA.cells.premiRNA[mRNA.cells.premiRNA$probeset_id %in% names(preCount), "pre_mirna_name"]
+  points(X[multiPrePs], Y[multiPrePs], col="blue", pch=1)
+
+  ## plot it again
+  plot(X, Y, xlab="miRNA expression", ylab="host gene expression", main="RNA from HMC-1 cells",
+       pch=16, cex=0.8, col=COL)
+  LM <- lm(Y~X)
+  abline(0, 1, col="blue", lty=2)
+  abline(LM, col="blue")
+
+  ## this time we highlight confidence data:
+  ## high confidence pre-miRNA: green
+  preConf <- unique(mir2ps[, c("pre_mirna_name", "pre_mirna_confidence")])
+  highConf <- preConf[which(preConf[, 2] > 0), 1]
+  points(X[highConf], Y[highConf], pch=16, col=paste0(brewer.pal(3, "Set1")[3], 80))
+  ## next we highlight mature miRNAs with less than 50 counts.
+  matCounts <- unique(mir2ps[, c("mat_mirna_id", "mat_mirna_read_count")])
+  lower10 <- matCounts[matCounts[, 2] < 10, 1]
+  lower50 <- matCounts[matCounts[, 2] < 50, 2]
+  bm <- miRNA.cells.premiRNA[miRNA.cells.premiRNA$mat_mirna_id %in% lower10, "pre_mirna_name"]
+  points(X[bm], Y[bm], pch=4, col=brewer.pal(3, "Set1")[1])
+
+  ## correlation:
+  ## + only for high confidence pre-miRNAs.
+  ## + without poor quality mature miRNAs.
+  ## + host genes encoding more than one exonic pre-miRNA.
+
+  ## only high confidence pre-miRNAs:
+  hosts <- Y[highConf]
+  mirs <- X[highConf]
+  highConf <- lm(hosts~mirs)
+
+  ## without poor quality mature miRNAs:
+  hosts <- Y[-which(names(Y) %in% bm)]
+  mirs <- X[-which(names(X) %in% bm)]
+  noPoorMat <- lm(hosts~mirs)
+#+END_SRC
+#+ATTR_HTML: :width 600px
+#+ATTR_LATEX: :center :placement [H] :width 16cm
+#+NAME: fig.correlation.cells.probeset.mature.premirna
+#+CAPTION: Correlation of mature miRNA expression data with host gene expression data from HMC-1 cells. Mapping has been established /via/ the pre-miRNAs, for each pre-miRNA the mature miRNA with the highest expression value was selected, as well as the probe set yielding the largest signal. Left: Green and red points indicate intronic and exonic miRNAs, respectively. Points encircled red are miRNAs encoded in more than one pre-miRNA, points encircled blue are probe sets for host genes encoding more than one pre-miRNA. Right: high confidence pre-miRNAs are depicted in green. Values for mature miRNAs with a read count lower than 10 in the miRBase database are highlighted with red crosses.
+#+RESULTS: src.correlation.cells.probeset.mature.premirna
+[[file:images/correlation-mean-cells-probeset-mature-miRNA-via-pre.png]]
+
+While the correlation is actually pretty poor, there are some quite remarkable
+observations:
++ Expression of exonic miRNAs (red points in the left plot in Figure
+  [[fig.correlation.cells.probeset.mature.premirna]]) is in many instances higher
+  than that of the host genes.
++ While destabilization of the primary transcript by Drosha processing of exonic
+  miRNAs was reported, for some exonic miRNAs expression between mature miRNA
+  and host gene correlates well.
++ Correlation fails for some miRNAs encoded in multiple pre-miRNAs.
+
+Confidence information of miRNAs has however bigger influence on the correlation
+(right plot in Figure [[fig.correlation.cells.probeset.mature.premirna]]): many of
+the mis-correlated miRNA-host gene pairs can be explained by poor quality
+miRNAs.
+
+Next we evaluate correlations for several sub-sets of miRNA/host gene
+pairs. First we evaluate the correlation between host genes and high confidence
+pre-miRNAs.
+
+#+NAME: src.correlation.cells.probeset.mature.premirna.highconf
+#+BEGIN_SRC R :results graphics :file (concat (org-sbe imagepath) "correlation-mean-cells-probeset-mature-miRNA-via-pre-high-conf-pre.png") :exports results :width 18 :height 8 :units cm :res 600 :pointsize 6
+  par(mfrow=c(1, 2), cex.axis=1.5, cex.lab=1.5, mar=c(4.5, 4.5, 1, 1))
+  X <- miRNA.cells.premiRNA$x
+  names(X) <- miRNA.cells.premiRNA$pre_mirna_name
+  Y <- mRNA.cells.premiRNA$x
+  names(Y) <- mRNA.cells.premiRNA$pre_mirna_name
+  ## plot.
+  plot(X, Y, xlab="miRNA expression", ylab="host gene expression", main="RNA from HMC-1 cells",
+       pch=16, cex=0.8, col=paste0(brewer.pal(9, "Greys")[6], 40))
+  LM <- lm(Y~X)
+  abline(LM, col=paste0(brewer.pal(9, "Greys")[6], 40))
+  ## and now subset to the high confidence only:
+  preConf <- unique(mir2ps[, c("pre_mirna_name", "pre_mirna_confidence")])
+  highConf <- preConf[which(preConf[, 2] > 0), 1]
+  mirs <- X[highConf]
+  hosts <- Y[highConf]
+  points(X[highConf], Y[highConf], pch=16, col=paste0(brewer.pal(3, "Set1")[2], "ce"))
+  highConfLM <- lm(hosts~mirs)
+  abline(highConfLM, col=paste0(brewer.pal(3, "Set1")[2], "ce"))
+  Sum <- summary(highConfLM)
+  legend("topleft", legend=c(paste0("Slope: ", format(Sum$coefficients[2, 1], digits=2)),
+                             paste0("P-value: ", format(Sum$coefficients[2, 4], digits=1))))
+
+  ## plot.
+  plot(X, Y, xlab="miRNA expression", ylab="host gene expression", main="RNA from HMC-1 cells",
+       pch=16, cex=0.8, col=paste0(brewer.pal(9, "Greys")[6], 40))
+  LM <- lm(Y~X)
+  abline(LM, col=paste0(brewer.pal(9, "Greys")[6], 40))
+  ## next we highlight mature miRNAs with less than 10 counts.
+  matCounts <- unique(mir2ps[, c("mat_mirna_id", "mat_mirna_read_count")])
+  higher10 <- matCounts[matCounts[, 2] > 10, 1]
+  higher10pres <- miRNA.cells.premiRNA[miRNA.cells.premiRNA$mat_mirna_id %in% higher10, "pre_mirna_name"]
+  mirs <- X[higher10pres]
+  hosts <- Y[higher10pres]
+  higher10LM <- lm(hosts~mirs)
+  points(mirs, hosts, pch=16, col=paste0(brewer.pal(3, "Set1")[2], "ce"))
+  abline(higher10LM, col=paste0(brewer.pal(3, "Set1")[2], "ce"))
+  Sum <- summary(higher10LM)
+  legend("topleft", legend=c(paste0("Slope: ", format(Sum$coefficients[2, 1], digits=2)),
+                             paste0("P-value: ", format(Sum$coefficients[2, 4], digits=1))))
+#+END_SRC
+#+ATTR_HTML: :width 600px
+#+ATTR_LATEX: :center :placement [H] :width 16cm
+#+NAME: fig.correlation.cells.probeset.mature.premirna.highconf
+#+CAPTION: Correlation of mature miRNA expression data with host gene expression data from HMC-1 cells. Mapping has been established /via/ the pre-miRNAs, for each pre-miRNA the mature miRNA with the highest expression value was selected, as well as the probe set yielding the largest signal. Grey dots indicate all miRNA/host gene pairs. In the left plot, blue dots represent miRNA/host gene pairs for high confidence pre-miRNAs, in the right plot for mature miRNAs with more than 10 read counts in the miRBase database. Correlation was performed on these blue points.
+#+RESULTS: src.correlation.cells.probeset.mature.premirna.highconf
+[[file:images/correlation-mean-cells-probeset-mature-miRNA-via-pre-high-conf-pre.png]]
+
+Indeed, when considering only high confidence pre-miRNAs, the correlation
+increases (see Figure
+[[fig.correlation.cells.probeset.mature.premirna.highconf]]). A large part of the
+failing miRNA/host gene correlation in the top left corner of the plot
+(i.e. high host gene and very low mature miRNA expression) can be explained by
+low quality miRNAs. Still, a considerable number of mature miRNAs yield much
+higher expression than their host genes (bottom right corner).
+
+Next we evaluate the correlation between mature miRNA/host gene pairs
+restricting to only intronic miRNAs or miRNAs encoded by a single precursor.
+
+
+#+NAME: src.correlation.cells.probeset.mature.premirna.intronic
+#+BEGIN_SRC R :results graphics :file (concat (org-sbe imagepath) "correlation-mean-cells-probeset-mature-miRNA-via-pre-only-intronic.png") :exports results :width 16 :height 8 :units cm :res 600 :pointsize 6
+  par(mfrow=c(1, 2), cex.axis=1.5, cex.lab=1.5, mar=c(4.5, 4.5, 1, 1))
+  X <- miRNA.cells.premiRNA$x
+  names(X) <- miRNA.cells.premiRNA$pre_mirna_name
+  Y <- mRNA.cells.premiRNA$x
+  names(Y) <- mRNA.cells.premiRNA$pre_mirna_name
+  ## plot.
+  plot(X, Y, xlab="miRNA expression", ylab="host gene expression", main="RNA from HMC-1 cells",
+       pch=16, cex=0.8, col=paste0(brewer.pal(9, "Greys")[6], 40))
+  LM <- lm(Y~X)
+  abline(LM, col=paste0(brewer.pal(9, "Greys")[6], 40))
+  ## encoding of the pre-miRNA
+  encoding <- unique(mir2ps[, c("pre_mirna_name", "in_exon", "in_intron")])
+  encoding <- split(encoding, encoding$pre_mirna_name)
+  ## intronic
+  intronic <- unlist(lapply(encoding, function(z){
+      return(all(z$in_intron > 0 & z$in_exon == 0))
+  }))
+  intronic <- intronic[intronic]
+  intronic <- intronic[names(intronic) %in% names(X)]
+  mirs <- X[names(intronic)]
+  hosts <- Y[names(intronic)]
+  points(mirs, hosts, col=paste0(brewer.pal(3, "Set1")[3], "ce"), pch=16)
+  intronicLM <- lm(hosts~mirs)
+  abline(intronicLM, col=paste0(brewer.pal(3, "Set1")[3], "ce"))
+  Sum <- summary(intronicLM)
+  legend("topleft", legend=c(paste0("Slope: ", format(Sum$coefficients[2, 1], digits=2)),
+                             paste0("P-value: ", format(Sum$coefficients[2, 4], digits=1))))
+
+
+  ## plot.
+  plot(X, Y, xlab="miRNA expression", ylab="host gene expression", main="RNA from HMC-1 cells",
+       pch=16, cex=0.8, col=paste0(brewer.pal(9, "Greys")[6], 40))
+  LM <- lm(Y~X)
+  abline(LM, col=paste0(brewer.pal(9, "Greys")[6], 40))
+  ## next for those that are encoded in a single pre-cursor (including pre-miRNAs with a single
+  ## genomic alignment).
+  mirnpre <- matmirnas(mhg, columns=c("mat_mirna_id", "pre_mirna_algn_id"),
+                       filter=MatmirnaidFilter(miRNA.cells.premiRNA$mat_mirna_id))
+  mirPreCount <- unlist(lapply(split(mirnpre, mirnpre$mat_mirna_id), nrow))
+  singleMir <- names(mirPreCount)[mirPreCount == 1]
+  singleMirPre <- miRNA.cells.premiRNA[miRNA.cells.premiRNA$mat_mirna_id %in% singleMir, "pre_mirna_name"]
+  mirs <- X[singleMirPre]
+  hosts <- Y[singleMirPre]
+  points(mirs, hosts, col=paste0(brewer.pal(3, "Set1")[3], "ce"), pch=16)
+  singleMirLM <- lm(hosts~mirs)
+  abline(singleMirLM, col=paste0(brewer.pal(3, "Set1")[3], "ce"))
+  Sum <- summary(singleMirLM)
+  legend("topleft", legend=c(paste0("Slope: ", format(Sum$coefficients[2, 1], digits=2)),
+                             paste0("P-value: ", format(Sum$coefficients[2, 4], digits=1))))
+
+#+END_SRC
+#+ATTR_HTML: :width 600px
+#+ATTR_LATEX: :center :placement [H] :width 16cm
+#+NAME: fig.correlation.cells.probeset.mature.premirna.intronic
+#+CAPTION: Correlation of mature miRNA expression data with host gene expression data from HMC-1 cells. Mapping has been established /via/ the pre-miRNAs, for each pre-miRNA the mature miRNA with the highest expression value was selected, as well as the probe set yielding the largest signal. Grey dots indicate all miRNA/host gene pairs. In the left plot, blue dots represent miRNA/host gene pairs from high confidence pre-miRNAs, in the right plot from mature miRNAs encoded in a single pre-miRNA. Correlation was performed on these blue points.
+#+RESULTS: src.correlation.cells.probeset.mature.premirna.intronic
+[[file:images/correlation-mean-cells-probeset-mature-miRNA-via-pre-only-intronic.png]]
+
+As expected, some of the mis-correlations of highly expressed mature miRNAs with
+low host gene expression can be explained by the fact that their pre-miRNAs are
+encoded in the host transcript's exon (see Figure
+[[fig.correlation.cells.probeset.mature.premirna.intronic]], left plot).
+Some other such mis-correlations result from mature miRNAs encoded in more than
+one pre-miRNA with only one of the host genes (which most likely is not
+expressed) being detectable by probe sets on the microarray.
+
+At last we restrict the correlation analysis to: a) high confidence pre-miRNAs,
+b) only intronic pre-miRNAs and c) mature miRNAs encoded in a single pre-miRNA
+(high confidence pre-miRNA that is; thus if a mature miRNA is encoded in a high
+confidence and low confidence pre-miRNA it is still considered, but only using
+the mapping to the high confidence pre-miRNA). Probe sets for host genes are
+also mapped to high confidence pre-miRNAs.
+
+#+NAME: src.correlation.cells.probeset.mature.premirna.best
+#+BEGIN_SRC R
+  ## First select miRNAs encoded in a single, high confidence pre-miRNA:
+  ## Note: this would keep also miRNAs which are encoded in one high confidence, and one
+  ## low confidence pre-miRNA!
+  ## a)
+  preByMat <- premirnasBy(mhg, columns=c("mat_mirna_id", "pre_mirna_algn_id", "pre_mirna_name"),
+                          filter=PremirnaConfidence("high"), by="mat_mirna")
+  ## c)
+  matCounts <- unlist(lapply(preByMat, nrow))
+  singleCount <- names(matCounts)[matCounts == 1]
+  highQPre <- unique(do.call(rbind, preByMat[singleCount])$pre_mirna_name)
+
+  ## Next we transfer the values. use the mature miRNA ids above (encoded in a single, high quality, pre-miRNA)
+  ## AND the pre-miRNA alignment ids as filters.
+  miRNA.cells.premiRNA <- transferValues(miRNA.mean.exprs[, "cell"], mhg,
+                                         solveFun=chooseOrderedValue,
+                                         xNamesAre="mat_mirna_id", toNames="pre_mirna_name",
+                                         filter=list(MatmirnaidFilter(singleCount),
+                                                     PremirnaFilter(highQPre)), na.rm=TRUE)
+  ## just to cross-check:
+  ## each of these mature miRNAs HAS to be encoded in a single pre-miRNA
+  ## tmp <- premirnasBy(mhg, filter=MatmirnaidFilter(miRNA.cells.premiRNA$mat_mirna_id))
+  ## table(unlist(lapply(tmp, function(z){sum(z$pre_mirna_confidence == 1)})))
+
+  ## map probe set data to (high confidence) pre-miRNAs.
+  mRNA.cells.premiRNA <- transferValues(mRNA.mean.exprs[, "cell"], mhg,
+                                        solveFun=chooseOrderedValue, xNamesAre="probeset_id",
+                                        toNames="pre_mirna_name",
+                                        filter=PremirnaConfidence("high"), na.rm=TRUE)
+
+  ## now match each other.
+  presInBoth <- intersect(mRNA.cells.premiRNA$pre_mirna_name,
+                          miRNA.cells.premiRNA$pre_mirna_name)
+  mRNA.cells.premiRNA <- mRNA.cells.premiRNA[mRNA.cells.premiRNA$pre_mirna_name %in% presInBoth, ]
+  miRNA.cells.premiRNA <- miRNA.cells.premiRNA[miRNA.cells.premiRNA$pre_mirna_name %in% presInBoth, ]
+  rownames(mRNA.cells.premiRNA) <- mRNA.cells.premiRNA$pre_mirna_name
+  rownames(miRNA.cells.premiRNA) <- miRNA.cells.premiRNA$pre_mirna_name
+  miRNA.cells.premiRNA <- miRNA.cells.premiRNA[rownames(mRNA.cells.premiRNA), ]
+#+END_SRC
+
+Well done. Now we can run the correlation on this, presumably, high quality data.
+
+#+NAME: src.correlation.cells.probeset.mature.premirna.best.correlation
+#+BEGIN_SRC R :results graphics :file (concat (org-sbe imagepath) "correlation-mean-cells-probeset-mature-miRNA-via-pre-best.png") :exports results :width 8 :height 8 :units cm :res 600 :pointsize 6
+  par(cex.axis=1.5, cex.lab=1.5, mar=c(4.5, 4.5, 1, 1))
+  X <- miRNA.cells.premiRNA$x
+  names(X) <- miRNA.cells.premiRNA$pre_mirna_name
+  Y <- mRNA.cells.premiRNA$x
+  names(Y) <- mRNA.cells.premiRNA$pre_mirna_name
+  ## plot.
+  plot(X, Y, xlab="miRNA expression", ylab="host gene expression", main="RNA from HMC-1 cells",
+       pch=16, cex=0.8, col=paste0(brewer.pal(9, "Greys")[8], 80))
+  LM <- lm(Y~X)
+  abline(LM, col=paste0(brewer.pal(9, "Greys")[6], 40))
+  Sum <- summary(LM)
+  legend("topleft", legend=c(paste0("Slope: ", format(Sum$coefficients[2, 1], digits=2)),
+                             paste0("P-value: ", format(Sum$coefficients[2, 4], digits=1))))
+
+  ## Could highlight exonic encoded miRNAs.
+  ## Get all information from the database. Note that this way we get host genes defined in
+  ## all 3 databases.
+  encodings <- premirnasBy(mhg, filter=list(ProbesetidFilter(mRNA.cells.premiRNA$probeset_id),
+                                            PremirnaConfidence("high"),
+                                            MatmirnaidFilter(miRNA.cells.premiRNA$mat_mirna_id),
+                                            GenebiotypeFilter("miRNA", condition="!=")),
+                           columns=c("pre_mirna_name", "mat_mirna_id", "in_intron", "in_exon",
+                                     "gene_name", "database"),
+                           by="mat_mirna")
+  ## define colors for encodings: red exonic, green intronic, blue mixed.
+  encodings <- unlist(lapply(encodings, function(z){
+      ## Check if we have any genes defined in the core database.
+      ## For that one we can be sure that gene_biotype "miRNA" represents pre-miRNAs.
+      ## In the otherfeatures that might not be the case, but we checked those host genes
+      ## that were not defined in the core and none represented a pre-miRNA.
+      if(any(z$database == "core")){
+          z <- z[z$database == "core", , drop=FALSE]
+      }
+      if(all(z$in_intron > 0) & all(z$in_exon == 0))
+          return("intronic")
+      if(all(z$in_intron == 0) & all(z$in_exon > 0))
+          return("exonic")
+      return("mixed")
+  }))
+  encodingColors <- paste0(brewer.pal(3, "Set1"), 80)
+  names(encodingColors) <- c("exonic", "intronic", "mixed")
+  points(X, Y, pch=16,
+         col=encodingColors[encodings[miRNA.cells.premiRNA$mat_mirna_id]])
+  ## lm on only the non-exonic
+  mirs <- X[miRNA.cells.premiRNA$mat_mirna_id %in% names(encodings)[encodings!="exonic"]]
+  hosts <- Y[miRNA.cells.premiRNA$mat_mirna_id %in% names(encodings)[encodings!="exonic"]]
+  nonExonicLM <- lm(hosts~mirs)
+  abline(nonExonicLM, col=paste0(brewer.pal(3, "Set1")[2], 80), lwd=2)
+
+#+END_SRC
+#+ATTR_HTML: :width 600px
+#+ATTR_LATEX: :center :placement [H] :width 8cm
+#+NAME: fig.correlation.cells.probeset.mature.premirna.best.correlation
+#+CAPTION: Correlation of mature miRNA expression data with host gene expression data from HMC-1 cells. Mapping has been established /via/ the pre-miRNAs, for each high confidence pre-miRNA the mature miRNA with the highest expression value was selected, excluding mature miRNAs encoded in more than one high confidence pre-miRNA. Probe sets were also mapped to high confidence pre-miRNAs, selecting always the probe set with the highest expression value. Blue, green and red points indicate intronic, mixed and exonic pre-miRNAs.
+#+RESULTS: src.correlation.cells.probeset.mature.premirna.best.correlation
+[[file:images/correlation-mean-cells-probeset-mature-miRNA-via-pre-best.png]]
+
+So, I can increase the correlation to some degree.
+
+
+#+NAME: src.correlation.cells.probeset.mature.premirna.failed.table
+#+BEGIN_SRC R :results output raw :exports none
+  ## get those with the largest difference
+  Diffs <- miRNA.cells.premiRNA$x - mRNA.cells.premiRNA$x
+  worstPres <- miRNA.cells.premiRNA$pre_mirna_name[order(Diffs, decreasing=TRUE)][1:20]
+  worstMats <- miRNA.cells.premiRNA$mat_mirna_id[order(Diffs, decreasing=TRUE)][1:20]
+
+  matmirnas(mhg, filter=MatmirnaidFilter(worstMats),
+            columns=c("mat_mirna_name", "mat_mirna_read_count", "pre_mirna_name",
+                      "pre_mirna_confidence", "in_exon", "in_intron",
+                      "sequence", "pre_mirna_algn_id"), return.type="data.frame")
+
+#+END_SRC
+
+
+Still, what is puzzling is the failing correlation between highly expressed host
+genes and their intronic miRNAs.
+
+
+In an alternative approach we select for each host gene the highest expressed
+probe set and for each host gene the pre-miRNA with the highest value. This
+fixes two complications: multiple probe sets per host gene/tx and multiple
+pre-miRNAs within most host transcripts.
+
+
+#+NAME: src.correlation.select.values.hostgene
+#+BEGIN_SRC R :results silent :exports code
+  ## map probe sets to host genes, select for each host gene the probe set with the largest
+  ## expression value. Note, we're using only mapping to Ensembl core genes to avoid redundancies
+  ## in gene definitions.
+  mRNA.cells.hostgene <- transferValues(mRNA.mean.exprs[, "cell"], mhg,
+                                        solveFun=chooseOrderedValue, xNamesAre="probeset_id",
+                                        toNames="gene_id", filter=list(DatabaseFilter("core")),
+                                        na.rm=TRUE)
+
+  ## now, map mature miRNAs also to host genes
+  miRNA.cells.hostgene <- transferValues(miRNA.mean.exprs[, "cell"], mhg,
+                                         solveFun=chooseOrderedValue, xNamesAre="mat_mirna_id",
+                                         toNames="gene_id", filter=list(DatabaseFilter("core")))
+
+  ## subset the table to those that are in common and order them like that.
+  rownames(miRNA.cells.hostgene) <- miRNA.cells.hostgene$gene_id
+  rownames(mRNA.cells.hostgene) <- mRNA.cells.hostgene$gene_id
+  commonHg <- intersect(miRNA.cells.hostgene$gene_id, mRNA.cells.hostgene$gene_id)
+  miRNA.cells.hostgene <- miRNA.cells.hostgene[commonHg, ]
+  mRNA.cells.hostgene <- mRNA.cells.hostgene[commonHg, ]
+
+
+
+  X <- miRNA.cells.hostgene$x
+  Y <- mRNA.cells.hostgene$x
+  names(X) <- miRNA.cells.hostgene$gene_id
+  names(Y) <- mRNA.cells.hostgene$gene_id
+  ## plot.
+  plot(X, Y, xlab="miRNA expression", ylab="host gene expression", main="RNA from HMC-1 cells",
+       pch=16, cex=0.8, col=COL)
+  LM <- lm(Y~X)
+  abline(0, 1, col="blue", lty=2)
+  abline(LM, col="blue")
+
+
+#+END_SRC
+
+LLLL: Use the PremirnaConfidence filter or use the read counts!
+
+
+#+BEGIN_SRC R
+  ## just check some of the miRNAs that completely fail...
+  Diffs <- miRNA.cells.premiRNA$x - mRNA.cells.premiRNA$x
+
+  ## those with high miRNA but low host gene expression:
+  testIds <- head(miRNA.cells.premiRNA[order(Diffs, decreasing=TRUE), ])$mat_mirna_id
+
+  matmirnas(mhg, filter=MatmirnaidFilter(testIds))
+  ## well, some are encoded in more than one host gene... then it's apparent.
+
+
+  ## other way round: high host gene, low mat miRNA:
+  head(miRNA.cells.premiRNA[order(Diffs, decreasing=FALSE), ])
+  ## miR-632 might not exist at all; 1 paper, 60 reads, mature miRNA seems wrongly defined.
+  ## miR-612 might not exist al all; same paper as above, 11 reads, 9 experiments.
+  ## miR-558 might also not exist at all; same paper as above, 253 reads, 44 experiments, but
+  ##         none matching the mature miRNA.
+#+END_SRC
+
+
+** Correlation using the miRBase 21
+
+Thus far we used miRBase 20, but miRBase 21 would also include high confidence
+information from mature miRNAs.
+
+
+** Correlation of differential expression
+
+The advantage here is that we could just correlate the data for differentially
+expressed genes, as in a /real/ world situation we would use the differential
+expression analysis on the host gene level to infer regulation of the encoded
+mature miRNAs. Thus, we would like to know how sure it is that we find that
+paralleled regulation.
+
+
+
+** Session information
+
+All software packages along with their version number used for this analysis are listed below.
+
+
+-----
+#+NAME: src.diffexp.session
+#+BEGIN_SRC R :results output raw :exports both
+  library( ascii )
+  cat( "\n- Date :: ", date(), "\n" )
+  print( ascii( sessionInfo() ), type="org" )
+
+#+END_SRC
+
+#+ATTR_LATEX: :font \scriptsize
+#+RESULTS: src.diffexp.session
+
+
+** TODOs							   :noexport:
+
+*** DONE Run the affy pre-processing
+    CLOSED: [2015-04-02 Thu 07:10]
+    - State "DONE"       from "TODO"       [2015-04-02 Thu 07:10]
+*** DONE Run the Exiqon pre-processing
+    CLOSED: [2015-04-02 Thu 07:11]
+    - State "DONE"       from "TODO"       [2015-04-02 Thu 07:11]
+*** DONE Map affy probe sets to Exiqon
+    CLOSED: [2015-09-04 Fri 11:19]
+    - State "DONE"       from "TODO"       [2015-09-04 Fri 11:19]
+*** TODO Correlate host tx with mature miRNA.
+*** CANCELED Do the comparison also on a single sample
+    CLOSED: [2015-09-09 Wed 15:55]
+    - State "CANCELED"   from "TODO"       [2015-09-09 Wed 15:55] \\
+      Makes no sense here, since we don't have the 1:1 mapping; don't even know if the
+      RNAs are from the same cells/experiments.
+Basically, correlating expression values directly between individual samples.
+*** TODO Evaluate correlation host gene/pre-miRNA across the examples to determine quality of host gene definition

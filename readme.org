@@ -1,0 +1,17 @@
+# #+TITLE:mirhostgenes: putting miRNAs into genomic context
+#+AUTHOR: Johannes Rainer
+#+email: johannes.rainer@eurac.edu
+#+OPTIONS: ^:{}
+#+PROPERTY: exports code
+#+PROPERTY: session *R*
+
+# badges:
+
+
+*CAVE*: this is in active development phase!
+
+* =mirhostgenes=: putting miRNAs into genomic context
+
+
+For more information please refer to the [[file:vignettes/mirhostgenes.org]] file.
+

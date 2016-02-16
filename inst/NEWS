@@ -1,0 +1,38 @@
+CHANGES IN VERSION 0.99.0
+--------------
+
+SIGNIFICANT USER-VISIBLE CHANGES
+    o The primary key is not automatically added to the argument "columns" for methods
+      premirnas, matmirnas etc.
+
+
+CHANGES IN VERSION 0.3.0
+--------------
+
+NEW FEATURES
+    o Summary methods matmirnasInMultiplePremirnas and premirnasWithMultipleAlignments.
+    o Method transferValues to map/transfer values from one type of identifier to another.
+    o Function doSelectData to select a value among same-named values.
+    o Function doPairData to pair same-named values between numeric vectors.
+    o Function fetchAdditionalInformation to fetch miRNA and pre-miRNA read count data and
+      high confidence data from miRBase database files and save them into the corresponding
+      database tables.
+    o Defined MatmirnaConfidence and PremirnaConfidence filters that allow to filter data
+      on the confidence information.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+    o Enhancement of the vignette.
+
+
+
+CHANGES IN VERSION 0.2.0
+--------------
+
+BUG FIXES
+    o Specifying sequence for matmirnas returns no longer the pre-miRNA
+      sequence, but the mature miRNA sequence.
+
+
+SIGNIFICANT USER-VISIBLE CHANGES
+    o filter can be a list of filters or a single filter object.
+

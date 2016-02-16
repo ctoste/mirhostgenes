@@ -1,0 +1,935 @@
+#+TITLE: mirhostgenes: putting miRNAs into genomic context
+#+AUTHOR:    Johannes Rainer
+#+EMAIL:     johannes.rainer@eurac.edu
+#+DESCRIPTION:
+#+KEYWORDS:
+#+LANGUAGE:  en
+#+PROPERTY: exports code
+#+OPTIONS: ^:{}
+#+PROPERTY: session *R*
+#+FILETAGS: :work:project:
+#+CATEGORY: miRhost
+
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+
+#+BEGIN_EXPORT html
+
+---
+title: "mirhostgenes: putting miRNAs into genomic context"
+graphics: yes
+output:
+  BiocStyle::html_document:
+    toc_depth: 2
+  BiocStyle::pdf_document:
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{mirhostgenes: putting miRNAs into genomic context}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{mirhostgenes}
+  %\VignettePackage{mirhostgenes}
+  %\VignetteKeywords{annotation,database,miRNA}
+bibliography: mirhostgenes.bib
+csl: biomed-central.csl
+references:
+- id: dummy
+  title: no title
+  author:
+  - family: noname
+    given: noname
+---
+
+#+END_EXPORT
+
+#+BEGIN_SRC R :ravel echo=FALSE, results='asis'
+  BiocStyle::markdown()
+#+END_SRC
+
+# #+NAME: style
+# #+BEGIN_SRC R :ravel results='asis', echo=FALSE, eval=TRUE
+# BiocStyle::latex()
+# #+END_SRC
+
+# Alternative title: miRNA host genes: putting miRNAs into genomic context.
+
+* How to export this to a =Rmd= vignette			   :noexport:
+
+Use =ox-ravel= to export this file as a R markdown file (=C-c C-e m
+r=). That way we don't need to edit the resulting =Rmd= file.
+
+
+* How to export this to a =Rnw= vignette			   :noexport:
+
+Use =ox-ravel= from the =orgmode-accessories= package to export this file to a =Rnw= file. After export edit the generated =Rnw= in the following way:
+
+1) Delete all =\usepackage= commands.
+2) Move the =<<style>>= code chunk before the =\begin{document}= and before =\author=.
+3) Move all =%\Vignette...= lines at the start of the file (even before =\documentclass=).
+4) Replace =\date= with =\date{Modified: 21 October, 2013. Compiled: \today}=
+
+Note: use =:ravel= followed by the properties for the code chunk headers, e.g. =:ravel results='hide'=. Other options for knitr style options are:
++ =results=: ='hide'= (hides all output, not warnings or messages), ='asis'=, ='markup'= (the default).
++ =warning=: =TRUE= or =FALSE= whether warnings should be displayed.
++ =message=: =TRUE= or =FALSE=, same as above.
++ =include=: =TRUE= or =FALSE=, whether the output should be included into the final document (code is still evaluated).
+
+
+* Introduction
+
+miRNAs are processed from precursor molecules (pri-miRNAs or primary
+transcripts), which are either transcribed from independent miRNA genes or are
+portions of introns of protein-coding RNA polymerase II transcripts
+\cite{Filipowicz:2008fg}. In humans, only a minority of miRNAs belong to the
+former class (exonic miRNAs), while the majority are intronic, sharing in many
+instances even the promoter with their host gene \cite{Ha:2014ek}. miRNA
+precursors (pre-miRNAs) are excised from the primary transcript by Drosha prior
+to the splicing process and further processed in the cytoplasm by Dicer
+resulting in the mature ~22 nucleotide long miRNA.  Cleavage of an intron by
+Drosha does not affect splicing \cite{Kim:2007cf}, hence, from the same primary
+transcript both, the pre-miRNA and the mRNA for the host gene, can be generated.
+Given canonical pre-miRNA processing, expression of the mature miRNA and the
+host gene's mRNA are thus frequently paralleled
+\cite{Cullen:2004gi}\cite{Baskerville:2005ds}\cite{Rodriguez:2004kc} which
+enables, to some extend, to infer expression of mature miRNAs from expression
+data of their host genes \cite{Rainer:2009jb}\cite{Pasqualini:2015dy}.  In
+addition, knowing the miRNAs' potential host genes and thus their originating
+genomic context can help understanding how they are regulated. This can be of
+interest especially for miRNAs that are encoded in several pre-miRNAs, or derive
+from pre-miRNAs encoded in multiple genomic locations.
+
+The =mirhostgenes= package provides functionality to define host genes and
+transcripts for all miRNAs of one species and build corresponding databases and
+annotation packages (see Section [[section.mirna.hostgene.definition]]). Generated
+databases and packages are /versioned/ and linked to a specific Ensembl and
+miRBase version guaranteeing reproducible research. The name of such =MirhostDb=
+packages is a combination of the =R= object class, the organism, the Ensembl
+version and the mirbase version it is build upon,
+e.g. =MirhostDb.Hsapiens.v75.v20= for the =MirhostDb= database for /Homo
+sapiens/, Ensembl version 75 and mirbase version 20. In addition it defines
+function to query and access such data enabling an easy and straight forward
+combination of host gene and miRNA expression data (also by providing links to
+features from the most commonly used microarray targeting the host genes).  In
+that matter, =mirhostgenes= integrates seamlessly with the =ensembldb= Ensembl
+based gene annotation package and the Bioconductor annotation framework in
+general.
+
+* Basic usage and information
+
+In the example below we load an miRNA host gene database for Homo sapiens based
+on Ensembl version 75 and mirbase version 20. The connection to the database is
+bound to the variable =MirhostDb.Hsapiens.v75.v20=.
+
+#+BEGIN_SRC R :ravel warning=FALSE, message=FALSE
+  library(MirhostDb.Hsapiens.v75.v20)
+
+  ## print some informations for this package
+  MirhostDb.Hsapiens.v75.v20
+
+  ## make a shortcut, so we don't have to type the
+  ## full package name.
+  mhg <- MirhostDb.Hsapiens.v75.v20
+
+
+#+END_SRC
+
+
+We can retrieve some basic information from the database, such as the Ensembl
+or the miRBase version the package was build on, or the genome version for the
+mapping of the pre-miRNA hairpin sequence to the genomic DNA.
+
+#+BEGIN_SRC R
+
+  ## get the Ensembl and the miRbase versions:
+  ensemblVersion(mhg)
+  mirbaseVersion(mhg)
+
+  ## get the genome version
+  unique(genome(mhg))
+
+  ## get the organism
+  organism(mhg)
+#+END_SRC
+
+The layout of the internal database is shown in Section
+[[section.database.layout]]. To get an overview of all tables and their
+columns/attributes we can use the =listTables= method.
+
+#+BEGIN_SRC R
+  listTables(mhg)
+#+END_SRC
+
+
+* Retrieving miRNA informations
+
+In addition to miRNA host gene definitions, the package can also be used to get
+informations for all miRNAs defined in the miRbase database for the organism the
+package is built on.
+
+For example, we can use the =matmirnas= to retrieve all mature miRNAs. By
+default all methods return a =DataFrame= object, but for mature miRNAs and
+pre-miRNAs it is also possible to return the result as =GRanges= with the start
+and end positions defining the genomic position of the mature miRNAs and
+pre-miRNAs, respectively.
+
+#+BEGIN_SRC R
+  ## get an overview of the number of defined mature miRNAs:
+  nrow(matmirnas(mhg))
+
+  ## return the information as a DataFrame; default
+  matmirnas(mhg)
+
+  ## or return the information as GRanges
+  matmirnas(mhg, return.type="GRanges")
+
+#+END_SRC
+
+
+Note that the same mature miRNAs can be encoded in several precursors (and thus
+genomic positions). In that cases (as can be seen in the example above), the
+same mature miRNA ID is returned for several genomic positions.
+
+We can add additional annotations from other database columns to the query
+results, like the name of the pre-miRNA that encodes the mature miRNA and the
+name of the miRNA family the miRNA belongs to. To get an overview of all
+database tables and supported columns use the =listTables= and =listColumns=
+methods on the =MirhosgenesDb=. In the example below we retrieve the mature
+miRNA name, the name of the pre-miRNA, the name of the miRNA family and the
+mature miRNAs' sequences. Note that the sequence represent the actual RNA
+sequence of the mature miRNA, not the genomic sequence of the regions specified
+by the =GRanges= object.
+
+#+BEGIN_SRC R
+  ## retrieve the mature miRNAs along with the name of the encoding
+  ## pre-miRNA and the name of the miRNA family
+  matmirnas(mhg, columns=c("mat_mirna_name", "pre_mirna_name",
+                           "mirfam_name", "sequence"), return.type="GRanges")
+
+#+END_SRC
+
+Thus far we have queried the database for all miRNAs, but we can also specify
+filters to search for specific miRNAs. The same filtering system is also used in
+the =ensembldb= package and many of the filters are imported from that package.
+A complete list of filters is given below (in alphabetical order):
+
++ =AlignmentidFilter=: allows to filter results based on the (internal)
+  alignment ID for a pre-miRNA. The same pre-miRNA sequence might have multiple
+  genomic alignments, thus, the alignment ID was introduced ensure an unique
+  identifier in the database. Both, the mature miRNAs and the host transcripts
+  are linked /via/ this ID to the pre-miRNA alignment.
++ =DatabaseFilter=: for the host gene definition different databases (usually
+  the Ensembl core, Vega and otherfeatures (containing also RefSeq genes)) are
+  queried. Using this filter it is possible to restrict the search to
+  genes/transcripts defined in a specific database, thus avoiding the problem to
+  potentially retrieve the same gene with different identifiers from different
+  databases.
++ =ExonidFilter=: allows to filter the result based on the (Ensembl) exon
+  identifiers.
++ =GenebiotypeFilter=: allows to filter for the gene biotypes defined in the
+  Ensembl database.
++ =GeneidFilter=: allows to filter based on the Ensembl gene IDs.
++ =GenenameFilter=: allows to filter based on the names (symbols) of the genes.
++ =MatmirnaFilter=: filter on the name of the mature miRNA.
++ =MatmirnaidFilter=: filter on the ID (mirbase accession) of the mature miRNA.
++ =MirfamFilter=: filter on the name of the miRNA family.
++ =MirfamidFilter=: filter on the ID (mirbase accession) of the miRNA family.
++ =PositionFilter=: allows to filter results based on whether the (mature) miRNA
+  is exonic or intronic, i.e. is encoded in an exon of the transcript, or in an
+  intron.
++ =PremirnaFilter=: allows to filter on the pre-miRNA names.
++ =PremirnaidFilter=: filter on the pre-miRNA ID (i.e. mirbase accession).
++ =SeqendFilter=: filter based on the chromosomal end coordinate of the mature
+  miRNA or pre-miRNA.
++ =SeqnameFilter=: filter by the name of the chromosomes the host genes are encoded on.
++ =SeqstartFilter=: filter based on the chromosomal start coordinates of the
+  mature miRNA or pre-miRNA.
++ =SeqstrandFilter=: filter for the chromosome strand on which the genes are
+  encoded.
++ =TxbiotypeFilter=: filter on the transcript biotype defined in Ensembl.
++ =TxidFilter=: filter on the Ensembl transcript identifiers.
+
+Next we query the database to retrieve all pre-miRNAs encoding the mature miRNA
+/hsa-miR-16-5p/. To this end we define a =MatmirnaFilter= and submit that with
+the argument =filter=. We could also combine different filter, e.g. the
+=MatmirnaFilter= with a =Seqname= filter to further specify the query.
+
+#+BEGIN_SRC R
+  ## get the pre-miRNAs encoding mature miRNA miR-16-5p
+  mir16 <- premirnas(mhg, filter=MatmirnaFilter("hsa-miR-16-5p"))
+  mir16
+
+  ## we could also combine filters to retrieve only the pre-miRNA
+  ## encoded on chromosome 13.
+  premirnas(mhg, filter=list(MatmirnaFilter("hsa-miR-16-5p"),
+                             SeqnameFilter("13")))
+#+END_SRC
+
+So, miR-16-5p is encoded in two different pre-miRNAs. In addition to such a
+multiple mapping of mature and pre-miRNAs, the same pre-miRNA might also be
+encoded in several genomic loci such as the one in the example below.
+
+We can also retrieve e.g. pre-miRNAs grouped by mature miRNAs.
+
+#+BEGIN_SRC R
+  premirnasBy(mhg, by="mat_mirna", use.names=TRUE)
+#+END_SRC
+
+
+* Retrieving miRNA host gene definitions
+
+# Use case:
+# have some miRNAs and want to know from
+# get host transcripts for selected mature miRNAs.
+# get mature miRNAs for genes.
+
+Analogously to the way we fetched mature and pre-miRNA annotations, we can also
+retrieve host gene and host transcript annotation from the database, i.e. using
+the =hostgenes=, =hosttx=, =hostgenesBy= and =hosttxBy= methods. In addition, we
+could however also just include column names from tables /host_gene/ or
+/host_tx/ to the =columns= argument of the =matmirnas= or =premirnas= method.
+
+Off note, the central identifier in the database is the
+=pre_mirna_alignment_id=, i.e. a sequential number for each unique alignment of
+a pre-miRNA to the genome. Both mature miRNAs and host transcripts are linked to
+pre-miRNAs /via/ this number, and, since this number is unique in the database
+while the pre-miRNA name might not be, the default grouping factor for
+=hosttxBy= and =hostgenesBy= is the =pre_mirna_alignment_id=.
+
+In the example below we want to retrieve the potential host gene(s) of the
+mature miRNA /miR-16-5p/. We know already from the example above that this miRNA
+is encoded in two different pre-miRNAs, thus, we expect to get more than one
+host genes.
+
+#+BEGIN_SRC R
+  ## first define a filter for miR-16-5p
+  mmf <- MatmirnaFilter("hsa-miR-16-5p")
+
+  ## retrieve all host genes
+  hgs <- hostgenes(mhg, filter=mmf)
+  hgs
+
+#+END_SRC
+
+
+As explained in detail in Section [[section.mirna.hostgene.definition]], host genes
+are defined using gene/transcript models from different resources (usually
+using the Ensembl core, otherfeatures and vega databases). While the gene
+definitions are largely overlapping, a different identifier for the same gene is
+used in the various databases. This might lead, as in the example above, to a
+surprisingly high number of host genes.
+Thus it is in most instances advisable to use a =DatabaseFilter= to restrict the
+results to genes defined in a specific database (e.g. to the /core/ database).
+
+#+BEGIN_SRC R
+  ## list all databases on which gene models host genes were predicted
+  listDatabases(mhg)
+
+  ## define a database filter for the Ensembl core gene models
+  df <- DatabaseFilter("core")
+
+  ## get all host genes for miR-16 defined in the Ensembl core database
+  hgs <- hostgenes(mhg, filter=list(mmf, df))
+  hgs
+#+END_SRC
+
+We get 4 predicted host genes for that miRNA, two of them represent however the
+actual pre-miRNA, which in Ensembl is also defined as a /gene/ of the gene
+biotype /miRNA/. For most host gene/transcript related analyses these genes of
+this biotypes might be excluded, as they can not be detected by most gene
+expression microarray platforms or RNA-seq protocols. Thus we define an
+additional filter with which we can exclude genes from the /miRNA/ biotype.
+
+#+BEGIN_SRC R
+  ## define the gene biotype filter that excludes genes from the
+  ## biotype "miRNA"
+  gbf <- GenebiotypeFilter("miRNA", condition="!=")
+  hgs <- hostgenes(mhg, filter=list(mmf, df, gbf))
+  hgs
+#+END_SRC
+
+We could now use gene expression information for these genes and relate it to
+the expression data of the miRNA in order to determine from which genomic locus
+the miRNA was transcribed.
+If we used gene microarray data, we could even query the database to return the
+id of the microarray feature that would allow to measure these genes as shown in
+the code below; alternatively, we could use the =probesets= method with the same
+arguments to get the same result without =NA= entries.
+
+#+BEGIN_SRC R
+  hostgenes(mhg, filter=list(mmf, df, gbf), columns=c("gene_name", "probeset_id"))
+#+END_SRC
+
+We could also go one step further and investigate the actual transcript variants
+of the genes that might derive from a primary transcript common to both, the
+pre-miRNA and the transcript. In practice, a pre-miRNA is never encoded by a
+host gene itself, but in one of its transcripts (a pre-miRNA might e.g. be
+encoded in an intron that is common only to a subset of the gene's transcripts).
+
+#+BEGIN_SRC R
+  hosttx(mhg, filter=list(mmf, df, gbf))
+#+END_SRC
+
+From this call we get some interesting information related to the position
+within the primary transcript the pre-miRNA is encoded. Apparently, the
+pre-miRNA is intronic in all of the two genes' transcripts (as column /in_exon/
+is =0= for all).
+
+It might also be interesting to go the other way round and ask for miRNAs that
+might be eventually encoded in one of a gene's transcripts.
+We are using the =matmirnasBy= method to search for all mature miRNAs that are
+encoded in introns or exons of the genes /DLEU/ and /SMC4/. As a result we get
+all mature miRNAs grouped by the id of the host gene.
+
+#+BEGIN_SRC R
+  ## we use again the database filter and define a filter on the gene name
+  matmirnasBy(mhg, filter=list(df, GenenameFilter(c("SMC4", "DLEU2"))), by="host_gene")
+#+END_SRC
+
+Both genes, /DLEU2/ and /SMC4/, encode miRNAs from the mir-15 miRNA family, each
+containing two pre-miRNAs in one of their introns.
+
+
+* Pairing mature miRNA and host gene expression data
+
++ Describe the methods: =doSelectData=, =transferValues=.
+
+* Using gene expression data to infer miRNA expression/regulation  :noexport:
+
+GO ON HERE LLLLL
+
+The aim of such an analysis can be either to screen an existing gene expression data set for potential de-regulations of miRNAs, or to infer from which genomic location an e.g. de-regulated mature miRNA derives (i.e. in which pre-cursor the miRNA is encoded).
+The former is especially useful for experiments with limited or precious RNA, e.g. from clinical samples, where it is not possible or advisable to perform both gene and miRNA expression analyses in parallel. Thus, a (whole genome or targeted) miRNA expression profiling might only be performed if there is evidence for de-regulation of miRNA host transcripts from the gene expression experiment.
+The latter use case is specifically of interest for mature miRNAs that are encoded by different precursors. Knowing from which genomic locus a miRNA is transcribed (i.e. putting it into genomic context) is useful to determine how this miRNA might be regulated.
+
+Host gene/transcript expression analyses can be performed using either RNAseq or microarray experiments.
+For RNAseq data it is straight forward to use the transcript identifiers of the host transcripts in the feature counting to estimate expression of the host transcript.
+Using microarray data for host transcript expression/regulation is a little more complicated, as microarray annotations usually are /gene centric/, i.e. probe set IDs are mostly mapped to genes, and thus it is usually hard to determine which transcript of a gene the probe set detects.
+To allow such analyses, the =MirhostDb= packages provide mappings between miRNA host transcripts and microarray probe sets (at present for the most frequently used microarrays from Affymetrix).
+
+# Use case:
+# have a gene expression dataset: which miRNAs might be regulated? dataset: michela carlet.
+# have a de-regulated mature miRNA: from which genomic locus does this derive?
+# Note: exclude exonic miRNAs -> release of exonic miRNAs causes destabilization of the pre-miRNA.
+
+To predict miRNA expression on host gene expression, host genes encoding miRNAs in their exons should be excluded as the release of the pre-miRNA hair-pin structure from the primary transcript leads to destabilization of the transcript.
+
+# PUT THAT IN A SECTION EXPLAINING WHY EXPRESSION CORRELATION MIGHT BE LACKING!
+!!! CAVE:
+why is the type important? we do expect to see only correlations between
+miRNAs and host genes if the miRNA is encoded in an intron of the primary
+transcript. For miRNA encodin miRNAs in their exons it is likely that the
+RNA of the host transcript is degraded after excision of the pre-miRNA or
+at least that the mature RNA is not created.
+
+This might in part be related
+by the position in the primary transcript in which the miRNA is encoded,
+i.e. whether the miRNA is encoded in one of the host gene's transcripts exons or
+introns. For the latter, it is known that the miRNA precursor is excised from
+the common primary transcription unit co-transcriptionally, before splicing
+\cite{Ha:2014ek}\cite{Kim:2007cf} leading of the generation of both, the
+pre-miRNA and the mature RNA from the host gene. For exonic miRNAs it is however
+likely that Drosha processing of the primary transcript prevents the generation
+of the host gene's transcript. Thus, for host genes with exonic miRNAs,
+cytoplasmic, mature RNA transcripts might only be measurable, if either not all
+of the transcribed primary units are processed by Drosha, or if a mature RNA
+variant can be generated by a subsequent splice process that lacks the miRNA
+encoding exon.
+
+Indeed, Drosha-mediated cleavage of a primary transcript containing an exonic
+miRNA can lead to destabilization of the mRNA \cite{Han:2009jl}\cite{Ha:2014ek}.
+
+
+NOTE: correlation of expression is more likely to fail than correlation of
+regulation: for regulation, if the host gene is differentially expressed it is
+likely that the miRNA is also differentially expressed. Correlation of
+expression depends also on the difference in the technologies to measure mature
+miRNAs and host genes.
+
+
+* Reasons for failing correlation between miRNAs and host genes
+
++ Mature miRNA has a low confidence or does not exist. This results
+  mis-correlations with high host gene but absent/low mature miRNA
+  expression. Solution: use =PremirnaConfidence= or =MatmirnaConfidence= filter
+  or a =ReadCountFilter= to exclude such cases.
+
++ Pre-miRNA is encoded in an exon of the host gene/transcript. Exonic Drosha
+  processing has been related to destabilization of the host transcript
+  \cite{Han:2009jl}. This can result in high mature miRNA expression and low
+  host gene expression. Interestingly, this is not for all exonic pre-miRNAs the
+  case, suggesting that either some transcripts /escape/ Drosha processing, or
+  that the spliceosome is still capable to further process (splice) the
+  transcript. Solution: use a =PositionFilter=.
+
++ Mature miRNA is encoded in several pre-miRNAs respectively host genes, of
+  which not all are detectable (e.g. by microarray probe sets). This can result
+  in high mature miRNA, but low host gene expression (if the host gene actually
+  expressing the mature miRNA is not detectable).
+
+
+
+
+* Important notes
+
+These notes might explain eventually unexpected results (and, more importantly, help avoiding them):
+
++ The ordering of the results returned by the =matmirnas=, =premirnas=, =hostgenes=, =hosttx= methods can be specified with the =order.by= parameter. The ordering of the results does however *not* correspond to the ordering of values in submitted filter objects.
+
++ Results of =premirnasBy=, =matmirnasBy=, =hostgenesBy= and =hosttxBy= are always ordered by the =by= parameter.
+
++ Ensembl defines pre-miRNAs as genes of the gene biotype /miRNA/. Thus, it might be advisable to use for some queries a =GenebiotypeFilter("miRNA", condition="!=")=.
+
++ The database contains gene/transcript models from different databases. Thus, the same transcript/gene model might be returned as multiple host transcripts/genes identified by different transcript/gene identifiers (e.g. Ensembl ID and RefSeq ID).
+
++ Methods =premirnasBy=, =matmirnasBy=, =hostgenesBy= and =hosttxBy= return only entries from the database for which the column specified with the argument =by= are not empty. Thus, =premirnasBy(..., by="host_tx")= only returns pre-miRNAs for which a host transcript could be identified. To get all elements use the methods =premirnas=, =matmirnas=, =hostgenes= and =hosttx= instead.
+
+
+* Building miRNA host gene database packages
+
+The code in this section is not supposed to be automatically executed when the vignette is built, as this would require a working installation of the Ensembl Perl API, which is not expected to be available on each system. Also, fetching data from the Ensembl database takes quite some time (especially the one to fetch microarray probe sets for the transcripts), thus, in this section only the code is displayed, but not executed.
+
+** Definition of miRNA host genes<<section.mirna.hostgene.definition>>
+
+miRNA host genes are defined by the =defineMirhostgenes= function which in turn
+calls the internal perl script =define_mirna_host_genes.pl= to perform the
+task. That function first extracts the genomic positions from all pre-miRNAs of a
+species from the miRBase and subsequently queries various Ensembl databases for
+transcripts and consequently genes that have an exon or intron at that
+location. If so, the gene and transcript are defined as potential host gene
+respectively transcript for that miRNA.
+Each pre-miRNA - host transcript relation is reported in the database and
+assigned an unique identifier =pre_mirna_alignment_id=. A pre-miRNA can be
+/exonic/, /intronic/, /mixed/ or /partially outside/ relative to its host
+transcript, depending whether it falls completely within an exon, an intron,
+partially in an exon and in an intron or if only a part of the pre-miRNA falls
+into the transcript, respectively. The database columns /in_intron/, /in_exon/
+and /is_outside/ of database table =host_tx= can be used to distinguish between
+these cases:
++ /exonic/: column /in_exon/ contains the number of the exon in which the
+  pre-miRNA is encoded (exon counting is always 5' to 3'), while both
+  /in_intron/ and /is_outside/ are =0=.
++ /intronic/: only column /in_intron/ contains a value (i.e. the number of the
+  intron the pre-miRNA is encoded), both other columns are =0=.
++ /mixed/: both /in_intron/ and /in_exon/ contain a value different from =0=.
++ /partially outside/: /in_exon/ contains a value other than =0= and
+  /is_outside/ contains =1=.
+
+By default, the Ensembl /core/ (containing all gene models from Ensembl), the
+Ensembl /vega/ (containing high quality, manually curated gene models) and the
+Ensembl /otherfeatures/ (containing the full set of EST alignments) are queried
+for potential host genes. Since redundancies between gene definitions in the various
+databases exist, the same actual host gene might be defined for a miRNA.
+
+
+
+
+** Requirements
+
+The package uses the Ensembl Perl API to retrieve the required annotations from
+an Ensembl database (e.g. from the main site /ensembldb.ensembl.org/). Thus, to
+use the functionality to define host genes, the Ensembl Perl API needs to be
+installed (see http://www.ensembl.org/info/docs/api/api_installation.html for details).
+
+
+** Building an annotation package
+
+The functions below use the Ensembl Perl API to fetch the required data directly from the Ensembl core databases. Thus, the path to the Perl API specific for the desired Ensembl version needs to be added to the =PERL5LIB= environment variable.
+
+To build a package, first the mirbase (http://www.mirbase.org) files for the desired version have to be downloaded.
+Subsequently, the genomic alignments provided from the mirbase are used to determine whether at that location a gene is defined in the Ensembl database. This step defines the host genes and transcripts.
+In the next steps, a table with the pre-miRNA sequences is generated, as well as a table providing the mapping of pre-miRNAs to miRNA families (based on the information from the mirbase).
+Based on the tables generated from the functions above, an SQLite database is generated, for which in the last step the database package is created.
+
+#+BEGIN_SRC R :ravel eval=FALSE
+  library(mirhostgenes)
+
+  ## download mirbase version 20 (matching genome release 37)
+  downloadMirbase(version=20)
+
+  ## define miRNA host genes using the Ensembl core, vega and otherfeatures databases.
+  ## we're using the gff file for human miRNAs of the miRBase version we
+  ## just downloaded.
+  ## we set v=TRUE to get some feedback about the progress.
+  defineMirhostgenes(gff="20/genomes/hsa.gff3",
+                     database=c("core", "otherfeatures", "vega"),
+                     verbose=TRUE)
+
+  ## Fetch additional information from downloaded miRBase files:
+  ## o pre-miRNA sequence data.
+  ## o miRNA family information.
+  ## o pre- and mature miRNA confidence data.
+  ## o pre- and mature miRNA read count data.
+  fetchAdditionalInformation(mirbase.path="20/")
+
+  ## add probe features... for Affymetrix microarrays. It is crucial that
+  ## the species matches!
+  ## We do also specify form which microarrays we want to fetch the probes/
+  ## probe sets.
+  getArrayFeaturesForTx(species="human",
+                        arrays=c("HG-U133_Plus_2", "PrimeView"),
+                        verbose=TRUE)
+
+  ## build the SQLite database from the generated txt files.
+  DBNAME <- makeHostgeneSQLiteFromTables()
+
+  ## build a R package providing the annotation database.
+  makeMirhostgenesPackage(DBNAME,
+                          version="0.99.0",
+                          maintainer="Johannes Rainer <johannes.rainer@eurac.edu>",
+                          author="J Rainer"
+                          )
+
+#+END_SRC
+
+The generated package can then be build using =R CMD build Hsapiens.Ensembl75= and installed with =R CMD INSTALL Hsapiens.Ensembl75*=.
+
+
+* Database layout<<section.database.layout>>
+
+The database consists of the following tables and attributes (the layout is also shown in Figure [[fig.database.layout]]):
+
++ *mat_mirna*: contains informations related to the mature miRNA. Note that this table represents the alignments of mature miRNAs, and does thus not contain a unique list of mature miRNAs. Mature miRNAs might be encoded by several pre-miRNAs and would thus also show up in several rows of this database table.
+  - =mat_mirna_id=: the ID of the mature miRNA (mirbase accession).
+  - =mat_mirna_name=: the name of the mature miRNA.
+  - =mat_seq_name=: the sequence (chromosome) name on which the mature miRNA is encoded.
+  - =mat_seq_strand=: the strand on which the miRNA is encoded.
+  - =mat_seq_start=: the start coordinate of the location at which the miRNA is encoded.
+  - =mat_seq_end=: the end coordinate of the location at which the miRNA is encoded.
+  - =pre_mirna_algn_id=: the foreign key establishing the link between the mature miRNA and the corresponding pre-miRNA.
+
++ *pre_mirna*: contains information related to the pre-miRNAs. Note that this table contains rather pre-miRNA alignments than pre-miRNAs. Thus, the same pre-miRNA might be present several times in this table, depending of the number of alignments it has.
+  - =pre_mirna_id=: the ID of the miRNA precursor (mirbase accession).
+  - =pre_mirna_name=: the name of the pre-miRNA.
+  - =seq_name=: the name of the sequence (chromosome) on which the pre-miRNA is encoded.
+  - =seq_strand=: the strand on which the pre-miRNA is encoded.
+  - =seq_start=: the start coordinate of the encoding.
+  - =seq_end=: the end coordinate of the encoding.
+  - =pre_mirna_algn_id=: the primary key (i.e. alignment id) of the pre-miRNA alignment. This key is used to link the pre-miRNA alignment to the corresponding mature miRNA alignments in the =mat_mirna= table and to the host transcript in the =host_tx= table.
+
+
++ *host_tx*: contains information related to the host transcripts.
+  - =tx_id=: the Ensembl transcript ID.
+  - =tx_biotype=: the biotype of the transcript.
+  - =in_intron=: the number of the intron (always 5' to 3' of the transcript) in which the pre-miRNA is encoded, or =0= if it is not encoded in an intron.
+  - =in_exon=: the exon number of the transcript in which the pre-miRNA is encoded (or =0= if it is not an exonic pre-miRNA). Counting of exons is always 5' to 3' relative to the transcript.
+  - =is_outside=: if the pre-miRNA is only partially exonic, and part of the pre-miRNA is located up- or down-stream (but outside) of the transcript.
+  - =gene_id=: the gene to which the transcript belongs.
+  - =exon_id=: the ID of the exon in which the miRNA is encoded (if the miRNA is exonic).
+  - =pre_mirna_algn_id=: foreign key linking to the pre-miRNA alignment.
+
++ *host_gene*: contains information related to the host gene.
+  - =gene_id=: the Ensembl ID of the gene.
+  - =gene_name=: the name (symbol) of the gene. Note: this value is empty for all genes defined in the RefSeq database (available through the Ensembl otherfeatures database).
+  - =entrezid=: the NCBI Entrezgene ID(s) of the gene. Note that this can be a =;= separated list of IDs for genes that are mapped to more than one Entrezgene.
+  - =gene_biotype=: the biotype of the gene.
+  - =database=: character string representing in which database the gene was defined (either /core/, /otherfeatures/ or /vega/).
+  - =source=: character string specifying the source of the annotation (e.g. /refseq/, /ensembl/, /havanna/).
+
++ *pre_mirna_sequence*: the sequence of the miRNA precursor.
+  - =pre_mirna_id=: the id of the pre-miRNA.
+  - =sequence=: the sequence of the pre-miRNA.
+
++ *mirfam*: the definition of miRNA families.
+  - =mirfam_id=: the id of the miRNA family (mirbase accession).
+  - =mirfam_name=: the name of the miRNA family.
+  - =pre_mirna_id=: the id of the pre-miRNA.
+
++ *array_feature*: mapping between microarray probe sets and host transcripts.
+  - =tx_id=: the transcript ID the probe set targets. This attribute is not unique, as the same transcript might be targeted by multiple probe sets.
+  - =probeset_id=: the ID of the probe set. This attribute is not unique, as the same probe set might target multiple transcripts.
+  - =array_id=: the microarray on which the probe set is present.
+  - =probes_in_tx=: the number of probes of the probe set that are aligned within the exons of the transcript.
+
++ *information*: some additional, internal, informations (Genome build, Ensembl version etc).
+  - =key=
+  - =value=
+
+#+ATTR_LATEX: :center :placement [H] :width 14cm
+#+NAME: fig.database.layout
+#+CAPTION: Database layout.
+[[file:images/dblayout.png]]
+
+
+
+* Comparison of host gene definitions using different databases	   :noexport:
+
+We do get two host genes for this miRNA, one of them is however the pre-miRNA. Ensembl defines a gene for most of the pre-miRNAs from mirbase and assigns them the gene biotype =miRNA=. In most cases it might however be advisable to exclude such genes as they might not represent the primary transcription units. To this end a =GenebiotypeFilter= can be defined as shown in the code block below.
+
+#+BEGIN_SRC R
+  ## we specify an additional filter, GenebiotypeFilter and tell the
+  ## method to return all host genes that are NOT of the type miRNA
+  HG <- hostgenes(MirhostDb.Hsapiens.v75.v20,
+                  filter=list(MF,
+                      DatabaseFilter("core"),
+                      GenebiotypeFilter("miRNA", condition="!=")))
+
+  HG
+
+#+END_SRC
+
+Next we compare the number of host genes that are defined for each of the queried databases.
+
+#+BEGIN_SRC R
+  ## get all host genes from the core database
+  HGs <- hostgenes(MirhostDb.Hsapiens.v75.v20,
+                   attributes=c("gene_id", "pre_mirna_name", "database")
+                  )
+  length(unique(HGs[ HGs$database=="core", "gene_id" ]))
+  length(unique(HGs[ HGs$database=="otherfeatures", "gene_id" ]))
+  length(unique(HGs[ HGs$database=="vega", "gene_id" ]))
+
+  Tab <- matrix(ncol=3, nrow=length(unique(HGs$pre_mirna_name)), 0)
+  rownames(Tab) <- unique(HGs$pre_mirna_name)
+  colnames(Tab) <- c("core", "otherfeatures", "vega")
+  Tab[ unique(HGs[ HGs$database=="core", "pre_mirna_name" ]), "core" ] <- 1
+  Tab[ unique(HGs[ HGs$database=="otherfeatures", "pre_mirna_name" ]), "otherfeatures" ] <- 1
+  Tab[ unique(HGs[ HGs$database=="vega", "pre_mirna_name" ]), "vega" ] <- 1
+
+  ## for how many pre-miRNAs do we have a host gene defined?
+  nrow(Tab)
+
+  ## vega and core are supposed to be quite similar. so, checking which ones are
+  ## exclusive for core and for otherfeatures.
+  Core.only <- rownames(Tab)[ Tab[, "core"]==1 & Tab[, "otherfeatures"]==0 ]
+  Otherf.only <- rownames(Tab)[ Tab[, "core"]==0 & Tab[, "otherfeatures"]==1 ]
+
+#+END_SRC
+
+The number of host genes is overly optimistic, as some predicted host genes are actually genes defined for the pre-miRNAs. However, next we list the host genes for the pre-miRNAs for which a host gene was defined exclusively in the Ensembl core database. Note that here we are submitting a vector of pre-miRNA names to the =PremirnaFilter= instead of a single value.
+
+#+BEGIN_SRC R
+  ## retrieve the gene_id and gene_biotype (along with the pre-miRNA name) for all
+  ## pre-miRNAs for which a host gene was exclusicely identified using Ensembl core
+  ## gene/transcript models
+  HG <- hostgenes(MirhostDb.Hsapiens.v75.v20,
+                  filter=list(PremirnaFilter(unique(Core.only))),
+                  attributes=c("gene_id", "gene_biotype"))
+  nrow(HG)
+
+  ## what biotypes do these genes have?
+  sort(table(HG$gene_biotype), decreasing=TRUE)
+#+END_SRC
+
+In total there are host genes for SRC_R[:exports results :results output raw]{cat(nrow( HG), "\n")} pre-miRNAs defined exclusively in the Ensembl core database. Next we evaluate those defined only using gene/transcript models from the otherfeatures database.
+
+#+BEGIN_SRC R
+  HG <- hostgenes(MirhostDb.Hsapiens.v75.v20,
+                  filter=list(PremirnaFilter(unique(Otherf.only))),
+                  attributes=c("gene_id", "gene_biotype"))
+  nrow(HG)
+
+  ## from what biotypes are these?
+  sort(table(HG$gene_biotype), decreasing=TRUE)
+#+END_SRC
+
+Most of the host genes are of the biotype =misc_RNA=, with many of them potentially representing pre-miRNAs (unfortunately, the NCBI RefSeq database does not distinguish between a gene biotype =miRNA= and =misc_RNA=).
+
+So, summarizing, the overlap of pre-miRNAs for which host genes were predicted is very large between all queried databases.
+
+
+* References
+
+
+* TODOs								   :noexport:
+
+** DONE Clean up and define the =define_mirna_host_genes.pl= perl script.
+    CLOSED: [2015-02-06 Fri 14:59]
+    - State "DONE"       from "TODO"       [2015-02-06 Fri 14:59]
+
++ [X] Implement the perl script.
++ [X] Test and run the R-wrapper function.
++ [X] Compare the result with the old scripts: new scripts work better and faster.
+
+** DONE Implement the function to build the SQLite database.
+   CLOSED: [2015-02-09 Mon 08:50]
+   - State "DONE"       from "TODO"       [2015-02-09 Mon 08:50]
+
+** DONE Implement the function to build the annotation package.
+   CLOSED: [2015-02-09 Mon 08:50]
+   - State "DONE"       from "TODO"       [2015-02-09 Mon 08:50]
+
+** DONE Implement all additional functionality in R to use the annotation database. [1/2]
+   CLOSED: [2016-02-16 Tue 09:27]
+
+   - State "DONE"       from "TODO"       [2016-02-16 Tue 09:27]
+- [X] Basically, implement the API to perform the most frequent tasks, e.g. get host genes/transcripts for a miRNA.
+- [ ] Add examples to the vignette.
+
+** DONE Evaluate: include miRNA sequence to the database.
+    CLOSED: [2015-03-05 Thu 13:07]
+    - State "DONE"       from "TODO"       [2015-03-05 Thu 13:07]
+The question is whether it would make sense to include also the sequence from the pre-miRNA to the database (mature miRNA sequence could be inferred from that). This would mean that we would have to parse the /hairpin.fa/ file.
+
+** DONE Evaluate: include miRNA families to the database.
+    CLOSED: [2015-03-05 Thu 13:08]
+    - State "DONE"       from "TODO"       [2015-03-05 Thu 13:08]
+Also here we might at some point want to have the miRNA families available. We could get these from the /miRFam.dat/ file.
+
+** DONE Fix the problem of the non-unique mature and pre-miRNAs
+    CLOSED: [2015-03-05 Thu 13:12]
+    - State "DONE"       from "TODO"       [2015-03-05 Thu 13:12]
+Apparently, the same pre-miRNA can have several genomic alignments which results in multiple lines in the tables. Have to fix this by introducing a =pre_mirna_pk=. We'll link to this from the =mat_mirna= and from the =host_tx= tables.
+
+** DONE Check the probe sets defined by the new perl script.
+   CLOSED: [2015-03-23 Mon 08:32]
+   - State "DONE"       from "TODO"       [2015-03-23 Mon 08:32]
+     + For the commonly defined host transcripts: count the number of commonly defined probe sets: i.e. table with =no_ps_new=, =no_ps_new_in_old=, =no_ps_only_old=.
+     + Compared the numbers; at first glance it seemed the old script did define more (40 probe sets), however, these are all most likely probe sets from older type of microarrays, which had 16 instead of the 11 probes. Thus, the discrepancy is explained by the fact that the old script just required that more than 8 probes matched, while the new script required that 80% of the probes in a probe set match!
+
+** DONE Add the functionality to query probe sets for host transcripts.
+   CLOSED: [2015-03-12 Thu 16:37]
+   - State "DONE"       from "TODO"       [2015-03-12 Thu 16:37]
+** CANCELED Add functionality to do enrichment analyses.
+   CLOSED: [2015-03-12 Thu 16:15]
+   - State "CANCELED"   from "TODO"       [2015-03-12 Thu 16:15] \\
+     Makes no sense in this package; move that to the mirtarbase package!
+** TODO Use case scenarios
+
++ [ ] Determine whether in a list of genes there is a significant enrichment of target genes of specific miRNAs.
+  - Take the gene list from Aneychik et al.
+  - Use =mtisBy= in the =mirtarbase= package to extract a grouping of genes by miRNA.
+
++ [ ] Perform a differential expression analysis on miRNA host genes in the C7H2 HGU133 data set.
+
++ [ ] For a list of differentially expressed miRNAs, perform a GO analysis on their target genes.
+
+** DONE Rename the miRNA host gene databases
+    CLOSED: [2015-03-12 Thu 16:15]
+    - State "DONE"       from "TODO"       [2015-03-12 Thu 16:15]
+
+Idea would be to rename them to: =MirhostDb.Hsapiens.v75.20=, where the first version corresponds to the Ensembl version, the second to the mirbase version.
+
+
+** DONE Implement the functionality around the =array_feature= table [7/7]
+   CLOSED: [2015-03-25 Wed 09:33]
+   - State "DONE"       from "TODO"       [2015-03-25 Wed 09:33]
++ [X] =ProbesetidFilter=: Filter can already be applied to the methods.
++ [X] =ArrayFilter=
++ [X] =probesetsBy=
++ [X] =premirnasBy= =by="probeset"=.
++ [X] =matmirnasBy= =by="probeset"=.
++ [X] =hosttxBy= =by="probeset"=.
++ [X] =hostgeneBy= =by="probeset"=.
+
+** DONE Fix the perl script to return also entrezid and name for otherfeatures database
+   CLOSED: [2015-03-16 Mon 07:03]
+   - State "DONE"       from "TODO"       [2015-03-16 Mon 07:03]
+     - The problem is that the external name is not defined for otherfeatures; the only thing I can get is the Entrezgene ID for RefSeq genes, as the =gene_id= will be the =entrezid= in that case.
+** DONE Rename all =attributes= to =columns=.
+   CLOSED: [2015-03-18 Wed 16:52]
+   - State "DONE"       from "TODO"       [2015-03-18 Wed 16:52]
+** DONE Add some more cases to the unit tests.
+   CLOSED: [2015-03-25 Wed 09:51]
+   - State "DONE"       from "TODO"       [2015-03-25 Wed 09:51]
+** DONE Fix the bug in =hostgenes(DB)=
+   CLOSED: [2015-03-19 Thu 17:15]
+   - State "DONE"       from "TODO"       [2015-03-19 Thu 17:15]
+     - Somehow the =hostgenes(DB)= method is causing an error.
+     - Fixed that.
+
+
+** DONE Document the =use.names= argument to the =hostgenesBy= etc methods.
+   CLOSED: [2015-03-20 Fri 07:33]
+   - State "DONE"       from "TODO"       [2015-03-20 Fri 07:33]
+** DONE Check: does =drop.empty= argument also make sense for the =matmirnasBy= method?
+   CLOSED: [2015-03-20 Fri 07:26]
+   - State "DONE"       from "TODO"       [2015-03-20 Fri 07:26]
+     - No, doesn't make any sense, since all annotations start from mature miRNA or pre-miRNAs.
+** DONE Check: why is the =hostgenesBy= query for =by= pre-miRNA and =DatabaseFilter= so slow?
+   CLOSED: [2015-03-23 Mon 08:35]
+   - State "DONE"       from "TODO"       [2015-03-23 Mon 08:35]
+     - Actually, I don't know. Must have to do something with the left join?
+** DONE Check: why is the =hostgenesBy= query failing for a =MirfamFilter=?
+   CLOSED: [2015-03-20 Fri 09:10]
+   - State "DONE"       from "TODO"       [2015-03-20 Fri 09:10]
+     - Bug: the method for signature for =with.tables="character"= was missing.
+
+** TODO Reconsider: should methods =*By= return only values for which =by!=NA=?
+
+This all depends on the table on which the left join starts. If it is the table in which the column =by= is defined it (usually) means that we don't end up with empty values, *BUT* we also don't return all the values from the database!
+Alternatively we could return all elements, but throw a warning and group them to a dummy list element.
+The question is whether that last option is really what we want. We could get such information just by using the default methods.
+
+** CANCELED Add an example that retrieves all, also non-empty values.[/]
+   CLOSED: [2015-03-25 Wed 09:38]
+   - State "CANCELED"   from "TODO"       [2015-03-25 Wed 09:38] \\
+     Well, the *By functions do not return empty values. Their results are grouped by "by", thus, if by is empty nothing will be returned.
++ [ ] In the man page.
++ [ ] In the vignette.
+
+** DONE Reformat the man pages, examples and R source files.[3/3]
+   CLOSED: [2015-03-25 Wed 09:37]
+   - State "DONE"       from "TODO"       [2015-03-25 Wed 09:37]
++ [X] man pages.
++ [X] examples.
++ [X] R source.
+
+** DONE Check contents of help pages [6/6]
+   CLOSED: [2015-03-25 Wed 10:15]
+   - State "DONE"       from "TODO"       [2015-03-25 Wed 10:15]
++ [X] Filter-class.Rd
++ [X] Filter-imported.Rd
++ [X] FilterConstructors.Rd
++ [X] MirnahostgenesDb-class.Rd
++ [X] MirnahostgenesDb-usage.Rd
++ [X] defineMirnahostgenes.Rd
+
+** DONE Fix return type for =organism=
+   CLOSED: [2015-03-25 Wed 09:51]
+   - State "DONE"       from "TODO"       [2015-03-25 Wed 09:51]
+Has to be /Genus species/ (without =_= in between).
+** DONE Build packages [3/3]
+   CLOSED: [2015-03-30 Mon 11:57]
+   - State "DONE"       from "TODO"       [2015-03-30 Mon 11:57]
+
++ [X] Ensembl 75, mouse.
++ [X] Ensembl 79, human.
++ [X] Ensembl 79, mouse.
+** TODO Perform host gene analysis on data sets from GEO[/]
+
+The files are in extdata GEO.
+
++ [ ] Implement the function to pair miRNA and host gene data.
++ [ ] Analyze the /GSE25320/ data set.
++ [ ] Analyze the /GSE47379/ data set.
++ [ ] Analyze the /GSE53384/ data set.
+
+** TODO Fix and update documentation
+
++ [ ] Remove unnecessary /value/ section.
++ [ ] Group methods into sections.
++ [ ] Add missing documentations.
+
+** DONE Check what the methods return
+   CLOSED: [2016-02-16 Tue 09:26]
+
+   - State "DONE"       from "TODO"       [2016-02-16 Tue 09:26]
++ [X] Should be a GenomicFeatures thing.
+** DONE For =matmirnas=, return the mature sequence if =sequence= is among the columns
+   CLOSED: [2016-02-16 Tue 09:26]
+   - State "DONE"       from "TODO"       [2016-02-16 Tue 09:26]
+** TODO Submit to github.
+** DONE Implement the additional filter methods from =ensembldb= [5/5]
+   CLOSED: [2016-02-16 Tue 07:35]
+
+   - State "DONE"       from "TODO"       [2016-02-16 Tue 07:35]
+All, except =ReadCountFilter=, should work with the implementation for
+=BasicFilter=. Error checking etc should occur in the =where= method for
+=MirhostDb=.
+
++ [X] =value=
++ [X] =value<-=
++ [X] =condition=
++ [X] =condition<-=
+
++ [X] Fix the documentation for these.
+** DONE Only return the requested columns.
+   CLOSED: [2016-02-16 Tue 09:25]
+
+   - State "DONE"       from "TODO"       [2016-02-16 Tue 09:25]
+Skip returning of columns that are needed for a join, but not present in
+argument =columns=.
+
+** TODO Implement the methods from =AnnotationDbi=
+** TODO Database creation methods: replace all =cat= commands in the methods by =message=.
+
