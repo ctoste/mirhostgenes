@@ -10,8 +10,8 @@ before_install:
   - ./pkg-build.sh bootstrap
 
 install:
-  - ./pkg-build.sh install_bioc_deps
   - ./pkg-build.sh install_github jimhester/covr
+  - ./pkg-build.sh install_bioc BiocGenerics S4Vectors ensembldb GenomicRanges GenomicFeatures GenomeInfoDb Biobase RSQLite DBI BiocStyle knitr RUnit rmarkdown
   - ./pkg-build.sh install_github jotsetung/MirhostDb.Hsapiens.v75.v20
 
 ##  - ./pkg-build.sh install_deps
@@ -39,5 +39,6 @@ notifications:
 env:
   global:
       - RVERSION=release
+      - _R_CHECK_FORCE_SUGGESTS_=FALSE
 
 
