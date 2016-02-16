@@ -6,7 +6,8 @@
 #+PROPERTY: session *R*
 
 # badges:
-
+[[https://travis-ci.org/jotsetung/mirhostgenes][https://travis-ci.org/jotsetung/mirhostgenes.svg?branch=master]]
+[[https://codecov.io/github/jotsetung/mirhostgenes?branch=master][https://codecov.io/github/jotsetung/mirhostgenes/coverage.svg?branch=master]]
 
 *CAVE*: this is in active development phase!
 
