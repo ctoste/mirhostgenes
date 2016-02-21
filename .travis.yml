@@ -11,7 +11,9 @@ before_install:
 
 install:
   - ./pkg-build.sh install_github jimhester/covr
-  - ./pkg-build.sh install_bioc BiocGenerics S4Vectors ensembldb GenomicRanges GenomicFeatures GenomeInfoDb Biobase RSQLite DBI BiocStyle knitr RUnit rmarkdown
+  - ./pkg-build.sh install_bioc_deps
+
+##  - ./pkg-build.sh install_bioc BiocGenerics S4Vectors ensembldb GenomicRanges GenomicFeatures GenomeInfoDb Biobase RSQLite DBI BiocStyle knitr RUnit rmarkdown
 
 ##  - ./pkg-build.sh install_github jotsetung/MirhostDb.Hsapiens.v75.v20
 
@@ -39,7 +41,6 @@ notifications:
 
 env:
   global:
-      - RVERSION=release
-      - _R_CHECK_FORCE_SUGGESTS_=FALSE
+      - RVERSION=devel BIOC_USE_DEVEL=TRUE _R_CHECK_FORCE_SUGGEST_=FALSE
 
 
