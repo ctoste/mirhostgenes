@@ -41,6 +41,6 @@ notifications:
 
 env:
   global:
-      - RVERSION=devel BIOC_USE_DEVEL=TRUE _R_CHECK_FORCE_SUGGEST_=FALSE
+      - RVERSION=devel BIOC_USE_DEVEL=TRUE _R_CHECK_FORCE_SUGGESTS_=FALSE
 
 
