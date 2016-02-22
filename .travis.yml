@@ -12,7 +12,7 @@ before_install:
 install:
   - ./pkg-build.sh install_github jimhester/covr
   - ./pkg-build.sh install_bioc_deps
-  - ./pkg-build.sh install_github jotsetung/MirhostDb.Hsapiens.v75.v20
+  - ./pkg-build.sh install_github jotsetung/mirhostgenes jotsetung/MirhostDb.Hsapiens.v75.v20
 
 script:
   - ./pkg-build.sh run_tests
@@ -21,7 +21,9 @@ after_failure:
   - ./pkg-build.sh dump_logs
 
 after_success:
-  - Rscript -e 'covr::codecov()'
+  - ./pkg-build.sh r_script -e 'covr::codecov()'
+
+##Rscript -e 'covr::codecov()'
 
 notifications:
   email:
