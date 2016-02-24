@@ -3,3 +3,4 @@ readme.org
 extdata/*
 comparison-mature-host-gene-expression.org
 .git
+.travis.yml

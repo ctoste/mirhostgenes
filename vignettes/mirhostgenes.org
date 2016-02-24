@@ -123,16 +123,14 @@ bound to the variable =MirhostDb.Hsapiens.v75.v20=.
 #+BEGIN_SRC R :ravel warning=FALSE, message=FALSE
   library(MirhostDb.Hsapiens.v75.v20)
 
-  ## print some informations for this package
+  ## Print some informations for this package
   MirhostDb.Hsapiens.v75.v20
 
-  ## make a shortcut, so we don't have to type the
+  ## Make a shortcut, so we don't have to type the
   ## full package name.
   mhg <- MirhostDb.Hsapiens.v75.v20
 
-
 #+END_SRC
-
 
 We can retrieve some basic information from the database, such as the Ensembl
 or the miRBase version the package was build on, or the genome version for the
@@ -140,14 +138,14 @@ mapping of the pre-miRNA hairpin sequence to the genomic DNA.
 
 #+BEGIN_SRC R
 
-  ## get the Ensembl and the miRbase versions:
+  ## Get the Ensembl and the miRbase versions:
   ensemblVersion(mhg)
   mirbaseVersion(mhg)
 
-  ## get the genome version
+  ## Get the genome version
   unique(genome(mhg))
 
-  ## get the organism
+  ## Get the organism
   organism(mhg)
 #+END_SRC
 
@@ -173,17 +171,16 @@ and end positions defining the genomic position of the mature miRNAs and
 pre-miRNAs, respectively.
 
 #+BEGIN_SRC R
-  ## get an overview of the number of defined mature miRNAs:
+  ## Get an overview of the number of defined mature miRNAs:
   nrow(matmirnas(mhg))
 
-  ## return the information as a DataFrame; default
+  ## Return the information as a DataFrame; default
   matmirnas(mhg)
 
-  ## or return the information as GRanges
+  ## Or return the information as GRanges
   matmirnas(mhg, return.type="GRanges")
 
 #+END_SRC
-
 
 Note that the same mature miRNAs can be encoded in several precursors (and thus
 genomic positions). In that cases (as can be seen in the example above), the
@@ -200,7 +197,7 @@ sequence of the mature miRNA, not the genomic sequence of the regions specified
 by the =GRanges= object.
 
 #+BEGIN_SRC R
-  ## retrieve the mature miRNAs along with the name of the encoding
+  ## Retrieve the mature miRNAs along with the name of the encoding
   ## pre-miRNA and the name of the miRNA family
   matmirnas(mhg, columns=c("mat_mirna_name", "pre_mirna_name",
                            "mirfam_name", "sequence"), return.type="GRanges")
@@ -254,11 +251,11 @@ the argument =filter=. We could also combine different filter, e.g. the
 =MatmirnaFilter= with a =Seqname= filter to further specify the query.
 
 #+BEGIN_SRC R
-  ## get the pre-miRNAs encoding mature miRNA miR-16-5p
+  ## Get the pre-miRNAs encoding mature miRNA miR-16-5p
   mir16 <- premirnas(mhg, filter=MatmirnaFilter("hsa-miR-16-5p"))
   mir16
 
-  ## we could also combine filters to retrieve only the pre-miRNA
+  ## We could also combine filters to retrieve only the pre-miRNA
   ## encoded on chromosome 13.
   premirnas(mhg, filter=list(MatmirnaFilter("hsa-miR-16-5p"),
                              SeqnameFilter("13")))
@@ -301,15 +298,14 @@ is encoded in two different pre-miRNAs, thus, we expect to get more than one
 host genes.
 
 #+BEGIN_SRC R
-  ## first define a filter for miR-16-5p
+  ## First define a filter for miR-16-5p
   mmf <- MatmirnaFilter("hsa-miR-16-5p")
 
-  ## retrieve all host genes
+  ## Retrieve all putative host genes
   hgs <- hostgenes(mhg, filter=mmf)
   hgs
 
 #+END_SRC
-
 
 As explained in detail in Section [[section.mirna.hostgene.definition]], host genes
 are defined using gene/transcript models from different resources (usually
@@ -321,13 +317,13 @@ Thus it is in most instances advisable to use a =DatabaseFilter= to restrict the
 results to genes defined in a specific database (e.g. to the /core/ database).
 
 #+BEGIN_SRC R
-  ## list all databases on which gene models host genes were predicted
+  ## List all databases on which gene models host genes were predicted
   listDatabases(mhg)
 
-  ## define a database filter for the Ensembl core gene models
+  ## Define a database filter for the Ensembl core gene models
   df <- DatabaseFilter("core")
 
-  ## get all host genes for miR-16 defined in the Ensembl core database
+  ## Get all host genes for miR-16 defined in the Ensembl core database
   hgs <- hostgenes(mhg, filter=list(mmf, df))
   hgs
 #+END_SRC
@@ -340,7 +336,7 @@ expression microarray platforms or RNA-seq protocols. Thus we define an
 additional filter with which we can exclude genes from the /miRNA/ biotype.
 
 #+BEGIN_SRC R
-  ## define the gene biotype filter that excludes genes from the
+  ## Define the gene biotype filter that excludes genes from the
   ## biotype "miRNA"
   gbf <- GenebiotypeFilter("miRNA", condition="!=")
   hgs <- hostgenes(mhg, filter=list(mmf, df, gbf))
@@ -381,7 +377,7 @@ encoded in introns or exons of the genes /DLEU/ and /SMC4/. As a result we get
 all mature miRNAs grouped by the id of the host gene.
 
 #+BEGIN_SRC R
-  ## we use again the database filter and define a filter on the gene name
+  ## We use again the database filter and define a filter on the gene name
   matmirnasBy(mhg, filter=list(df, GenenameFilter(c("SMC4", "DLEU2"))), by="host_gene")
 #+END_SRC
 
@@ -890,15 +886,21 @@ Has to be /Genus species/ (without =_= in between).
 The files are in extdata GEO.
 
 + [ ] Implement the function to pair miRNA and host gene data.
-+ [ ] Analyze the /GSE25320/ data set.
-+ [ ] Analyze the /GSE47379/ data set.
-+ [ ] Analyze the /GSE53384/ data set.
++ [ ] Analyze the /GSE25320/ data set [[file+emacs:../extdata/GEO/GSE25320/GSE25320.org][GSE25320.org]]: Exiqon version 9.2, Affy hgu133plus2.
+  Status there: the mRNA and miRNA raw data has poor quality. The correlation of
+  expression and differential expression data is rather poor (eventually due to
+  the low data quality?).
++ [ ] Analyze the /GSE47379/ data set [[file+emacs:../extdata/GEO/GSE47379/GSE47379.org][GSE47379.org]]: Exiqon version 11.0, Affy hgu133plus2.
+  The raw data looks promising.
++ [ ] Analyze the /GSE53384/ data set: Exiqon version 11.0, Affy hugene10st.
 
-** TODO Fix and update documentation
+** DONE Fix and update documentation
+   CLOSED: [2016-02-16 Tue 11:08]
 
-+ [ ] Remove unnecessary /value/ section.
-+ [ ] Group methods into sections.
-+ [ ] Add missing documentations.
+   - State "DONE"       from "TODO"       [2016-02-16 Tue 11:08]
++ [X] Remove unnecessary /value/ section.
++ [X] Group methods into sections.
++ [X] Add missing documentations.
 
 ** DONE Check what the methods return
    CLOSED: [2016-02-16 Tue 09:26]
@@ -908,7 +910,9 @@ The files are in extdata GEO.
 ** DONE For =matmirnas=, return the mature sequence if =sequence= is among the columns
    CLOSED: [2016-02-16 Tue 09:26]
    - State "DONE"       from "TODO"       [2016-02-16 Tue 09:26]
-** TODO Submit to github.
+** DONE Submit to github.
+   CLOSED: [2016-02-16 Tue 11:08]
+   - State "DONE"       from "TODO"       [2016-02-16 Tue 11:08]
 ** DONE Implement the additional filter methods from =ensembldb= [5/5]
    CLOSED: [2016-02-16 Tue 07:35]
 
@@ -930,6 +934,15 @@ All, except =ReadCountFilter=, should work with the implementation for
 Skip returning of columns that are needed for a join, but not present in
 argument =columns=.
 
-** TODO Implement the methods from =AnnotationDbi=
-** TODO Database creation methods: replace all =cat= commands in the methods by =message=.
+** TODO Implement the methods from =AnnotationDbi= [/]
 
++ [ ] =columns=.
++ [ ] =keytypes=.
++ [ ] =keys=.
++ [ ] =select=.
++ [ ] =mapIds=.
+
+** DONE Database creation methods: replace all =cat= commands in the methods by =message=.
+   CLOSED: [2016-02-21 Sun 19:13]
+
+   - State "DONE"       from "TODO"       [2016-02-21 Sun 19:13]

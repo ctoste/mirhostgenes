@@ -32,7 +32,8 @@ downloadMirbase <- function(version, path=".", force.download=FALSE){
 ## main site (ensembldb.ensembl.org).
 ## user: the user name for the Ensembl database host (default anonymous).
 ## password: the password for the Ensembl database host.
-## ensemblapi: the path to the Ensembl Perl API corresponding to the Ensembl version to query.
+## ensemblapi: the path to the Ensembl Perl API corresponding to the Ensembl version
+## to query.
 ## v: be verbose.
 defineMirhostgenes <- function(gff,
                                database=c("core"),

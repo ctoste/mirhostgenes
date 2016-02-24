@@ -1,0 +1,14 @@
+array_file	name	condition	channel	replicate	cell_line
+GSM1148187_Hy3_MS1.txt.gz	CTRL1	CTRL	Cy3	1	MDA-MB-231 1833 cells
+GSM1148187_Hy5_MS1.txt.gz	RS1	RefSample	Cy5	1	unknown
+GSM1148188_Hy3_MS2.txt.gz	CTRL2	CTRL	Cy3	2	MDA-MB-231 1833 cells
+GSM1148188_Hy5_MS2.txt.gz	RS2	RefSample	Cy5	2	unknown
+GSM1148189_Hy3_MS3.txt.gz	CTRL3	CTRL	Cy3	3	MDA-MB-231 1833 cells
+GSM1148189_Hy5_MS3.txt.gz	RS3	RefSample	Cy5	3	unknown
+GSM1148190_Hy3_MS4.txt.gz	RKIP1	RKIP	Cy3	1	MDA-MB-231 1833 cells
+GSM1148190_Hy5_MS4.txt.gz	RS4	RefSample	Cy5	4	unknown
+GSM1148191_Hy3_MS5.txt.gz	RKIP2	RKIP	Cy3	2	MDA-MB-231 1833 cells
+GSM1148191_Hy5_MS5.txt.gz	RS5	RefSample	Cy5	5	unknown
+GSM1148192_Hy3_MS6.txt.gz	RKIP3	RKIP	Cy3	3	MDA-MB-231 1833 cells
+GSM1148192_Hy5_MS6.txt.gz	RS6	RefSample	Cy5	6	unknown
+

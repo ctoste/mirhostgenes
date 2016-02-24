@@ -1,4 +1,4 @@
-#+TITLE:Analysis of GSE25320 GEO data set
+#+TITLE:Analysis of GSE47379 GEO data set
 #+AUTHOR: Johannes Rainer
 #+email: johannes.rainer@eurac.edu
 #+OPTIONS: ^:{}
@@ -46,24 +46,50 @@
 
 #+END_SRC
 
-* Analysis of the gene and miRNA expression data set GSE25320
+* Data preparation						   :noexport:
+
+Before we can run the analysis below we have to prepare first the data,
+i.e. /untar/ the /GSE47379_RAW.tar/ archive (=tar -xf GSE47379_RAW.tar=) to get
+all of the raw data files.
+
+
+
+* Analysis of the gene and miRNA expression data set GSE47379
 
 ** What do we have:
 
-The data from \cite{Ekstrom:2012fn}:
+The data is not yet published.
 
-[mRNA profiling] Exosomes were prepared from the supernatant of HMC-1 cells by
-differential centrifugations and filtration. RNA was isolated from the exosomes
-and their parental cells using Trizol . The microarray experiments were
-performed by SweGene (www.swegene.org/) according to Affymetrix microarray DNA
-chip analysis (n=4). p0739_E1, p0739_ E2, p0739_E3 and p0739_E4 for the exosomes
-samples and p0739_C1, p0739_C2, p0739_C3, and p0739_C4 for the HMC-1 cells.
+RKIP has been implicated in suppression of breast tumor
+metastasis. Identification of microRNAs regulated by RKIP helps us to understand
+how RKIP suppresses tumor metastasis via its downstream target mircoRNAs and
+genes.
 
-[miRNA profiling] Exosomes were prepared from the supernatant of HMC-1 cells by
-differential centrifugations and filtration. RNA was isolated from the exosomes
-and their parental cells using Trizol followed by RNeasy clean-up. The
-microarray experiments were performed by Exiqon.
+[miRNA profiling] Total RNA was extracted from 1833 cells expressing RKIP or
+control, respectively. Exiqon miRCURY LNA array v.11.0. was performed to
+identify the microRNAs regulated by RKIP.
 
+[mRNA profiling] Total RNAs were extracted from 1833 cells expressing mutant
+RKIP (S153E-RKIP, a more potent Raf-1 inhibitor) and vector control. Affymetrix
+GeneChip hgu133plus2.0 Arrays were performed to detail the gene expression and
+identify the genes regulated by RKIP in human breast cancer cells.
+
+The miRNA data set consists of in total 6 microarrays, each containing Cy5
+labeled common reference samples and Cy3 labeled test samples. The first 3
+arrays contain RNA from MDA-MB-231 1883 breast cancer cells expressing the
+control vector and the latter 3 the same cells expressing S153E-RKIP.
+
+** Generate the phenodata files					   :noexport:
+
+#+BEGIN_SRC R
+  ## library(GEOquery)
+
+  ## miR <- getGEO(filename="./GSE47379-GPL15829_series_matrix.txt.gz")
+  ## pd <- pData(miR)
+
+  ## mR <- getGEO(filename="./GSE47379-GPL570_series_matrix.txt.gz")
+  ## pData(mR)
+#+END_SRC
 
 ** Affymetrix data analysis
 
@@ -77,34 +103,41 @@ pre-processing. We've got HG-U133 plus 2 arrays.
   library(ascii)
   library(affyPLM)
   source("../plot-utils.R")
-  pd.affy <- read.AnnotatedDataFrame("phenodata-affy-GSE25320.txt")
-  Chips.raw <- ReadAffy(filenames=paste0(sampleNames(pd.affy), ".CEL.gz"),
-                        phenoData=pd.affy)
+  pd.affy <- read.AnnotatedDataFrame("./phenodata-affy-GSE47379.txt")
+  Chips.raw <- ReadAffy(filenames=paste0(sampleNames(pd.affy)),
+			phenoData=pd.affy)
 #+END_SRC
-
 
 #+NAME: src.affy.sample.table
 #+BEGIN_SRC R :results outout raw :exports results
-  T <- cbind(CEL=sampleNames(Chips.raw), title=Chips.raw$title,
-             rna_source=Chips.raw$rna_source, cell_line=Chips.raw$cell_line)
+  T <- cbind(CEL=sampleNames(Chips.raw), name=Chips.raw$name,
+             condition=Chips.raw$condition, replicate=Chips.raw$replicate)
   suppressWarnings(
-      print(ascii(T, include.rownames=TRUE, include.colnames=TRUE, header = TRUE, caption="Microarrays and samples.") ,type="org")
+      print(ascii(T, include.rownames=TRUE, include.colnames=TRUE, header = TRUE) ,type="org")
      )
 #+END_SRC
-
 #+ATTR_HTML: :border 2 :rules all :frame border
 #+ATTR_LATEX: :center :environment longtable :placement [H] :font \scriptsize
 #+NAME: table.affy.sample.table
+#+CAPTION: Microarrays and samples.
 #+RESULTS: src.affy.sample.table
+|   | CEL                   | name  | condition | replicate |
+|---+-----------------------+-------+-----------+-----------|
+| 1 | GSM1148312_MS1.CEL.gz | CTRL1 | CTRL      |         1 |
+| 2 | GSM1148313_MS2.CEL.gz | CTRL2 | CTRL      |         2 |
+| 3 | GSM1148314_MS3.CEL.gz | CTRL3 | CTRL      |         3 |
+| 4 | GSM1148315_MS4.CEL.gz | RKIP1 | RKIP      |         1 |
+| 5 | GSM1148316_MS5.CEL.gz | RKIP2 | RKIP      |         2 |
+| 6 | GSM1148317_MS6.CEL.gz | RKIP3 | RKIP      |         3 |
 
-So, we've got 4 replicates for each condition.
+So, we've got 3 replicates for each condition.
 
 #+NAME: src.affy.preprocessing
 #+BEGIN_SRC R :results silent :exports code
   Chips.bgadj <- bg.adjust.gcrma(Chips.raw, fast=FALSE, GSB.adjust=FALSE)
   PLM <- fitPLM(Chips.bgadj, background=FALSE)
   Chips.norm <- PLMset2exprSet(PLM)
-  save(Chips.norm, file="GSE25320-Affy-Chips.norm.RData", compress="xz")
+  save(Chips.norm, file="GSE47379-Affy-Chips.norm.RData", compress="xz")
 #+END_SRC
 
 *** Quality controls
@@ -112,12 +145,12 @@ So, we've got 4 replicates for each condition.
 #+NAME: src.affy.rawdata.density
 #+BEGIN_SRC R :results graphics :file (concat (org-sbe imagepath) "affy-rawdata-density.png") :exports results :width 16 :height 8 :units cm :res 600 :pointsize 6
   GroupColors <- brewer.pal(3, "Set1")[1:2]
-  names(GroupColors) <- unique(Chips.raw$rna_source)
+  names(GroupColors) <- unique(Chips.raw$condition)
   par(mar=c(4.5, 4.5, 3, 1), cex.lab=1.5, cex.axis=1.5, mfrow=c(1, 2))
   plotDensity(log2(pm(Chips.raw)), main="PM probes", xlab=expression(log[2]~expression),
-              col=paste0(GroupColors[Chips.raw$rna_source], "80"), lwd=1, lty=1, xlim=c(4, 15))
+              col=paste0(GroupColors[Chips.raw$condition], "80"), lwd=1, lty=1, xlim=c(4, 15))
   plotDensity(log2(mm(Chips.raw)), main="MM probes", xlab=expression(log[2]~expression),
-              col=paste0(GroupColors[Chips.raw$rna_source], "80"), lwd=1, lty=1, xlim=c(4, 15))
+              col=paste0(GroupColors[Chips.raw$condition], "80"), lwd=1, lty=1, xlim=c(4, 15))
   legend("topright", lwd=2, col=GroupColors, legend=names(GroupColors))
 #+END_SRC
 #+ATTR_HTML: :width 600px
@@ -127,40 +160,43 @@ So, we've got 4 replicates for each condition.
 #+RESULTS: src.affy.rawdata.density
 [[file:images/affy-rawdata-density.png]]
 
-Oh man, we do have lower signal intensities in the exosome samples... talking about bias...
+OK, data looks acceptable thus far.
 
 #+NAME: src.affy.NUSE
 #+BEGIN_SRC R :results graphics :exports results :file (concat (org-sbe imagepath) "preprocessing-NUSE.png") :width 16 :height 8 :res 600 :units cm :pointsize 6
-  NUSE(PLM, col=GroupColors[Chips.raw$rna_source], xaxt="n")
+  NUSE(PLM, col=GroupColors[Chips.raw$condition], xaxt="n")
   axis(side=1, at=1:length(Chips.norm$CEL), labels=Chips.norm$CEL, las=2)
 #+END_SRC
-
 #+ATTR_LATEX: :center :placement [H] :width 12cm
 #+NAME: fig.affy.NUSE
 #+CAPTION: NUSE plot for the microarrays.
 #+RESULTS: src.affy.NUSE
 [[file:images/preprocessing-NUSE.png]]
 
-Doesn't get better... think here we might have a problem!
-
+With the exception of one sample the quality is comparable. Thus, the data is
+over and above OK.
 
 ** Exiqon data analysis
 
-According to the information provided, the Exiqon microarrays used are miRCURY LNA arrays (v9.2).
-We are reading the files (scanned by an ImaGene scanner) and performing the pre-processing, most likely lowess, or vsn.
+According to the information provided, the Exiqon microarrays used are miRCURY
+LNA arrays (v11.0). We are reading the files (scanned by an ImaGene scanner) and
+performing the pre-processing, most likely lowess, or vsn.
+We will run into serious problems with the annotation of the miRNAs.
 
 #+NAME: src.array.read
 #+BEGIN_SRC R :results silent :exports code
   library(limma)
   library(vsn)
 
-  pd.exiqon <- read.AnnotatedDataFrame("phenodata-exiqon-GSE25320.txt")
-  Arrays <- cbind(FileNameCy3=paste0(sampleNames(pd.exiqon), ".txt.gz")[pd.exiqon$channel=="Cy3"],
-                  FileNameCy5=paste0(sampleNames(pd.exiqon), ".txt.gz")[pd.exiqon$channel=="Cy5"])
+  pd.exiqon <- read.AnnotatedDataFrame("./phenodata-exiqon-GSE47379.txt")
+  Arrays <- cbind(FileNameCy3=paste0(sampleNames(pd.exiqon))[pd.exiqon$channel=="Cy3"],
+                  FileNameCy5=paste0(sampleNames(pd.exiqon))[pd.exiqon$channel=="Cy5"])
   Slides.raw <- read.maimages(files=Arrays, source="imagene")
   ## there's still the Name missing.
-  Gal <- readGAL(gzfile("GSM623441_Cy3_US45103009_SLOT19_S01_Cropped.txt.gz"),
-                 nrows=9792)
+  Gal <- readGAL(gzfile("./GSM1148187_Hy3_MS1.txt.gz"), skip=101,
+		 nrows=9360)
+  if(!all(Slides.raw$genes[, "Gene ID"] == Gal$Gene.ID))
+      stop("Order mismatch!")
   Genes <- cbind(Slides.raw$genes, Name=Gal$Name)
   Slides.raw$genes <- Genes
 #+END_SRC
@@ -181,40 +217,44 @@ Next we are background adjusting and normalizing the microarrays. For background
   Slides.vsn <- Slides.normexp
   Slides.vsn$R <- 2^(assayData(tmp)$R)
   Slides.vsn$G <- 2^(assayData(tmp)$G)
+  ## Without bg:
+  Slides.nobg.loess <- normalizeWithinArrays(Slides.nobg, method="loess")
+
 #+END_SRC
 
-The data does not look good at all, similar to the gene expression data there seems to be huge differences here. For pre-processing method, that best removed most of the difference, we will use the =normexp= background adjustment and the global loess normalization.
+The loess normalized data without background adjustment seems to yield the most
+reasonable expression data (albeit only very few, if any, differentially
+expressed miRNAs; data not shown).
 
-Next we perform a replicate handling step, i.e. we are averaging the values for the replicated spots on the microarray.
+Next we perform a replicate handling step, i.e. we are averaging the values for
+the replicated spots on the microarray.
 
 #+NAME: src.array.rep.handling
 #+BEGIN_SRC R :results silent :exports code
-  Slides.norm <- averageReps(Slides.normexp.loess)
-  save(Slides.norm, file="GSE25320-Exiqon-Slides.norm.RData", compress="xz")
+  Slides.norm <- averageReps(Slides.nobg.loess)
+  save(Slides.norm, file="GSE47379-Exiqon-Slides.norm.RData", compress="xz")
 #+END_SRC
 
-Pre-processing did not remove the huge difference in signals between the red and green channel (i.e. total cell RNA and exosome RNA) completely.
 
 *** Quality controls
 
 #+NAME: src.array.rawdata.density
 #+BEGIN_SRC R :results graphics :file (concat (org-sbe imagepath) "array-rawdata-density.png") :exports results :width 16 :height 8 :units cm :res 600 :pointsize 6
   GroupColors <- brewer.pal(3, "Set1")[1:2]
-  names(GroupColors) <- unique(Chips.raw$rna_source)
+  names(GroupColors) <- unique(Chips.norm$condition)
   par(mar=c(4.5, 4.5, 3, 1), cex.lab=1.5, cex.axis=1.5, mfrow=c(1, 2))
   ## foreground
   plotDensity(log2(cbind(Slides.raw$R, Slides.raw$G)), main="foreground",
               xlab=expression(log[2]~expression),
-              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=3), "80"),
+              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=ncol(Slides.raw$R)), "80"),
               lwd=1, lty=1, xlim=c(4, 15))
   ## background
   plotDensity(log2(cbind(Slides.raw$Rb, Slides.raw$Gb)), main="background",
               xlab=expression(log[2]~expression),
-              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=3), "80"),
+              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=ncol(Slides.raw$R)), "80"),
               lwd=1, lty=1, xlim=c(4, 15))
 
 #+END_SRC
-
 #+ATTR_HTML: :width 600px
 #+ATTR_LATEX: :center :placement [H] :width 16cm
 #+NAME: fig.array.rawdata.density
@@ -222,12 +262,15 @@ Pre-processing did not remove the huge difference in signals between the red and
 #+RESULTS: src.array.rawdata.density
 [[file:images/array-rawdata-density.png]]
 
-Apparently the red signal channel yields higher signals than the green signal channel.
+The raw signal intensities from the green signal channel (Cy3, containing the
+/test/ samples) are highly comparable across all microarrays, while there seems
+to be a shift in the red signal channels (Cy5, containing the common reference
+samples). This is a little puzzling as we would expect the opposite.
 
 #+NAME: src.array.ma.plot.raw
-#+BEGIN_SRC R :results graphics :exports results :file (concat (org-sbe imagepath) "array-rawdata-maplots.png") :width 16 :height 8 :units cm :res 600 :pointsize 6
+#+BEGIN_SRC R :results graphics :exports results :file (concat (org-sbe imagepath) "array-rawdata-maplots.png") :width 16 :height 14 :units cm :res 600 :pointsize 6
   source("../plot-utils.R")
-  par(mfrow=c(1, 3), cex.lab=1.4, cex.axis=1.4)
+  par(mfrow=c(2, 3), cex.lab=1.4, cex.axis=1.4)
   for(i in 1:ncol(Slides.raw$R)){
       MA(Slides.raw, slide=i)
   }
@@ -239,58 +282,74 @@ Apparently the red signal channel yields higher signals than the green signal ch
 #+RESULTS: src.array.ma.plot.raw
 [[file:images/array-rawdata-maplots.png]]
 
-Oh man, again, there seem to be huge differences between the samples.
+The raw data looks already quite promising in this data set.
 
 #+NAME: src.array.hidden.plots
 #+BEGIN_SRC R :results silent :exports none
   par(mfrow=c(1, 3))
   plotDensity(log2(cbind(Slides.nobg$R, Slides.nobg$G)), main="no bg adjustment",
               xlab=expression(log[2]~expression),
-              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=3), "80"),
+              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=ncol(Slides.nobg$R)), "80"),
               lwd=1, lty=1)
   plotDensity(log2(cbind(Slides.min$R, Slides.min$G)), main="bg adjustment: min",
               xlab=expression(log[2]~expression),
-              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=3), "80"),
+              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=ncol(Slides.min$R)), "80"),
               lwd=1, lty=1)
   plotDensity(log2(cbind(Slides.normexp$R, Slides.normexp$G)), main="bg adjustment: normexp",
               xlab=expression(log[2]~expression),
-              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=3), "80"),
+              col=paste0(rep(brewer.pal(3, "Set1")[c(1, 3)], each=ncol(Slides.min$R)), "80"),
               lwd=1, lty=1)
 
-  par(mfrow=c(3, 3))
-  for(i in 1:3){
+  par(mfrow=c(3, 2), mar=c(1, 1, 0, 0))
+  for(i in 1:6){
       MA(Slides.nobg, main="no bg adjustment")
   }
-  for(i in 1:3){
+  ## Inspect
+  for(i in 1:6){
       MA(Slides.min, main="bg adjustment: min")
   }
-  for(i in 1:3){
+  ## Don't like that
+  for(i in 1:6){
       MA(Slides.normexp, main="bg adjustment: minexp")
   }
 
   ## the same plot for the normalized data.
-  par(mfrow=c(3, 3))
-  for(i in 1:3){
+  par(mfrow=c(3, 2), mar=c(0, 0, 0, 0))
+  for(i in 1:6){
       MA(Slides.min.loess, main="min, loess")
+      abline(h=c(-1, 1))
   }
-  for(i in 1:3){
+  ## Don't like that
+  for(i in 1:6){
       MA(Slides.normexp.loess, main="normexp, loess")
+      abline(h=c(-1, 1))
   }
+  ## Ah, not that nice...
   ## for(i in 1:3){
   ##     MA(Slides.normexp.ptloess, main="normexp, ptloess")
   ## }
-  for(i in 1:3){
+  for(i in 1:6){
       MA(Slides.vsn, main="normexp, vsn")
+      abline(h=c(-1, 1))
   }
+  ## Kinda OK.
+  for(i in 1:6){
+      MA(Slides.nobg.loess, main="normexp, vsn")
+      abline(h=c(-1, 1))
+  }
+  ## That's essentially the best!
 #+END_SRC
 
-Something is strange with the =min= background adjustment method. In the end we will stick to the =normexp= bg adjustment and the loess normalization.
+In a comparison of background adjustment methods, both the data without or with
+=normexp= adjustment look reasonable, while the data adjusted with =min= does
+not.
+
 
 At last plotting the MA-plots after averaging of replicates.
 
 #+NAME: src.array.ma.plot.norm
-#+BEGIN_SRC R :results graphics :exports results :file (concat (org-sbe imagepath) "array-norm-maplots.png") :width 16 :height 8 :units cm :res 600 :pointsize 6
-  par(mfrow=c(1, 3), cex.lab=1.4, cex.axis=1.4)
+#+BEGIN_SRC R :results graphics :exports results :file (concat (org-sbe imagepath) "array-norm-maplots.png") :width 16 :height 12 :units cm :res 600 :pointsize 6
+  par(mfrow=c(3, 2), cex.lab=1.4, cex.axis=1.4)
   for(i in 1:ncol(Slides.norm$M)){
       MA(Slides.norm, slide=i)
   }
@@ -302,16 +361,16 @@ At last plotting the MA-plots after averaging of replicates.
 #+RESULTS: src.array.ma.plot.norm
 [[file:images/array-norm-maplots.png]]
 
-Well, the data still doesn't look perfect.
-
 #+NAME: imagepath
 : images/
+
 
 ** Preparing the data set
 
 In this section we establish the mapping between mature miRNAs and miRNA host
 transcripts. There are however some problems that need to be solved:
-1) Select a single probe set for the host transcript.
+
+1) Multiple probe sets for a host transcript.
    - Select the probe set with the highest average expression; presumably the
      /best/ probe set.
    - Select the probe set with the largest differential expression. This might
@@ -320,7 +379,7 @@ transcripts. There are however some problems that need to be solved:
      =mirhostgenes= package specifying =chooseOrderedValue= for argument
      =solveFun=.
 
-2) Select the mature miRNA (-3p or 5p) from the same pre-miRNA.
+2) Two mature miRNAs encoded in one pre-miRNA.
    - Select the mature miRNA with the highest average expression. This seems to
      be reasonable, since only one is expected to be expressed, or at least
      higher expressed than the other.
@@ -331,55 +390,49 @@ transcripts. There are however some problems that need to be solved:
      =matmirnasInMultiplePremirnas= method to indicate which mappings might be
      problematic.
 
-3) How to deal with mature miRNAs encoded in several pre-miRNAs/host
-   transcripts?
+3) Mature miRNAs encoded in several pre-miRNAs/host transcripts.
    - First check this using the number of pre-miRNAs (actually pre-miRNA
      alignments) we get for a mature miRNA from the =mirhostgenes= package.
    - At first, just highlight those miRNAs in the plots.
    - Solutions might be: sum up the host transcript expression values.
 
-Next we have to map the IDs we've got from the Exiqon microarrays to mature
-miRNA names (or better, mature miRNA accessions) from miRBase version 20. We're
-using here the platform annotation file downloaded (or rather copied and pasted)
-from GEO.
+4) Multiple pre-miRNAs encoded in a single host gene.
+   - Use all pre-miRNAs and correlate each with the host gene.
+   - Alternatively, select the /best/ matching pre-miRNA. For correlation of
+     differential expression we might select the one pre-miRNA with the best
+     correlation.
+
+While the first two issues can be solved relatively easily (and reasonable), the
+latter two remain problematic.
+
+Before we can correlate expression estimates, we have to map the IDs we've got
+from the Exiqon microarrays, which are from miRBase version 13, to mature miRNA
+names (or better, mature miRNA accessions) from miRBase version 20. We'll
+perform this mapping through the mature miRNA accession numbers that we extract
+using the provided mature miRNA names and the miRBase version 13 database (from
+which we extracted the =mirna_mature.txt.gz= file providing the mapping from
+mature miRNA names to mature miRNA accession IDs).
 
 #+NAME: src.mapping.exiqon
 #+BEGIN_SRC R :results silent :exports code
   ## loading the datasets...
-  load("GSE25320-Affy-Chips.norm.RData")
-  load("GSE25320-Exiqon-Slides.norm.RData")
+  load("GSE47379-Affy-Chips.norm.RData")
+  load("GSE47379-Exiqon-Slides.norm.RData")
   library(ascii)
   library(mirhostgenes)
   library(MirhostDb.Hsapiens.v75.v20)
-  ## source("../plot-utils.R")
-  ## oh man, in Slides.norm$genes$Name we've got all strange combinations, also
-  ## miRNAs separated by / ! these measure several miRNAs.
-  ## Note: we're loading the GPL file downloaded from GEO or, rather copied
-  ## and pasted using mc
-  Exiqon.annot <- read.table("GPL7724.txt", sep="\t", as.is=TRUE, header=TRUE)
-  rownames(Exiqon.annot) <- Exiqon.annot$ID
-  ## processing this file and removing miRBase accessions for non-human miRNAs
-  for(i in 1:nrow(Exiqon.annot)){
-      if(length(grep(Exiqon.annot[i, "miRNA_ID_LIST"], pattern="hsa")) > 0){
-          Names <- unlist(strsplit(Exiqon.annot[i, "miRNA_ID_LIST"], split="/ ",
-                                   fixed=TRUE))
-          Accs <- unlist(strsplit(Exiqon.annot[i, "Accession"], split="/",
-                                  fixed=TRUE))
-          if(length(Names)!=length(Accs))
-              stop("What? something strange going on...")
-          idx <- grep(Names, pattern="hsa")
-          Exiqon.annot[i, "miRNA_ID_LIST"] <- paste(Names[idx], collapse=";")
-          Exiqon.annot[i, "Accession"] <- paste(Accs[idx], collapse=";")
-      }
-  }
-  ## check if some of the IDs in $genes do not match
-  Have <- as.character(Slides.norm$genes[, "Gene ID"]) %in% rownames(Exiqon.annot)
-  Genes <- cbind(Slides.norm$genes,
-		 Exiqon.annot[as.character(Slides.norm$genes[, "Gene ID"]),
-                              c("miRNA_ID_LIST", "Accession", "SEQUENCE")]
-		 )
-  Slides.norm$genes <- Genes
-  ## OK, now we've got (hopefully) the correct miRNA accessions...
+  mhg <- MirhostDb.Hsapiens.v75.v20
+
+  ## Load the mirbase version 13 mapping table.
+  mirbase <- read.table("./mirna_mature.txt.gz", sep="\t", as.is=TRUE, quote="", comment.char="")
+  mirbase <- unique(mirbase[, c(2, 3)])
+  colnames(mirbase) <- c("mat_mirna_name", "mat_mirna_id")
+  rownames(mirbase) <- mirbase[, "mat_mirna_name"]
+
+  Gns <- Slides.norm$genes
+  Gns <- cbind(Gns, mat_mirna_id=mirbase[Gns$Name, "mat_mirna_id"])
+  Slides.norm$genes <- Gns
+
 #+END_SRC
 
 Next we're subsetting both the gene and miRNA expression data to miRNAs,
@@ -387,13 +440,6 @@ respectively host transcripts for which we do have probe sets defined.
 
 #+NAME: src.mapping.subset.new
 #+BEGIN_SRC R :results silent :exports code
-  ## First subset the data to HUMAN mature miRNAs.
-  Slides.norm.sub <- Slides.norm[grep(Slides.norm$genes[ , "miRNA_ID_LIST"], pattern="hsa-"), ]
-
-  ## load the MirhostDb package
-  library(MirhostDb.Hsapiens.v75.v20)
-  mhg <- MirhostDb.Hsapiens.v75.v20
-
   ## Get the complete mapping mature-miRNA -> probe set.
   ## Note that only mature miRNAs for which a host gene and probe set was defined are returned
   ## as we're using an ArrayFilter.
@@ -407,25 +453,23 @@ respectively host transcripts for which we do have probe sets defined.
   ## Note that this way we also exclude mature miRNAs with the same sequence.
   ## Also, this does not tackle the problem that a feature on the microarray may detect
   ## several miRNAs.
-  mir2ps <- mir2ps[mir2ps$mat_mirna_id %in% Slides.norm.sub$genes$Accession, ]
+  ## Subset the Exiqon data:
+  gotit <- Slides.norm$genes$mat_mirna_id %in% unique(mir2ps$mat_mirna_id)
+  Slides.norm.sub <- Slides.norm[gotit, ]
 
-  ## subset the mature miRNA data.
-  Slides.norm.sub <- Slides.norm.sub[Slides.norm.sub$genes$Accession %in%
-                                     mir2ps$mat_mirna_id, ]
-  ## Solve multi accessions.
-  multis <- table(Slides.norm.sub$genes$Accession)
-  multis <- names(multis)[multis > 1]
-  Slides.norm.sub <- Slides.norm.sub[!(Slides.norm.sub$genes$Accession %in% multis), ]
-  rownames(Slides.norm.sub$genes) <- Slides.norm.sub$genes$Accession
-  rownames(Slides.norm.sub$M) <- Slides.norm.sub$genes$Accession
-  rownames(Slides.norm.sub$A) <- Slides.norm.sub$genes$Accession
-  mir2ps <- mir2ps[mir2ps$mat_mirna_id %in% rownames(Slides.norm.sub$genes), ]
+  ## Now subset also the mapping.
+  mir2ps <- mir2ps[mir2ps$mat_mirna_id %in% Slides.norm$genes$mat_mirna_id, ]
 
-  ## subset the Affymetrix data.
+  rownames(Slides.norm.sub$genes) <- Slides.norm.sub$genes$mat_mirna_id
+  rownames(Slides.norm.sub$M) <- Slides.norm.sub$genes$mat_mirna_id
+  rownames(Slides.norm.sub$A) <- Slides.norm.sub$genes$mat_mirna_id
+
+  ## Subset the Affymetrix data.
   Chips.norm.sub <- Chips.norm[featureNames(Chips.norm) %in% mir2ps$probeset_id, ]
-  mir2ps <- mir2ps[mir2ps$probeset_id %in% featureNames(Chips.norm.sub), ]
 
 #+END_SRC
+
+LLLL GO ON HERE.
 
 Note that with the sub-setting above we also excluded mature miRNAs with the
 same sequence (in total =SRC_R[:exports results :results output raw]{cat(length(grep(Slides.norm.sub$genes$Accession, pattern = ';')), '\n')}=).

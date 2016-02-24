@@ -269,50 +269,50 @@ chooseClosestOld <- function(x){
 
 
 
-## Test data.
-## have mat miRNAs from pre-miRNAs miR-15b, 16-1 and 223
-miRNA.exprs <- c(8, 8.3, 5.6, 9.5, 4.6, 13.1)
-names(miRNA.exprs) <- c("hsa-miR-15b-3p", "hsa-miR-15b-5p", "hsa-miR-16-5p", "hsa-miR-16-1-3p", "hsa-miR-223-3p", "hsa-miR-223-5p")
-## expression data
+## ## Test data.
+## ## have mat miRNAs from pre-miRNAs miR-15b, 16-1 and 223
+## miRNA.exprs <- c(8, 8.3, 5.6, 9.5, 4.6, 13.1)
+## names(miRNA.exprs) <- c("hsa-miR-15b-3p", "hsa-miR-15b-5p", "hsa-miR-16-5p", "hsa-miR-16-1-3p", "hsa-miR-223-3p", "hsa-miR-223-5p")
+## ## expression data
 
 
-tx.exprs <- data.frame(tx_id=c("NR_002612.1", "ENST00000344722", "ENST00000344722",
-                           "ENST00000468653", "ENSESTT00000026526"),
-                       probeset_id=c("1564443_at", "201663_s_at", "201664_at",
-                           "215623_x_at", "229934_at"),
-                       pre_mirna=c("hsa-mir-16-1", "hsa-mir-15b/16-2", "hsa-mir-15b/16-2",
-                           "hsa-mir-15b/16-2", "hsa-mir-223"),
-                       exprs=c(8.9, 5.4, 8.8, 12.1, 4.3))
-rownames(tx.exprs) <- tx.exprs$probeset_id
+## tx.exprs <- data.frame(tx_id=c("NR_002612.1", "ENST00000344722", "ENST00000344722",
+##                            "ENST00000468653", "ENSESTT00000026526"),
+##                        probeset_id=c("1564443_at", "201663_s_at", "201664_at",
+##                            "215623_x_at", "229934_at"),
+##                        pre_mirna=c("hsa-mir-16-1", "hsa-mir-15b/16-2", "hsa-mir-15b/16-2",
+##                            "hsa-mir-15b/16-2", "hsa-mir-223"),
+##                        exprs=c(8.9, 5.4, 8.8, 12.1, 4.3))
+## rownames(tx.exprs) <- tx.exprs$probeset_id
 
-mirna <- miRNA.exprs
-tx <- tx.exprs[, "exprs", drop=TRUE]
-names(tx) <- rownames(tx.exprs)
-mirnaNamesAre <- "mat_mirna_name"
-txNamesAre <- "probeset_id"
-chooseTxFun <- chooseAll
-chooseMatMirFun <- chooseAll
-choosePreMirFun <- chooseAll
+## mirna <- miRNA.exprs
+## tx <- tx.exprs[, "exprs", drop=TRUE]
+## names(tx) <- rownames(tx.exprs)
+## mirnaNamesAre <- "mat_mirna_name"
+## txNamesAre <- "probeset_id"
+## chooseTxFun <- chooseAll
+## chooseMatMirFun <- chooseAll
+## choosePreMirFun <- chooseAll
 
-## testing the function below...
-## library(MirhostDb.Hsapiens.v75.v20)
-##MhgDb <- MirhostDb.Hsapiens.v75.v20
-library(MirhostDb.Hsapiens.v81.v21)
-MhgDb <- MirhostDb.Hsapiens.v81.v21
-## get all
-All <- pairData(MhgDb, mirna=mirna, tx=tx, chooseTxFun=chooseAll, chooseMatMirFun=chooseAll,
-                choosePreMirFun=chooseAll)
-All
-## OK
-## get all mat miRNAs, all pre-miRNAs but only one tx per pre-miRNA
-OneTx <- pairData(MhgDb, mirna=mirna, tx=tx, chooseTxFun=chooseOnValue,
-                  chooseMatMirFun=chooseAll, choosePreMirFun=chooseAll)
-## OK
-## get one mat miRNA, all pre-miRNAs and one tx per per-miRNA
-OneMatOneTx <- pairData(MhgDb, mirna=mirna, tx=tx, chooseTxFun=chooseOnValue,
-                        chooseMatMirFun=chooseOnValue, choosePreMirFun=chooseAll)
-## OK
-## get the mat miRNA just from one pre-miRNA
-OnePre <- pairData(MhgDb, mirna=mirna, tx=tx, chooseTxFun=chooseAll,
-                   chooseMatMirFun=chooseAll, choosePreMirFun=chooseOnValue)
-## NOPE!!! does reduce also per tx!!!
+## ## testing the function below...
+## ## library(MirhostDb.Hsapiens.v75.v20)
+## ##MhgDb <- MirhostDb.Hsapiens.v75.v20
+## library(MirhostDb.Hsapiens.v81.v21)
+## MhgDb <- MirhostDb.Hsapiens.v81.v21
+## ## get all
+## All <- pairData(MhgDb, mirna=mirna, tx=tx, chooseTxFun=chooseAll, chooseMatMirFun=chooseAll,
+##                 choosePreMirFun=chooseAll)
+## All
+## ## OK
+## ## get all mat miRNAs, all pre-miRNAs but only one tx per pre-miRNA
+## OneTx <- pairData(MhgDb, mirna=mirna, tx=tx, chooseTxFun=chooseOnValue,
+##                   chooseMatMirFun=chooseAll, choosePreMirFun=chooseAll)
+## ## OK
+## ## get one mat miRNA, all pre-miRNAs and one tx per per-miRNA
+## OneMatOneTx <- pairData(MhgDb, mirna=mirna, tx=tx, chooseTxFun=chooseOnValue,
+##                         chooseMatMirFun=chooseOnValue, choosePreMirFun=chooseAll)
+## ## OK
+## ## get the mat miRNA just from one pre-miRNA
+## OnePre <- pairData(MhgDb, mirna=mirna, tx=tx, chooseTxFun=chooseAll,
+##                    chooseMatMirFun=chooseAll, choosePreMirFun=chooseOnValue)
+## ## NOPE!!! does reduce also per tx!!!
