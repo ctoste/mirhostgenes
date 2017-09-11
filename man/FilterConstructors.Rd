@@ -1,17 +1,17 @@
 \name{PositionFilter}
-\alias{AlignmentidFilter}
+\alias{AlignmentIdFilter}
 \alias{ArrayFilter}
 \alias{DatabaseFilter}
 \alias{PositionFilter}
-\alias{PremirnaConfidence}
-\alias{PremirnaFilter}
-\alias{PremirnaidFilter}
-\alias{ProbesetidFilter}
-\alias{MatmirnaConfidence}
-\alias{MatmirnaFilter}
-\alias{MatmirnaidFilter}
+\alias{PreMirnaConfidence}
+\alias{PreMirnaFilter}
+\alias{PreMirnaIdFilter}
+\alias{ProbesetIdFilter}
+\alias{MatMirnaConfidence}
+\alias{MatMirnaFilter}
+\alias{MatMirnaIdFilter}
 \alias{MirfamFilter}
-\alias{MirfamidFilter}
+\alias{MirfamIdFilter}
 \alias{ReadCountFilter}
 \title{
   Constructor functions for filter objects
@@ -22,31 +22,31 @@
 }
 \usage{
 
-AlignmentidFilter(value, condition = "=")
+AlignmentIdFilter(value, condition = "==")
 
-ArrayFilter(value, condition = "=")
+ArrayFilter(value, condition = "==")
 
-DatabaseFilter(value, condition = "=")
+DatabaseFilter(value, condition = "==")
 
-MatmirnaConfidence(value="high", condition="=")
+MatMirnaConfidence(value="high", condition="==")
 
-MatmirnaFilter(value, condition = "=", match.case=TRUE)
+MatMirnaFilter(value, condition = "==", match.case=TRUE)
 
-MatmirnaidFilter(value, condition = "=")
+MatMirnaIdFilter(value, condition = "==")
 
-MirfamFilter(value, condition = "=", match.case=TRUE)
+MirfamFilter(value, condition = "==", match.case=TRUE)
 
-MirfamidFilter(value, condition = "=")
+MirfamIdFilter(value, condition = "==")
 
-PositionFilter(value, condition = "=")
+PositionFilter(value, condition = "==")
 
-PremirnaConfidence(value="high", condition="=")
+PreMirnaConfidence(value="high", condition="==")
 
-PremirnaFilter(value, condition = "=", match.case=TRUE)
+PreMirnaFilter(value, condition = "==", match.case=TRUE)
 
-PremirnaidFilter(value, condition = "=")
+PreMirnaIdFilter(value, condition = "==")
 
-ProbesetidFilter(value, condition = "=")
+ProbesetIdFilter(value, condition = "==")
 
 ReadCountFilter(value=0, condition=">", of="pre_mirna")
 }
@@ -61,7 +61,7 @@ ReadCountFilter(value=0, condition=">", of="pre_mirna")
   }
 
   \item{match.case}{
-    For \code{PremirnaFilter}, \code{MatmirnaFilter}
+    For \code{PreMirnaFilter}, \code{MatMirnaFilter}
     and \code{MirfamFilter}: whether the query should be performed case
     sensitive or insensitive.
   }
@@ -74,14 +74,14 @@ ReadCountFilter(value=0, condition=">", of="pre_mirna")
 
   \item{value}{
     The filter value, e.g.,
-    for \code{GeneidFilter} the id of the feature for which the data
+    for \code{GeneIdFilter} the id of the feature for which the data
     should be retrieved. For \code{PositionFilter} either
     \code{"exonic"}, \code{"intronic"} or \code{"both"} are allowed,
     specifying that the (pre-)miRNA should be located in an exon, intron
     or within a host transcript.  Can be any string for
-    \code{PremirnaFilter}, \code{PremirnaidFilter},
-    \code{MatmirnaFilter} and \code{MatmirnaidFilter}.
-    For \code{MatmirnaConfidence} and \code{PremirnaConfidence} at
+    \code{PreMirnaFilter}, \code{PreMirnaIdFilter},
+    \code{MatMirnaFilter} and \code{MatMirnaIdFilter}.
+    For \code{MatMirnaConfidence} and \code{PreMirnaConfidence} at
     present only a value of \code{"high"} is allowed, which allows to
     retrieve pre-miRNAs or mature miRNAs specified as \emph{high confidence}
     in the miRBase.
@@ -93,18 +93,18 @@ ReadCountFilter(value=0, condition=">", of="pre_mirna")
 \value{
   Depending on the function called, an instance of:
   \code{\linkS4class{ArrayFilter}},
-  \code{\linkS4class{AlignmentidFilter}},
+  \code{\linkS4class{AlignmentIdFilter}},
   \code{\linkS4class{DatabaseFilter}},
-  \code{\linkS4class{MatmirnaConfidence}},
-  \code{\linkS4class{MatmirnaFilter}},
-  \code{\linkS4class{MatmirnaidFilter}},
+  \code{\linkS4class{MatMirnaConfidence}},
+  \code{\linkS4class{MatMirnaFilter}},
+  \code{\linkS4class{MatMirnaIdFilter}},
   \code{\linkS4class{MirfamFilter}},
-  \code{\linkS4class{MirfamidFilter}},
+  \code{\linkS4class{MirfamIdFilter}},
   \code{\linkS4class{PositionFilter}},
-  \code{\linkS4class{PremirnaConfidence}},
-  \code{\linkS4class{PremirnaFilter}},
-  \code{\linkS4class{PremirnaidFilter}},
-  \code{\linkS4class{ProbesetidFilter}},
+  \code{\linkS4class{PreMirnaConfidence}},
+  \code{\linkS4class{PreMirnaFilter}},
+  \code{\linkS4class{PreMirnaIdFilter}},
+  \code{\linkS4class{ProbesetIdFilter}},
   \code{\linkS4class{ReadCountFilter}}
 }
 
@@ -112,25 +112,23 @@ ReadCountFilter(value=0, condition=">", of="pre_mirna")
 
 \seealso{ \code{\link{hostgenes}}, \code{\link{hosttx}},
   \code{\linkS4class{ArrayFilter}},
-  \code{\linkS4class{AlignmentidFilter}},
+  \code{\linkS4class{AlignmentIdFilter}},
   \code{\linkS4class{DatabaseFilter}},
   \code{\linkS4class{PositionFilter}},
-  \code{\linkS4class{PremirnaFilter}},
-  \code{\linkS4class{PremirnaidFilter}},
-  \code{\linkS4class{ProbesetidFilter}},
-  \code{\linkS4class{MatmirnaFilter}},
-  \code{\linkS4class{MatmirnaidFilter}}
-  \code{\link[ensembldb]{GeneidFilter}},
-  \code{\link[ensembldb]{GenenameFilter}},
-  \code{\link[ensembldb]{GenebiotypeFilter}},
-  \code{\link[ensembldb]{TxidFilter}},
-  \code{\link[ensembldb]{TxbiotypeFilter}},
-  \code{\link[ensembldb]{ExonidFilter}},
-  \code{\link[ensembldb]{SeqnameFilter}},
-  \code{\link[ensembldb]{SeqstrandFilter}},
-  \code{\link[ensembldb]{SeqstartFilter}},
-  \code{\link[ensembldb]{SeqendFilter}} }
-
+  \code{\linkS4class{PreMirnaFilter}},
+  \code{\linkS4class{PreMirnaIdFilter}},
+  \code{\linkS4class{ProbesetIdFilter}},
+  \code{\linkS4class{MatMirnaFilter}},
+  \code{\linkS4class{MatMirnaIdFilter}}
+  \code{\link[AnnotationFilter]{GeneIdFilter}},
+  \code{\link[AnnotationFilter]{GenenameFilter}},
+  \code{\link[AnnotationFilter]{GeneBiotypeFilter}},
+  \code{\link[AnnotationFilter]{TxIdFilter}},
+  \code{\link[AnnotationFilter]{TxBiotypeFilter}},
+  \code{\link[AnnotationFilter]{ExonIdFilter}},
+  \code{\link[AnnotationFilter]{SeqNameFilter}},
+  \code{\link[AnnotationFilter]{SeqStrandFilter}}
+}
 \examples{
 
 ## Note: for additional examples see the help of the
@@ -145,9 +143,9 @@ Pos <- PositionFilter("exonic")
 where(Pos, MirhostDb.Hsapiens.v75.v20)
 column(Pos, MirhostDb.Hsapiens.v75.v20)
 
-## Next we define a SeqstartFilter (defined in the makeEnsemblDb
+## Next we define a SeqstartFilter (defined in the AnnotationFilter
 ## package)
-Start <- SeqstartFilter(12333)
+Start <- SeqStartFilter(12333)
 
 ## the default where and column calls will return us the settings
 ## required for the makeEnsemblDb package
@@ -158,7 +156,7 @@ column(Start)
 ## interested in the genomic alignment of miRNAs, not genes. Thus,
 ## submitting in addition the instance of the mirhostgenes database
 ## returns the correct columns and where clause:
-Start <- SeqstartFilter(12333, feature="pre_mirna")
+Start <- SeqStartFilter(12333, feature="pre_mirna")
 where(Start, MirhostDb.Hsapiens.v75.v20)
 column(Start, MirhostDb.Hsapiens.v75.v20)
 

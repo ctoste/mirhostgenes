@@ -246,19 +246,23 @@ test_transferValues <- function(){
     checkEquals(miRNA.exprs[names(ResX)], ResX)
 
     ## now: use a seqstrand filter, that should only return values for pre-miRNA-16-2
-    Res <- transferValues(miRNA.exprs, mhg, xNamesAre="mat_mirna_name", toNames="pre_mirna_name",
-                          filter=SeqstrandFilter(1), na.rm=TRUE)
+    Res <- transferValues(miRNA.exprs, mhg, xNamesAre="mat_mirna_name",
+                          toNames="pre_mirna_name",
+                          filter=SeqStrandFilter(1), na.rm=TRUE)
     checkEquals(any(Res$pre_mirna_name == "hsa-mir-16-1"), FALSE)
 
     ## check if the filter works for gene_biotype
-    Res <- transferValues(miRNA.exprs, mhg, xNamesAre="mat_mirna_name", toNames="gene_id",
+    Res <- transferValues(miRNA.exprs, mhg, xNamesAre="mat_mirna_name",
+                          toNames="gene_id",
                           na.rm=TRUE, filter=DatabaseFilter("core"))
-    Res <- hostgenes(mhg, filter=GeneidFilter(Res$gene_id))
+    Res <- hostgenes(mhg, filter=GeneIdFilter(Res$gene_id))
     checkEquals(unique(Res$database), "core")
     ## biotype
-    Res <- transferValues(miRNA.exprs, mhg, xNamesAre="mat_mirna_name", toNames="gene_id",
-                          na.rm=TRUE, filter=GenebiotypeFilter("miRNA", condition="!="))
-    Res <- hostgenes(mhg, filter=GeneidFilter(Res$gene_id))
+    Res <- transferValues(miRNA.exprs, mhg, xNamesAre="mat_mirna_name",
+                          toNames="gene_id",
+                          na.rm=TRUE,
+                          filter=GeneBiotypeFilter("miRNA", condition="!="))
+    Res <- hostgenes(mhg, filter=GeneIdFilter(Res$gene_id))
     checkEquals(any(Res$gene_biotype == "miRNA"), FALSE)
 }
 

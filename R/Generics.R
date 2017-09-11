@@ -106,3 +106,7 @@ setGeneric("tablesForColumns", function(x, columns, ...)
 setGeneric("tablesByDegree", function(x, ...)
     standardGeneric("tablesByDegree"))
 ##}
+setGeneric("column", function(object, db, with.tables, ...)
+    standardGeneric("column"))
+setGeneric("where", function(object, db, with.tables, ...)
+    standardGeneric("where"))

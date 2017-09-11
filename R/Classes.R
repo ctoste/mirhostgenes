@@ -60,307 +60,216 @@ setClass("MirhostDb",
 ##***********************************************************************
 ## Table pre_mirna
 ## filter for the alignment id.
-setClass("AlignmentidFilter", contains="BasicFilter",
+setClass("AlignmentIdFilter", contains="CharacterFilter",
          prototype=list(
-             condition="=",
+             condition="==",
              value="",
-             .valueIsCharacter=TRUE
+             field = "pre_mirna_algn_id"
          )
          )
-AlignmentidFilter <- function(value, condition="="){
+AlignmentIdFilter <- function(value, condition = "==") {
     ## here value could be intronic, exonic, both.
     ## condition will not be considered...
-    if(length(value) > 1){
-        if(condition=="=")
-            condition="in"
-        if(condition=="!=")
-            condition="not in"
-    }
-    return(new("AlignmentidFilter", condition=condition, value=as.character(value)))
+    new("AlignmentIdFilter", condition = condition, value = as.character(value))
 }
 
 ## Table array_feature
 ## filter for attribute array_id
-setClass("ArrayFilter", contains="BasicFilter",
+setClass("ArrayFilter", contains="CharacterFilter",
          prototype=list(
-             condition="=",
+             condition="==",
              value="",
-             .valueIsCharacter=TRUE
+             field = "array_id"
          )
          )
-ArrayFilter <- function(value, condition="="){
-    if(missing(value)){
-        stop("A filter without a value makes no sense!")
-    }
-    if(length(value) > 1){
-        if(condition=="=")
-            condition="in"
-        if(condition=="!=")
-            condition="not in"
-    }
-    return(new("ArrayFilter", condition=condition, value=as.character(value)))
+ArrayFilter <- function(value, condition = "=="){
+    new("ArrayFilter", condition=condition, value=as.character(value))
 }
 ## filter for attribute array_id
-setClass("ProbesetidFilter", contains="BasicFilter",
-         prototype=list(
-             condition="=",
+setClass("ProbesetIdFilter", contains="CharacterFilter",
+         prototype = list(
+             condition = "==",
              value="",
-             .valueIsCharacter=TRUE
+             field = "probeset_id"
          )
          )
-ProbesetidFilter <- function(value, condition="="){
-    if(missing(value)){
-        stop("A filter without a value makes no sense!")
-    }
-    if(length(value) > 1){
-        if(condition=="=")
-            condition="in"
-        if(condition=="!=")
-            condition="not in"
-    }
-    return(new("ProbesetidFilter", condition=condition, value=as.character(value)))
+ProbesetIdFilter <- function(value, condition = "=="){
+    new("ProbesetIdFilter", condition = condition, value=as.character(value))
 }
 
 ## Table host_gene
 ## filter for the database.
-setClass("DatabaseFilter", contains="BasicFilter",
+setClass("DatabaseFilter", contains="CharacterFilter",
          prototype=list(
-             condition="=",
+             condition="==",
              value="",
-             .valueIsCharacter=TRUE
+             field = "database"
          )
          )
-DatabaseFilter <- function(value, condition="="){
-    ## here value could be intronic, exonic, both.
-    ## condition will not be considered...
-    if(length(value) > 1){
-        if(condition=="=")
-            condition="in"
-        if(condition=="!=")
-            condition="not in"
-    }
-    return(new("DatabaseFilter", condition=condition, value=as.character(value)))
+DatabaseFilter <- function(value, condition="=="){
+    new("DatabaseFilter", condition=condition, value=as.character(value))
 }
 
 
 ## Table host_tx
 ## filter for position
-setClass("PositionFilter", contains="BasicFilter",
+setClass("PositionFilter", contains="CharacterFilter",
          prototype=list(
-             condition="=",
+             condition="==",
              value="",
-             .valueIsCharacter=TRUE
+             field = ""
          )
          )
-PositionFilter <- function(value, condition="="){
+PositionFilter <- function(value, condition="=="){
     ## here value could be intronic, exonic, both.
     ## condition will not be considered...
     value <- match.arg(value, c("intronic", "exonic", "both"))
-    if(missing(value)){
-        stop("A filter without a value makes no sense!")
-    }
-    if(length(value) > 1){
-        if(condition=="=")
-            condition="in"
-        if(condition=="!=")
-            condition="not in"
-    }
-    return(new("PositionFilter", condition=condition, value=as.character(value)))
+    new("PositionFilter", condition=condition, value=as.character(value))
 }
 
 ##***********************************************************************
 ## Table pre_mirna
 ## filter for pre_mirnas
-setClass("PremirnaFilter", contains="BasicFilter",
+setClass("PreMirnaFilter", contains="CharacterFilter",
          representation(
              match.case="logical"
          ),
          prototype=list(
-             condition="=",
+             condition="==",
              value="",
-             .valueIsCharacter=TRUE,
+             field = "pre_mirna_name",
              match.case=TRUE
          )
          )
-PremirnaFilter <- function(value, condition="=", match.case=TRUE){
+PreMirnaFilter <- function(value, condition="==", match.case=TRUE){
     if(missing(value)){
         stop("A filter without a value makes no sense!")
     }
-    if(length(value) > 1){
-        if(condition=="=")
-            condition="in"
-        if(condition=="!=")
-            condition="not in"
-    }
-    return(new("PremirnaFilter", match.case=match.case, condition=condition,
-               value=as.character(value)))
+    new("PreMirnaFilter", match.case = match.case, condition = condition,
+               value = as.character(value))
 }
-setClass("PremirnaidFilter", contains="BasicFilter",
+setClass("PreMirnaIdFilter", contains="CharacterFilter",
          prototype=list(
-             condition="=",
+             condition="==",
              value="",
+             field = "pre_mirna_id",
              .valueIsCharacter=TRUE
          )
          )
-PremirnaidFilter <- function(value, condition="="){
+PreMirnaIdFilter <- function(value, condition="=="){
     if(missing(value)){
         stop("A filter without a value makes no sense!")
     }
-    if(length(value) > 1){
-        if(condition=="=")
-            condition="in"
-        if(condition=="!=")
-            condition="not in"
-    }
-    return(new("PremirnaidFilter", condition=condition, value=as.character(value)))
+    new("PreMirnaIdFilter", condition=condition, value=as.character(value))
 }
 
 ##***********************************************************************
 ## Table mat_mirna
 ## filter for mat_mirnas
-setClass("MatmirnaFilter", contains="BasicFilter",
+setClass("MatMirnaFilter", contains="CharacterFilter",
          representation(
              match.case="logical"
          ),
          prototype=list(
-             condition="=",
+             condition="==",
              value="",
-             .valueIsCharacter=TRUE,
+             field = "mat_mirna_name",
              match.case=TRUE
          )
          )
-MatmirnaFilter <- function(value, condition="=", match.case=TRUE){
-    if(missing(value)){
-        stop("A filter without a value makes no sense!")
-    }
-    if(length(value) > 1){
-        if(condition=="=")
-            condition="in"
-        if(condition=="!=")
-            condition="not in"
-    }
-    return(new("MatmirnaFilter", match.case=match.case, condition=condition,
-               value=as.character(value)))
+MatMirnaFilter <- function(value, condition="==", match.case=TRUE){
+    new("MatMirnaFilter", match.case=match.case, condition=condition,
+        value=as.character(value))
 }
-setClass("MatmirnaidFilter", contains="BasicFilter",
+setClass("MatMirnaIdFilter", contains="CharacterFilter",
          prototype=list(
-             condition="=",
+             condition="==",
              value="",
+             field = "mat_mirna_id",
              .valueIsCharacter=TRUE
          )
          )
-MatmirnaidFilter <- function(value, condition="="){
-    if(missing(value)){
-        stop("A filter without a value makes no sense!")
-    }
-    if(length(value) > 1){
-        if(condition=="=")
-            condition="in"
-        if(condition=="!=")
-            condition="not in"
-    }
-    return(new("MatmirnaidFilter", condition=condition, value=as.character(value)))
+MatMirnaIdFilter <- function(value, condition="=="){
+    new("MatMirnaIdFilter", condition=condition, value=as.character(value))
 }
 
 
 ##***********************************************************************
 ## Table mat_mirna
 ## filter for mat_mirnas
-setClass("MirfamFilter", contains="BasicFilter",
+setClass("MirfamFilter", contains="CharacterFilter",
          representation(
              match.case="logical"
          ),
          prototype=list(
-             condition="=",
+             condition="==",
              value="",
-             .valueIsCharacter=TRUE,
+             field = "mirfam_name",
              match.case=TRUE
          )
          )
-MirfamFilter <- function(value, condition="=", match.case=TRUE){
-    if(missing(value)){
-        stop("A filter without a value makes no sense!")
-    }
-    if(length(value) > 1){
-        if(condition=="=")
-            condition="in"
-        if(condition=="!=")
-            condition="not in"
-    }
-    return(new("MirfamFilter", match.case=match.case, condition=condition,
-               value=as.character(value)))
+MirfamFilter <- function(value, condition="==", match.case=TRUE){
+    new("MirfamFilter", match.case=match.case, condition=condition,
+        value=as.character(value))
 }
-setClass("MirfamidFilter", contains="BasicFilter",
+setClass("MirfamIdFilter", contains="CharacterFilter",
          prototype=list(
-             condition="=",
+             condition="==",
              value="",
-             .valueIsCharacter=TRUE
+             field = "mirfam_id"
          )
          )
-MirfamidFilter <- function(value, condition="="){
-    if(missing(value)){
-        stop("A filter without a value makes no sense!")
-    }
-    if(length(value) > 1){
-        if(condition=="=")
-            condition="in"
-        if(condition=="!=")
-            condition="not in"
-    }
-    return(new("MirfamidFilter", condition=condition, value=as.character(value)))
+MirfamIdFilter <- function(value, condition="=="){
+    new("MirfamIdFilter", condition=condition, value=as.character(value))
 }
 
 ## special type fo filter: high confidence filter.
-setClass("MatmirnaConfidence", contains="BasicFilter",
+setClass("MatMirnaConfidence", contains="CharacterFilter",
          prototype=list(
-             condition="=",
+             condition="==",
              value="high",
-             .valueIsCharacter=TRUE
+             field = "mat_mirna_confidence"
          ))
-MatmirnaConfidence <- function(value="high", condition="="){
+MatMirnaConfidence <- function(value="high", condition="=="){
+    if(length(value) > 1){
+        value <- value[1]
+        warning("MatMirnaConfidence filter does only support a single value. Taking value[1].")
+    }
+    if(!(condition %in% c("==", "!=")))
+        stop("MatMirnaConfidence filter does not support a condition other than '=' or '!='.")
+    return(new("MatMirnaConfidence", condition=condition,
+               value=as.character(value)))
+}
+
+## special type fo filter: high confidence filter.
+setClass("PreMirnaConfidence", contains="CharacterFilter",
+         prototype=list(
+             condition="==",
+             value="high",
+             field = "pre_mirna_confidence"
+         ))
+PreMirnaConfidence <- function(value="high", condition="=="){
     if(missing(value)){
         value <- "high"
     }
     if(length(value) > 1){
         value <- value[1]
-        warning("MatmirnaConfidence filter does only support a single value. Taking value[1].")
+        warning("PreMirnaConfidence filter does only support a single value. Taking value[1].")
     }
-    if(!(condition %in% c("=", "!=")))
-        stop("MatmirnaConfidence filter does not support a condition other than '=' or '!='.")
-    return(new("MatmirnaConfidence", condition=condition,
-               value=as.character(value)))
+    if(!(condition %in% c("==", "!=")))
+        stop("PreMirnaConfidence filter does not support a condition other than '=' or '!='.")
+    new("PreMirnaConfidence", condition=condition,
+        value=as.character(value))
 }
 
-## special type fo filter: high confidence filter.
-setClass("PremirnaConfidence", contains="BasicFilter",
-         prototype=list(
-             condition="=",
-             value="high",
-             .valueIsCharacter=TRUE
-         ))
-PremirnaConfidence <- function(value="high", condition="="){
-    if(missing(value)){
-        value <- "high"
-    }
-    if(length(value) > 1){
-        value <- value[1]
-        warning("PremirnaConfidence filter does only support a single value. Taking value[1].")
-    }
-    if(!(condition %in% c("=", "!=")))
-        stop("PremirnaConfidence filter does not support a condition other than '=' or '!='.")
-    return(new("PremirnaConfidence", condition=condition,
-               value=as.character(value)))
-}
-
-setClass("ReadCountFilter", contains="BasicFilter",
+setClass("ReadCountFilter", contains="IntegerFilter",
          representation(
              of="character"
          ),
          prototype=list(
-             condition=">",
-             value="0",
-             .valueIsCharacter=FALSE,
-             of="pre_mirna"
+             condition = ">",
+             value = 0L,
+             of = "pre_mirna"
          ))
 ReadCountFilter <- function(value=0, condition=">", of="pre_mirna"){
     if(length(value) > 1){
@@ -369,9 +278,44 @@ ReadCountFilter <- function(value=0, condition=">", of="pre_mirna"){
     }
     if(is.na(as.numeric(value)))
         stop("value has to be numeric for ReadCountFilter!")
-    return(new("ReadCountFilter", condition=condition, value=as.character(value), of=of))
+    new("ReadCountFilter", condition=condition, value=as.integer(value), of=of)
 }
 ## do: ProbesetFilter, throws error if no required table there
 ## do: ArrayFilter, throws error if no required table there
+
+setClass("SeqEndFilter", contains="IntegerFilter",
+         representation(
+             feature="character"
+         ),
+         prototype=list(
+             condition = ">",
+             feature = "gene",
+             value = 0L
+         ))
+SeqEndFilter <- function(value = 0, condition = ">", feature = "pre_mirna"){
+    if(length(value) > 1){
+        value <- value[1]
+        warning("SeqEndFilter does only support a single value! Taking value[1].")
+    }
+    new("SeqEndFilter", condition = condition, value = as.integer(value),
+        feature = feature)
+}
+setClass("SeqStartFilter", contains="IntegerFilter",
+         representation(
+             feature="character"
+         ),
+         prototype=list(
+             condition = ">",
+             feature = "gene",
+             value = 0L
+         ))
+SeqStartFilter <- function(value = 0, condition = ">", feature = "pre_mirna"){
+    if(length(value) > 1){
+        value <- value[1]
+        warning("SeqStartFilter does only support a single value! Taking value[1].")
+    }
+    new("SeqStartFilter", condition = condition, value = as.integer(value),
+        feature = feature)
+}
 
 

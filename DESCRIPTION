@@ -1,13 +1,13 @@
 Package: mirhostgenes
 Type: Package
 Title: mirhostgenes: putting miRNAs into genomic context
-Version: 0.99.1
+Version: 0.99.10
 Author: J. Rainer
 Maintainer: Johannes Rainer <johannes.rainer@eurac.edu>
 URL: https://github.com/jotsetung/mirhostgenes
 Imports: methods, Biobase, DBI, RSQLite, GenomicFeatures, GenomeInfoDb,
 	 AnnotationDbi, S4Vectors, IRanges
-Depends: BiocGenerics, ensembldb (>= 0.99.8), GenomicRanges
+Depends: BiocGenerics, ensembldb (>= 0.99.8), GenomicRanges, AnnotationFilter
 Suggests: BiocStyle, knitr, rmarkdown, RUnit, MirhostDb.Hsapiens.v75.v20
 VignetteBuilder: knitr
 Description: This package provides functionality to define host genes for all miRNAs

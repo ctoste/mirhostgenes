@@ -529,12 +529,26 @@ installed (see http://www.ensembl.org/info/docs/api/api_installation.html for de
 
 ** Building an annotation package
 
-The functions below use the Ensembl Perl API to fetch the required data directly from the Ensembl core databases. Thus, the path to the Perl API specific for the desired Ensembl version needs to be added to the =PERL5LIB= environment variable.
+The functions below use the Ensembl Perl API to fetch the required data directly
+from the Ensembl core databases. Thus, the path to the Perl API specific for the
+desired Ensembl version needs to be added to the =PERL5LIB= environment
+variable.
 
-To build a package, first the mirbase (http://www.mirbase.org) files for the desired version have to be downloaded.
-Subsequently, the genomic alignments provided from the mirbase are used to determine whether at that location a gene is defined in the Ensembl database. This step defines the host genes and transcripts.
-In the next steps, a table with the pre-miRNA sequences is generated, as well as a table providing the mapping of pre-miRNAs to miRNA families (based on the information from the mirbase).
-Based on the tables generated from the functions above, an SQLite database is generated, for which in the last step the database package is created.
+To build a package, first the mirbase (http://www.mirbase.org) files for the
+desired version have to be downloaded.  Subsequently, the genomic alignments
+provided from the mirbase are used to determine whether at that location a gene
+is defined in the Ensembl database. This step defines the host genes and
+transcripts.  In the next steps, a table with the pre-miRNA sequences is
+generated, as well as a table providing the mapping of pre-miRNAs to miRNA
+families (based on the information from the mirbase).  Based on the tables
+generated from the functions above, an SQLite database is generated, for which
+in the last step the database package is created.
+
+Note: if data should be retrieved from local mirrors of the Ensembl databases,
+the following databases should be installed: =core=, =vega= and =otherfeatures=
+for the miRNA host gene definitions and the =funcgen= database for the probe set
+definitions.
+
 
 #+BEGIN_SRC R :ravel eval=FALSE
   library(mirhostgenes)

@@ -78,44 +78,44 @@ setMethod("where", signature(object="PositionFilter", db="MirhostDb", with.table
 
 ##***********************************************************************
 ##
-##     Implementations for AlignmentidFilter.
+##     Implementations for AlignmentIdFilter.
 ##
 ##***********************************************************************
 ##
 ##     public methods
 ##***********************************************************************
-setMethod("column", signature(object="AlignmentidFilter", db="missing", with.tables="missing"),
+setMethod("column", signature(object="AlignmentIdFilter", db="missing", with.tables="missing"),
           function(object, db, with.tables, ...){
-              warning("Method column for object=AlignmentidFilter, db=missing not implemented!")
+              warning("Method column for object=AlignmentIdFilter, db=missing not implemented!")
               return(NULL)
           })
-setMethod("column", signature(object="AlignmentidFilter", db="MirhostDb",
+setMethod("column", signature(object="AlignmentIdFilter", db="MirhostDb",
                               with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="AlignmentidFilter", db="MirhostDb",
+setMethod("column", signature(object="AlignmentIdFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, "pre_mirna_algn_id", with.tables=with.tables),
                             use.names=FALSE))
           })
 ## that's the version without a database specified.
-setMethod("where", signature(object="AlignmentidFilter", db="missing",
+setMethod("where", signature(object="AlignmentIdFilter", db="missing",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               ## without a database we're just calling the where of BasicFilter
               return(callNextMethod())
           }
           )
-setMethod("where", signature(object="AlignmentidFilter", db="MirhostDb",
+setMethod("where", signature(object="AlignmentIdFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="AlignmentidFilter", db="MirhostDb",
+setMethod("where", signature(object="AlignmentIdFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- where(object) ## that returns the result from the BasicFilter...
@@ -223,28 +223,28 @@ setMethod("where", signature(object="DatabaseFilter", db="MirhostDb", with.table
 
 ##***********************************************************************
 ##
-##     Implementations for ProbesetidFilter.
+##     Implementations for ProbesetIdFilter.
 ##
 ##***********************************************************************
 ##
 ##     public methods
 ##***********************************************************************
-setMethod("column", signature(object="ProbesetidFilter", db="missing", with.tables="missing"),
+setMethod("column", signature(object="ProbesetIdFilter", db="missing", with.tables="missing"),
           function(object, db, with.tables, ...){
-              warning("Method column for object=ProbesetidFilter, db=missing not implemented!")
+              warning("Method column for object=ProbesetIdFilter, db=missing not implemented!")
               return(NULL)
           })
-setMethod("column", signature(object="ProbesetidFilter", db="MirhostDb",
+setMethod("column", signature(object="ProbesetIdFilter", db="MirhostDb",
                               with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="ProbesetidFilter", db="MirhostDb",
+setMethod("column", signature(object="ProbesetIdFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               if(!db@have_array_features){
-                  warning("Can not use a ProbesetidFilter, as the database",
+                  warning("Can not use a ProbesetIdFilter, as the database",
                           " doesn't have the required table.\n")
                   return(NULL)
               }
@@ -252,23 +252,23 @@ setMethod("column", signature(object="ProbesetidFilter", db="MirhostDb",
                             use.names=FALSE))
           })
 ## that's the version without a database specified.
-setMethod("where", signature(object="ProbesetidFilter", db="missing", with.tables="missing"),
+setMethod("where", signature(object="ProbesetIdFilter", db="missing", with.tables="missing"),
           function(object, db, with.tables, ...){
               ## without a database we're just calling the where of BasicFilter
               return(callNextMethod())
           }
           )
-setMethod("where", signature(object="ProbesetidFilter", db="MirhostDb", with.tables="missing"),
+setMethod("where", signature(object="ProbesetIdFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="ProbesetidFilter", db="MirhostDb",
+setMethod("where", signature(object="ProbesetIdFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               if(!db@have_array_features){
                   ## means we don't have that data available...
-                  warning("Can not use a ProbesetidFilter, as the database",
+                  warning("Can not use a ProbesetIdFilter, as the database",
                           " doesn't have the required table.\n")
                   return(NULL)
               }
@@ -279,27 +279,27 @@ setMethod("where", signature(object="ProbesetidFilter", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for MatmirnaConfidence
+##     Implementations for MatMirnaConfidence
 ##
 ##
 ##***********************************************************************
-setMethod("column", signature(object="MatmirnaConfidence", db="missing",
+setMethod("column", signature(object="MatMirnaConfidence", db="missing",
                               with.tables="missing"),
           function(object, db, with.tables, ...){
-              warning("Method column for object=MatmirnaConfidence, db=missing not implemented!")
+              warning("Method column for object=MatMirnaConfidence, db=missing not implemented!")
               return(NULL)
           })
-setMethod("column", signature(object="MatmirnaConfidence", db="MirhostDb",
+setMethod("column", signature(object="MatMirnaConfidence", db="MirhostDb",
                               with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="MatmirnaConfidence", db="MirhostDb",
+setMethod("column", signature(object="MatMirnaConfidence", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               if(!db@have_matmirna_confidence){
-                  warning("Can not use MatmirnaConfidence, as the database",
+                  warning("Can not use MatMirnaConfidence, as the database",
                           " doesn't have the required information.\n")
                   return(NULL)
               }
@@ -307,35 +307,35 @@ setMethod("column", signature(object="MatmirnaConfidence", db="MirhostDb",
                             use.names=FALSE))
           })
 ## that's the version without a database specified.
-setMethod("where", signature(object="MatmirnaConfidence", db="missing",
+setMethod("where", signature(object="MatMirnaConfidence", db="missing",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               ## without a database we're just calling the where of BasicFilter
               return(callNextMethod())
           }
           )
-setMethod("where", signature(object="MatmirnaConfidence", db="MirhostDb",
+setMethod("where", signature(object="MatMirnaConfidence", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="MatmirnaConfidence", db="MirhostDb",
+setMethod("where", signature(object="MatMirnaConfidence", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               if(!db@have_matmirna_confidence){
                   ## means we don't have that data available...
-                  warning("Can not use MatmirnaConfidence, as the database",
+                  warning("Can not use MatMirnaConfidence, as the database",
                           " doesn't have the required information.\n")
                   return(NULL)
               }
               ## check manually what values we've got. Thus far we support only
               ## confidence of value "high"
               if(object@value!="high")
-                  stop("MatmirnaConfidence can only take the value 'high' for",
+                  stop("MatMirnaConfidence can only take the value 'high' for",
                        " db being a MirhostDb database.")
               if(object@value == "high"){
-                  suff <- paste0(object@condition, 1)
+                  suff <- paste0(.condition(object), 1)
               }
               ## suff <- where(object) ## that returns the result from the BasicFilter...
               return(paste(column(object, db, with.tables=with.tables), suff))
@@ -344,28 +344,28 @@ setMethod("where", signature(object="MatmirnaConfidence", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for PremirnaConfidence
+##     Implementations for PreMirnaConfidence
 ##
 ##
 ##***********************************************************************
-setMethod("column", signature(object="PremirnaConfidence", db="missing",
+setMethod("column", signature(object="PreMirnaConfidence", db="missing",
                               with.tables="missing"),
           function(object, db, with.tables, ...){
-              warning("Method column for object=PremirnaConfidence,",
+              warning("Method column for object=PreMirnaConfidence,",
                       " db=missing not implemented!")
               return(NULL)
           })
-setMethod("column", signature(object="PremirnaConfidence", db="MirhostDb",
+setMethod("column", signature(object="PreMirnaConfidence", db="MirhostDb",
                               with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="PremirnaConfidence", db="MirhostDb",
+setMethod("column", signature(object="PreMirnaConfidence", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               if(!db@have_premirna_confidence){
-                  warning("Can not use PremirnaConfidence, as the database",
+                  warning("Can not use PreMirnaConfidence, as the database",
                           " doesn't have the required information.\n")
                   return(NULL)
               }
@@ -373,35 +373,35 @@ setMethod("column", signature(object="PremirnaConfidence", db="MirhostDb",
                             use.names=FALSE))
           })
 ## that's the version without a database specified.
-setMethod("where", signature(object="PremirnaConfidence", db="missing",
+setMethod("where", signature(object="PreMirnaConfidence", db="missing",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               ## without a database we're just calling the where of BasicFilter
               return(callNextMethod())
           }
           )
-setMethod("where", signature(object="PremirnaConfidence", db="MirhostDb",
+setMethod("where", signature(object="PreMirnaConfidence", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="PremirnaConfidence", db="MirhostDb",
+setMethod("where", signature(object="PreMirnaConfidence", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               if(!db@have_premirna_confidence){
                   ## means we don't have that data available...
-                  warning("Can not use PremirnaConfidence, as the database",
+                  warning("Can not use PreMirnaConfidence, as the database",
                           " doesn't have the required information.\n")
                   return(NULL)
               }
               ## check manually what values we've got. Thus far we support only
               ## confidence of value "high"
               if(object@value!="high")
-                  stop("PremirnaConfidence can only take the value 'high' for",
+                  stop("PreMirnaConfidence can only take the value 'high' for",
                        " db being a MirhostDb database.")
               if(object@value == "high"){
-                  suff <- paste0(object@condition, 1)
+                  suff <- paste0(.condition(object), 1)
               }
               ## suff <- where(object) ## that returns the result from the BasicFilter...
               return(paste(column(object, db, with.tables=with.tables), suff))
@@ -487,55 +487,55 @@ setMethod("where", signature(object="ReadCountFilter", db="MirhostDb",
               suff <- where(object) ## that returns the result from the BasicFilter...
               return(paste(column(object, db, with.tables=with.tables), suff))
           })
-setReplaceMethod("value", "ReadCountFilter", function(x, value){
-    ## Complain if value is not numeric.
-    if(!is.numeric(value)){
-        suppressWarnings(
-            numVal <- as.numeric(value)
-        )
-        if(is.na(numVal))
-            stop("ReadCountFilter only supports numeric values!")
-    }
-    x@value <- as.character(value)
-    return(x)
-})
+## setReplaceMethod("value", "ReadCountFilter", function(x, value){
+##     ## Complain if value is not numeric.
+##     if(!is.numeric(value)){
+##         suppressWarnings(
+##             numVal <- as.numeric(value)
+##         )
+##         if(is.na(numVal))
+##             stop("ReadCountFilter only supports numeric values!")
+##     }
+##     x@value <- as.character(value)
+##     return(x)
+## })
 
 ##***********************************************************************
 ##
-##     Implementations for PremirnaFilter.
+##     Implementations for PreMirnaFilter.
 ##
 ##***********************************************************************
 ##
 ##     public methods
 ##***********************************************************************
-setMethod("column", signature(object="PremirnaFilter", db="missing", with.tables="missing"),
+setMethod("column", signature(object="PreMirnaFilter", db="missing", with.tables="missing"),
           function(object, db, with.tables, ...){
-              warning("Method column for object=PremirnaFilter, db=missing not implemented!")
+              warning("Method column for object=PreMirnaFilter, db=missing not implemented!")
               return(NULL)
           })
-setMethod("column", signature(object="PremirnaFilter", db="MirhostDb", with.tables="missing"),
+setMethod("column", signature(object="PreMirnaFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="PremirnaFilter", db="MirhostDb", with.tables="character"),
+setMethod("column", signature(object="PreMirnaFilter", db="MirhostDb", with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, "pre_mirna_name", with.tables=with.tables),
                             use.names=FALSE))
           })
 ## that's the version without a database specified.
-setMethod("where", signature(object="PremirnaFilter", db="missing", with.tables="missing"),
+setMethod("where", signature(object="PreMirnaFilter", db="missing", with.tables="missing"),
           function(object, db, with.tables, ...){
               ## without a database we're just calling the where of BasicFilter
               return(callNextMethod())
           }
           )
-setMethod("where", signature(object="PremirnaFilter", db="MirhostDb", with.tables="missing"),
+setMethod("where", signature(object="PreMirnaFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="PremirnaFilter", db="MirhostDb", with.tables="character"),
+setMethod("where", signature(object="PreMirnaFilter", db="MirhostDb", with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- where(object) ## that returns the result from the BasicFilter...
               nc <- NULL
@@ -548,42 +548,42 @@ setMethod("where", signature(object="PremirnaFilter", db="MirhostDb", with.table
 
 ##***********************************************************************
 ##
-##     Implementations for PremirnaidFilter.
+##     Implementations for PreMirnaIdFilter.
 ##
 ##***********************************************************************
 ##
 ##     public methods
 ##***********************************************************************
-setMethod("column", signature(object="PremirnaidFilter", db="missing", with.tables="missing"),
+setMethod("column", signature(object="PreMirnaIdFilter", db="missing", with.tables="missing"),
           function(object, db, with.tables, ...){
-              warning("Method column for object=PremirnaidFilter, db=missing not implemented!")
+              warning("Method column for object=PreMirnaIdFilter, db=missing not implemented!")
               return(NA)
           })
-setMethod("column", signature(object="PremirnaidFilter", db="MirhostDb", with.tables="missing"),
+setMethod("column", signature(object="PreMirnaIdFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="PremirnaidFilter", db="MirhostDb",
+setMethod("column", signature(object="PreMirnaIdFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, "pre_mirna_id", with.tables=with.tables),
                             use.names=FALSE))
           })
 ## that's the version without a database specified.
-setMethod("where", signature(object="PremirnaidFilter", db="missing",
+setMethod("where", signature(object="PreMirnaIdFilter", db="missing",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               return(callNextMethod())
           }
           )
-setMethod("where", signature(object="PremirnaidFilter", db="MirhostDb",
+setMethod("where", signature(object="PreMirnaIdFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="PremirnaidFilter", db="MirhostDb",
+setMethod("where", signature(object="PreMirnaIdFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- where(object)
@@ -593,42 +593,42 @@ setMethod("where", signature(object="PremirnaidFilter", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for MatmirnaFilter.
+##     Implementations for MatMirnaFilter.
 ##
 ##***********************************************************************
 ##
 ##     public methods
 ##***********************************************************************
-setMethod("column", signature(object="MatmirnaFilter", db="missing", with.tables="missing"),
+setMethod("column", signature(object="MatMirnaFilter", db="missing", with.tables="missing"),
           function(object, db, with.tables, ...){
-              warning("Method column for object=MatmirnaFilter, db=missing not implemented!")
+              warning("Method column for object=MatMirnaFilter, db=missing not implemented!")
               return(NA)
           })
-setMethod("column", signature(object="MatmirnaFilter", db="MirhostDb",
+setMethod("column", signature(object="MatMirnaFilter", db="MirhostDb",
                               with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="MatmirnaFilter", db="MirhostDb",
+setMethod("column", signature(object="MatMirnaFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, "mat_mirna_name", with.tables=with.tables),
                             use.names=FALSE))
           })
 ## that's the version without a database specified.
-setMethod("where", signature(object="MatmirnaFilter", db="missing", with.tables="missing"),
+setMethod("where", signature(object="MatMirnaFilter", db="missing", with.tables="missing"),
           function(object, db, with.tables, ...){
               return(callNextMethod())
           }
           )
-setMethod("where", signature(object="MatmirnaFilter", db="MirhostDb",
+setMethod("where", signature(object="MatMirnaFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- names(listTables(db))
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="MatmirnaFilter", db="MirhostDb",
+setMethod("where", signature(object="MatMirnaFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- where(object)
@@ -643,43 +643,43 @@ setMethod("where", signature(object="MatmirnaFilter", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for MatmirnaidFilter.
+##     Implementations for MatMirnaIdFilter.
 ##
 ##***********************************************************************
 ##
 ##     public methods
 ##***********************************************************************
-setMethod("column", signature(object="MatmirnaidFilter", db="missing", with.tables="missing"),
+setMethod("column", signature(object="MatMirnaIdFilter", db="missing", with.tables="missing"),
           function(object, db, with.tables, ...){
-              warning("Method column for object=MatmirnaidFilter, db=missing not implemented!")
+              warning("Method column for object=MatMirnaIdFilter, db=missing not implemented!")
               return(NA)
           })
-setMethod("column", signature(object="MatmirnaidFilter", db="MirhostDb",
+setMethod("column", signature(object="MatMirnaIdFilter", db="MirhostDb",
                               with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(column(object, db, tn))
           })
-setMethod("column", signature(object="MatmirnaidFilter", db="MirhostDb",
+setMethod("column", signature(object="MatMirnaIdFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, "mat_mirna_id", with.tables=with.tables),
                             use.names=FALSE))
           })
 ## that's the version without a database specified.
-setMethod("where", signature(object="MatmirnaidFilter", db="missing",
+setMethod("where", signature(object="MatMirnaIdFilter", db="missing",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               return(callNextMethod())
           }
           )
-setMethod("where", signature(object="MatmirnaidFilter", db="MirhostDb",
+setMethod("where", signature(object="MatMirnaIdFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="MatmirnaidFilter", db="MirhostDb",
+setMethod("where", signature(object="MatMirnaIdFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- where(object)
@@ -748,43 +748,43 @@ setMethod("where", signature(object="MirfamFilter", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for MirfamidFilter.
+##     Implementations for MirfamIdFilter.
 ##
 ##***********************************************************************
 ##
 ##     public methods
 ##***********************************************************************
-setMethod("column", signature(object="MirfamidFilter", db="missing", with.tables="missing"),
+setMethod("column", signature(object="MirfamIdFilter", db="missing", with.tables="missing"),
           function(object, db, with.tables, ...){
-              warning("Method column for object=MirfamidFilter, db=missing not implemented!")
+              warning("Method column for object=MirfamIdFilter, db=missing not implemented!")
               return(NA)
           })
-setMethod("column", signature(object="MirfamidFilter", db="MirhostDb",
+setMethod("column", signature(object="MirfamIdFilter", db="MirhostDb",
                               with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="MirfamidFilter", db="MirhostDb",
+setMethod("column", signature(object="MirfamIdFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, "mirfam_id", with.tables=with.tables),
                             use.names=FALSE))
           })
 ## that's the version without a database specified.
-setMethod("where", signature(object="MirfamidFilter", db="missing",
+setMethod("where", signature(object="MirfamIdFilter", db="missing",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               return(callNextMethod())
           }
           )
-setMethod("where", signature(object="MirfamidFilter", db="MirhostDb",
+setMethod("where", signature(object="MirfamIdFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="MirfamidFilter", db="MirhostDb",
+setMethod("where", signature(object="MirfamIdFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- where(object)
@@ -799,42 +799,86 @@ setMethod("where", signature(object="MirfamidFilter", db="MirhostDb",
 ##     Classes imported from ensembldb
 ##
 ##***********************************************************************
-setMethod("where", signature(object="BasicFilter", db="MirhostDb", with.tables="missing"),
+setMethod("where", signature(object="AnnotationFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               ## just call the plain method without database.
-              return(ensembldb:::.where(object))
+              .where(object)
           })
-setMethod("where", signature(object="BasicFilter", db="MirhostDb", with.tables="character"),
+setMethod("where", signature(object="AnnotationFilter", db="MirhostDb", with.tables="character"),
           function(object, db, with.tables, ...){
               ## just call the plain method without database.
-              return(ensembldb:::.where(object))
+              .where(object)
+          })
+setMethod("where", signature(object = "AnnotationFilter", db = "missing",
+                             with.tables = "missing"),
+          function(object, db, with.tabbles, ...) {
+              .where(object)
+          })
+setMethod("column", signature(object = "AnnotationFilter", db = "missing",
+                              with.tables = "missing"),
+          function(object, db, with.tables, ...){
+              field(object)
           })
 
+.where <- function(x) {
+    ## field condition value
+    paste0(.condition(x), .value(x))
+}
+.condition <- function(x) {
+    cond <- condition(x)
+    if (length(unique(value(x))) > 1) {
+        if (cond == "==")
+            cond <- "in "
+        if (cond == "!=")
+            cond <- "not in "
+    }
+    if (cond == "==")
+        cond <- "="
+    if (cond %in% c("startsWith", "endsWith", "contains"))
+        cond <- "like "
+    cond    
+}
+.value <- function(x) {
+    vals <- unique(value(x))
+    if (is(x, "CharacterFilter")) {
+        vals <- sQuote(gsub(unique(vals), pattern = "'", replacement = "''"))
+    }
+    if (length(vals) > 1)
+        vals <- paste0("(",  paste0(vals, collapse = ","), ")")
+    ## Process the like/startsWith/endsWith
+    if (condition(x) == "startsWith")
+        vals <- paste0("'", unique(x@value), "%'")
+    if (condition(x) == "endsWith")
+        vals <- paste0("'%", unique(x@value), "'")
+    if (condition(x) == "contains")
+        vals <- paste0("'%", unique(x@value), "%'")
+    vals
+}
 
 ##***********************************************************************
 ##
-##     Implementations for GeneidFilter.
+##     Implementations for GeneIdFilter.
 ##
-##     overwriting/implementation of methods for GeneidFilter defined
+##     overwriting/implementation of methods for GeneIdFilter defined
 ##     in makeEnsemblDb to be applicable in mirhostgenesdb
 ##
 ##***********************************************************************
-setMethod("column", signature(object="GeneidFilter", db="MirhostDb", with.tables="missing"),
+setMethod("column", signature(object="GeneIdFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="GeneidFilter", db="MirhostDb", with.tables="character"),
+setMethod("column", signature(object="GeneIdFilter", db="MirhostDb", with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, column(object), with.tables=with.tables),
                             use.names=FALSE))
           })
-setMethod("where", signature(object="GeneidFilter", db="MirhostDb", with.tables="missing"),
+setMethod("where", signature(object="GeneIdFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="GeneidFilter", db="MirhostDb", with.tables="character"),
+setMethod("where", signature(object="GeneIdFilter", db="MirhostDb", with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- callNextMethod()
               return(paste(column(object, db, with.tables=with.tables), suff))
@@ -859,6 +903,11 @@ setMethod("column", signature(object="GenenameFilter", db="MirhostDb", with.tabl
               return(unlist(prefixColumns(db, column(object), with.tables=with.tables),
                             use.names=FALSE))
           })
+setMethod("column", signature(object = "GenenameFilter", db = "missing",
+                              with.tables = "missing"),
+          function(object, db, with.tables, ...)
+              "gene_name"
+          )
 setMethod("where", signature(object="GenenameFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables,...){
               tn <- tableNames(db)
@@ -873,30 +922,30 @@ setMethod("where", signature(object="GenenameFilter", db="MirhostDb", with.table
 
 ##***********************************************************************
 ##
-##     Implementations for GenebiotypeFilter.
+##     Implementations for GeneBiotypeFilter.
 ##
-##     overwriting/implementation of methods for GenebiotypeFilter defined
+##     overwriting/implementation of methods for GeneBiotypeFilter defined
 ##     in makeEnsemblDb to be applicable in mirhostgenesdb
 ##
 ##***********************************************************************
-setMethod("column", signature(object="GenebiotypeFilter", db="MirhostDb", with.tables="missing"),
+setMethod("column", signature(object="GeneBiotypeFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="GenebiotypeFilter", db="MirhostDb",
+setMethod("column", signature(object="GeneBiotypeFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, column(object), with.tables=with.tables),
                             use.names=FALSE))
           })
-setMethod("where", signature(object="GenebiotypeFilter", db="MirhostDb",
+setMethod("where", signature(object="GeneBiotypeFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="GenebiotypeFilter", db="MirhostDb",
+setMethod("where", signature(object="GeneBiotypeFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- callNextMethod()
@@ -907,30 +956,30 @@ setMethod("where", signature(object="GenebiotypeFilter", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for TxidFilter.
+##     Implementations for TxIdFilter.
 ##
-##     overwriting/implementation of methods for TxidFilter defined
+##     overwriting/implementation of methods for TxIdFilter defined
 ##     in makeEnsemblDb to be applicable in mirhostgenesdb
 ##
 ##***********************************************************************
-setMethod("column", signature(object="TxidFilter", db="MirhostDb", with.tables="missing"),
+setMethod("column", signature(object="TxIdFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="TxidFilter", db="MirhostDb",
+setMethod("column", signature(object="TxIdFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, column(object), with.tables=with.tables),
                             use.names=FALSE))
           })
-setMethod("where", signature(object="TxidFilter", db="MirhostDb",
+setMethod("where", signature(object="TxIdFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="TxidFilter", db="MirhostDb",
+setMethod("where", signature(object="TxIdFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- callNextMethod()
@@ -940,30 +989,30 @@ setMethod("where", signature(object="TxidFilter", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for TxbiotypeFilter.
+##     Implementations for TxBiotypeFilter.
 ##
-##     overwriting/implementation of methods for TxbiotypeFilter defined
+##     overwriting/implementation of methods for TxBiotypeFilter defined
 ##     in makeEnsemblDb to be applicable in mirhostgenesdb
 ##
 ##***********************************************************************
-setMethod("column", signature(object="TxbiotypeFilter", db="MirhostDb", with.tables="missing"),
+setMethod("column", signature(object="TxBiotypeFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="TxbiotypeFilter", db="MirhostDb",
+setMethod("column", signature(object="TxBiotypeFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, column(object), with.tables=with.tables),
                             use.names=FALSE))
           })
-setMethod("where", signature(object="TxbiotypeFilter", db="MirhostDb",
+setMethod("where", signature(object="TxBiotypeFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="TxbiotypeFilter", db="MirhostDb",
+setMethod("where", signature(object="TxBiotypeFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- callNextMethod()
@@ -973,30 +1022,30 @@ setMethod("where", signature(object="TxbiotypeFilter", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for ExonidFilter.
+##     Implementations for ExonIdFilter.
 ##
-##     overwriting/implementation of methods for ExonidFilter defined
+##     overwriting/implementation of methods for ExonIdFilter defined
 ##     in makeEnsemblDb to be applicable in mirhostgenesdb
 ##
 ##***********************************************************************
-setMethod("column", signature(object="ExonidFilter", db="MirhostDb", with.tables="missing"),
+setMethod("column", signature(object="ExonIdFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables,  ...){
               tn <- tableNames(db)
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="ExonidFilter", db="MirhostDb",
+setMethod("column", signature(object="ExonIdFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables,  ...){
               return(unlist(prefixColumns(db, column(object), with.tables=with.tables),
                             use.names=FALSE))
           })
-setMethod("where", signature(object="ExonidFilter", db="MirhostDb",
+setMethod("where", signature(object="ExonIdFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="ExonidFilter", db="MirhostDb",
+setMethod("where", signature(object="ExonIdFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- callNextMethod()
@@ -1006,30 +1055,30 @@ setMethod("where", signature(object="ExonidFilter", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for SeqnameFilter.
+##     Implementations for SeqNameFilter.
 ##
-##     overwriting/implementation of methods for SeqnameFilter defined
+##     overwriting/implementation of methods for SeqNameFilter defined
 ##     in makeEnsemblDb to be applicable in mirhostgenesdb
 ##
 ##***********************************************************************
-setMethod("column", signature(object="SeqnameFilter", db="MirhostDb", with.tables="missing"),
+setMethod("column", signature(object="SeqNameFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="SeqnameFilter", db="MirhostDb",
+setMethod("column", signature(object="SeqNameFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, column(object), with.tables=with.tables),
                             use.names=FALSE))
           })
-setMethod("where", signature(object="SeqnameFilter", db="MirhostDb",
+setMethod("where", signature(object="SeqNameFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="SeqnameFilter", db="MirhostDb",
+setMethod("where", signature(object="SeqNameFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- callNextMethod()
@@ -1039,30 +1088,30 @@ setMethod("where", signature(object="SeqnameFilter", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for SeqstrandFilter.
+##     Implementations for SeqStrandFilter.
 ##
-##     overwriting/implementation of methods for SeqstrandFilter defined
+##     overwriting/implementation of methods for SeqStrandFilter defined
 ##     in makeEnsemblDb to be applicable in mirhostgenesdb
 ##
 ##***********************************************************************
-setMethod("column", signature(object="SeqstrandFilter", db="MirhostDb", with.tables="missing"),
+setMethod("column", signature(object="SeqStrandFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="SeqstrandFilter", db="MirhostDb",
+setMethod("column", signature(object="SeqStrandFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               return(unlist(prefixColumns(db, column(object), with.tables=with.tables),
                             use.names=FALSE))
           })
-setMethod("where", signature(object="SeqstrandFilter", db="MirhostDb",
+setMethod("where", signature(object="SeqStrandFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="SeqstrandFilter", db="MirhostDb",
+setMethod("where", signature(object="SeqStrandFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               suff <- callNextMethod()
@@ -1072,18 +1121,18 @@ setMethod("where", signature(object="SeqstrandFilter", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for SeqstartFilter.
+##     Implementations for SeqStartFilter.
 ##
-##     overwriting/implementation of methods for SeqstartFilter defined
+##     overwriting/implementation of methods for SeqStartFilter defined
 ##     in makeEnsemblDb to be applicable in mirhostgenesdb
 ##
 ##***********************************************************************
-setMethod("column", signature(object="SeqstartFilter", db="MirhostDb", with.tables="missing"),
+setMethod("column", signature(object="SeqStartFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="SeqstartFilter", db="MirhostDb",
+setMethod("column", signature(object="SeqStartFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               feat <- object@feature
@@ -1093,13 +1142,18 @@ setMethod("column", signature(object="SeqstartFilter", db="MirhostDb",
                                           with.tables=with.tables),
                             use.names=FALSE))
           })
-setMethod("where", signature(object="SeqstartFilter", db="MirhostDb",
+setMethod("column", signature(object = "SeqStartFilter", db = "missing",
+                              with.tables = "missing"),
+          function(object, db, with.tables, ...) {
+              paste0(object@feature, "_seq_start")
+          })
+setMethod("where", signature(object="SeqStartFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="SeqstartFilter", db="MirhostDb",
+setMethod("where", signature(object="SeqStartFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               return(paste0(column(object, db, with.tables=with.tables),
@@ -1109,18 +1163,18 @@ setMethod("where", signature(object="SeqstartFilter", db="MirhostDb",
 
 ##***********************************************************************
 ##
-##     Implementations for SeqendFilter.
+##     Implementations for SeqEndFilter.
 ##
-##     overwriting/implementation of methods for SeqendFilter defined
+##     overwriting/implementation of methods for SeqEndFilter defined
 ##     in makeEnsemblDb to be applicable in mirhostgenesdb
 ##
 ##***********************************************************************
-setMethod("column", signature(object="SeqendFilter", db="MirhostDb", with.tables="missing"),
+setMethod("column", signature(object="SeqEndFilter", db="MirhostDb", with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(column(object, db, with.tables=tn))
           })
-setMethod("column", signature(object="SeqendFilter", db="MirhostDb",
+setMethod("column", signature(object="SeqEndFilter", db="MirhostDb",
                               with.tables="character"),
           function(object, db, with.tables, ...){
               feat <- object@feature
@@ -1130,13 +1184,18 @@ setMethod("column", signature(object="SeqendFilter", db="MirhostDb",
                                           with.tables=with.tables),
                             use.names=FALSE))
           })
-setMethod("where", signature(object="SeqendFilter", db="MirhostDb",
+setMethod("column", signature(object = "SeqEndFilter", db = "missing",
+                              with.tables = "missing"),
+          function(object, db, with.tables, ...) {
+              paste0(object@feature, "_seq_end")
+          })
+setMethod("where", signature(object="SeqEndFilter", db="MirhostDb",
                              with.tables="missing"),
           function(object, db, with.tables, ...){
               tn <- tableNames(db)
               return(where(object, db, with.tables=tn))
           })
-setMethod("where", signature(object="SeqendFilter", db="MirhostDb",
+setMethod("where", signature(object="SeqEndFilter", db="MirhostDb",
                              with.tables="character"),
           function(object, db, with.tables, ...){
               return(paste0(column(object, db, with.tables=with.tables),

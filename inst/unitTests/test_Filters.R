@@ -5,7 +5,7 @@
 library("MirhostDb.Hsapiens.v75.v20")
 MHDB <- MirhostDb.Hsapiens.v75.v20
 
-## testing GeneidFilter
+## testing GeneIdFilter
 test_PositionFilter <- function(){
     Filt <- PositionFilter("exonic")
     ## check if column matches the present database.
@@ -17,107 +17,108 @@ test_PositionFilter <- function(){
 
     ## value
     checkEquals(value(Filt), "intronic")
-    value(Filt) <- "exonic"
+    Filt <- PositionFilter("exonic")
     checkEquals(value(Filt), "exonic")
+
     ## something wrong; allow setting the value, but throw an error
     ## if we're calling it for MHDB.
-    value(Filt) <- "something"
-    checkEquals(value(Filt), "something")
-    checkException(where(Filt, MHDB))
+    checkException(PositionFilter("something"))
+    res <- where(Filt)
+    res <- where(Filt, MHDB)
     ## condition
-    condition(Filt)
-    condition(Filt) <- "="
+    checkEquals(condition(Filt), "==")
 }
 
-test_PremirnaFilter <- function(){
-    Filt <- PremirnaFilter("a")
+test_PreMirnaFilter <- function(){
+    Filt <- PreMirnaFilter("a")
     checkEquals(column(Filt, MHDB), "pre_mirna.pre_mirna_name")
 
     ## condition
-    checkException(condition(Filt) <- ">")
+    checkException(PreMirnaFilter("a", condition = ">"))
     condition(Filt)
 
     ## Value
-    value(Filt)
-    value(Filt) <- c("a", "b")
-    checkEquals(condition(Filt), "in")
-    condition(Filt) <- "!="
-    Filt
-    checkEquals(condition(Filt), "not in")
+    checkEquals(value(Filt), "a")
+    Filt <- PreMirnaFilter(c("a", "b"))
+    checkEquals(condition(Filt), "==")
+    checkEquals(where(Filt), "in ('a','b')")
+    Filt <- PreMirnaFilter(c("a", "b"), "!=")
+    checkEquals(condition(Filt), "!=")
+    checkEquals(where(Filt), "not in ('a','b')")
 
     where(Filt, MHDB)
 }
 
-test_PremirnaidFilter <- function(){
-    Filt <- PremirnaidFilter("a")
+test_PreMirnaIdFilter <- function(){
+    Filt <- PreMirnaIdFilter("a")
     checkEquals(column(Filt, MHDB), "pre_mirna.pre_mirna_id")
     value(Filt)
-    value(Filt) <- c("a", "b")
-    checkEquals(condition(Filt), "in")
-    condition(Filt) <- "!="
-    Filt
-    checkEquals(condition(Filt), "not in")
+    Filt <- PreMirnaIdFilter(c("a", "b"))
+    checkEquals(condition(Filt), "==")
+    checkEquals(where(Filt), "in ('a','b')")
+    Filt <- PreMirnaIdFilter(c("a", "b"), condition = "!=")
+    checkEquals(where(Filt), "not in ('a','b')")
 
     where(Filt, MHDB)
 }
 
-test_MatmirnaFilter <- function(){
-    Filt <- MatmirnaFilter("a")
+test_MatMirnaFilter <- function(){
+    Filt <- MatMirnaFilter("a")
     checkEquals(column(Filt, MHDB), "mat_mirna.mat_mirna_name")
-    value(Filt)
-    value(Filt) <- c("a", "b")
-    checkEquals(condition(Filt), "in")
-    condition(Filt) <- "!="
-    Filt
-    checkEquals(condition(Filt), "not in")
+    checkEquals(value(Filt), "a")
+    Filt <- MatMirnaFilter(c("a", "b"))
+    checkEquals(condition(Filt), "==")
+    checkEquals(where(Filt), "in ('a','b')")
+    Filt <- MatMirnaFilter(c("a", "b"), "!=")
+    checkEquals(where(Filt), "not in ('a','b')")
 
-    where(Filt, MHDB)
+    checkEquals(where(Filt, MHDB), "mat_mirna.mat_mirna_name not in ('a','b')")
 }
 
-test_MatmirnaidFilter <- function(){
-    Filt <- MatmirnaidFilter("a")
+test_MatMirnaIdFilter <- function(){
+    Filt <- MatMirnaIdFilter("a")
     checkEquals(column(Filt, MHDB), "mat_mirna.mat_mirna_id")
-    value(Filt)
-    value(Filt) <- c("a", "b")
-    checkEquals(condition(Filt), "in")
-    condition(Filt) <- "!="
-    Filt
-    checkEquals(condition(Filt), "not in")
+    checkEquals(value(Filt), "a")
+    Filt <- MatMirnaIdFilter(c("a", "b"))
+    checkEquals(condition(Filt), "==")
+    checkEquals(where(Filt), "in ('a','b')")
+    Filt <- MatMirnaIdFilter(c("a", "b"), "!=")
+    checkEquals(where(Filt), "not in ('a','b')")
 
-    where(Filt, MHDB)
+    checkEquals(where(Filt, MHDB), "mat_mirna.mat_mirna_id not in ('a','b')")
 }
 
 test_MirfamFilter <- function(){
     Filt <- MirfamFilter("a")
     checkEquals(column(Filt, MHDB), "mirfam.mirfam_name")
-    value(Filt)
-    value(Filt) <- c("a", "b")
-    checkEquals(condition(Filt), "in")
-    condition(Filt) <- "!="
-    Filt
-    checkEquals(condition(Filt), "not in")
+    checkEquals(value(Filt), "a")
+    Filt <- MirfamFilter(c("a", "b"))
+    checkEquals(condition(Filt), "==")
+    checkEquals(where(Filt), "in ('a','b')")
+    Filt <- MirfamFilter(c("a", "b"), "!=")
+    checkEquals(where(Filt), "not in ('a','b')")
 
-    where(Filt, MHDB)
+    checkEquals(where(Filt, MHDB), "mirfam.mirfam_name not in ('a','b')")
 }
 
-test_MirfamidFilter <- function(){
-    Filt <- MirfamidFilter("a")
+test_MirfamIdFilter <- function(){
+    Filt <- MirfamIdFilter("a")
     checkEquals(column(Filt, MHDB), "mirfam.mirfam_id")
-    value(Filt)
-    value(Filt) <- c("a", "b")
-    checkEquals(condition(Filt), "in")
-    condition(Filt) <- "!="
-    Filt
-    checkEquals(condition(Filt), "not in")
+    checkEquals(value(Filt), "a")
+    Filt <- MirfamIdFilter(c("a", "b"))
+    checkEquals(where(Filt), "in ('a','b')")
+    Filt <- MirfamIdFilter(c("a", "b"), "!=")
+    checkEquals(where(Filt), "not in ('a','b')")
 
-    where(Filt, MHDB)
+    checkEquals(where(Filt, MHDB), "mirfam.mirfam_id not in ('a','b')")
 }
 
-test_AlignmentidFilter <- function(){
-    Filt <- AlignmentidFilter(1:10)
-    checkEquals(condition(Filt), "in")
-    Filt <- AlignmentidFilter(1:10, condition="!=")
-    checkEquals(condition(Filt), "not in")
+test_AlignmentIdFilter <- function(){
+    Filt <- AlignmentIdFilter(1:10)
+    checkEquals(condition(Filt), "==")
+    checkEquals(where(Filt), "in ('1','2','3','4','5','6','7','8','9','10')")
+    Filt <- AlignmentIdFilter(1:10, condition="!=")
+    checkEquals(condition(Filt), "!=")
     checkEquals(column(Filt, MHDB), "pre_mirna.pre_mirna_algn_id")
 }
 
@@ -126,53 +127,50 @@ test_AlignmentidFilter <- function(){
 ##     checkEquals(column(Filt, MHDB), "array_features.array_id")
 ## }
 
-## test_ProbesetidFilter <- function(){
-##     Filt <- ProbesetidFilter("a")
+## test_ProbesetIdFilter <- function(){
+##     Filt <- ProbesetIdFilter("a")
 ##     checkEquals(column(Filt, MHDB), "array_features.feature_id")
 ## }
 
 test_DatabaseFilter <- function(){
     Filt <- DatabaseFilter("a")
     checkEquals(column(Filt, MHDB), "host_gene.database")
-    value(Filt)
-    value(Filt) <- c("a", "b")
-    checkEquals(condition(Filt), "in")
-    condition(Filt) <- "!="
-    Filt
-    checkEquals(condition(Filt), "not in")
+    checkEquals(value(Filt), "a")
+    Filt <- DatabaseFilter(c("a", "b"))
+    checkEquals(where(Filt), "in ('a','b')")
+    Filt <- DatabaseFilter(c("a", "b"), "!=")
+    checkEquals(where(Filt), "not in ('a','b')")
 
-    where(Filt, MHDB)
+    checkEquals(where(Filt, MHDB), "host_gene.database not in ('a','b')")
 }
 
-test_MatmirnaConfidence <- function(){
-    Conf <- MatmirnaConfidence(value="other")
+test_MatMirnaConfidence <- function(){
+    Conf <- MatMirnaConfidence(value="other")
     ## we expect an error for where and MirhostDb.
-    checkEquals(where(Conf), "= 'other'")
+    checkEquals(where(Conf), "='other'")
     checkException(where(Conf, MHDB))
     ## doing it the "right" way:
-    Conf <- MatmirnaConfidence(value="high")
+    Conf <- MatMirnaConfidence(value="high")
     checkEquals(where(Conf, MHDB), "mat_mirna.mat_mirna_confidence =1")
 
-    value(Conf) <- "agkgnfk"
-    checkException(where(Conf, MHDB))
 }
 
-test_PremirnaConfidence <- function(){
-    Conf <- PremirnaConfidence(value="other")
+test_PreMirnaConfidence <- function(){
+    Conf <- PreMirnaConfidence(value="other")
     ## we expect an error for where and MirhostDb.
-    checkEquals(where(Conf), "= 'other'")
+    checkEquals(where(Conf), "='other'")
     checkException(where(Conf, MHDB))
     ## doing it the "right" way:
-    Conf <- PremirnaConfidence(value="high")
+    Conf <- PreMirnaConfidence(value="high")
     checkEquals(where(Conf, MHDB), "pre_mirna.pre_mirna_confidence =1")
 }
 
 test_ReadCountFilter <- function(){
     rcf <- ReadCountFilter(value=10)
-    checkEquals(where(rcf), "> 10")
+    checkEquals(where(rcf), ">10")
     ## throw an error
     checkException(ReadCountFilter(value="a"))
-    checkEquals(where(rcf, MHDB), "pre_mirna.pre_mirna_read_count > 10")
+    checkEquals(where(rcf, MHDB), "pre_mirna.pre_mirna_read_count >10")
     checkEquals(column(rcf, MHDB), "pre_mirna.pre_mirna_read_count")
 
     ## use a not allowed value for of
@@ -181,13 +179,10 @@ test_ReadCountFilter <- function(){
 
     ## mat_mirna
     rcf <- ReadCountFilter(value="10", of="mat_mirna")
-    checkEquals(where(rcf, MHDB), "mat_mirna.mat_mirna_read_count > 10")
+    checkEquals(where(rcf, MHDB), "mat_mirna.mat_mirna_read_count >10")
     checkEquals(column(rcf, MHDB), "mat_mirna.mat_mirna_read_count")
 
-    value(rcf)
-    value(rcf) <- 20
-
-    checkException(value(rcf) <- "dfdsf")
+    checkEquals(value(rcf), 10L)
 }
 
 

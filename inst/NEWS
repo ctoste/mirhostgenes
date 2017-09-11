@@ -1,5 +1,7 @@
-CHANGES IN VERSION 0.99.1
+CHANGES IN VERSION 0.99.10
 --------------
+
+o Use filter definitions from the AnnotationFilter package.
 
 
 CHANGES IN VERSION 0.99.0

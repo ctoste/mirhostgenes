@@ -1,8 +1,6 @@
 ## testing basic functionality of the package.
 ## these function just call the methods, but do not test the
 ## results.
-detach("package:MirhostDb.Hsapiens.v75.v20", unload=TRUE)
-detach("package:mirhostgenes", unload=TRUE)
 
 library("MirhostDb.Hsapiens.v75.v20")
 DB <- MirhostDb.Hsapiens.v75.v20
@@ -10,11 +8,11 @@ DB <- MirhostDb.Hsapiens.v75.v20
 
 test_matmirnas <- function(){
     ## get all mature miRNAs
-    MM <- matmirnas(DB)
+    checkTrue(nrow(matmirnas(DB)) > 1)
     ## get mat_mirna and pre_mirna entries for mature miRNA MIMAT0000062
     MM <- matmirnas(DB, columns=unique(c(listColumns(DB, "mat_mirna"),
                              listColumns(DB, "pre_mirna"))),
-                    filter=MatmirnaidFilter("MIMAT0000062"))
+                    filter=MatMirnaIdFilter("MIMAT0000062"))
     checkEquals(unique(MM$mat_mirna_id), "MIMAT0000062")
     ## Test whether the mature miRNA sequences are correctly calculated.
     MM <- matmirnas(DB, columns=c("mat_mirna_id", "pre_mirna_name",
@@ -103,7 +101,7 @@ test_hostgenes <- function(){
 
 test_hosttx <- function(){
     HT <- hosttx(DB)
-    HT <- hosttx(DB, filter=list(TxbiotypeFilter("miRNA")))
+    HT <- hosttx(DB, filter=list(TxBiotypeFilter("miRNA")))
     HT <- hosttxBy(DB, by="host_gene")
 
     ## Check columns, and make sure we're returning just those columns that
@@ -151,10 +149,10 @@ test_probesets <- function(){
 
 test_confidence_filter <- function(){
     if(DB@have_premirna_confidence){
-        highPres <- premirnas(DB, filter=PremirnaConfidence())
+        highPres <- premirnas(DB, filter=PreMirnaConfidence())
     }
     if(DB@have_matmirna_confidence){
-        highMats <- matmirnas(DB, filter=MatmirnaConfidence())
+        highMats <- matmirnas(DB, filter=MatMirnaConfidence())
     }
 }
 

@@ -409,11 +409,14 @@ addRequiredTables <- function(x, tab){
 ## just to add another layer; basically just calls buildQuery and executes the query
 ## return.all.columns: returns also columns added because of the filters.
 .getWhat <- function(x, columns, filter=list(), order.by="", order.type="asc",
-                     group.by, skip.order.check=FALSE, join="join", start.table, return.all.columns=TRUE){
+                     group.by, skip.order.check=FALSE, join="join", start.table,
+                     return.all.columns=TRUE){
     Q <- .buildQuery(x=x, columns=columns, filter=filter, order.by=order.by,
                      order.type=order.type, group.by=group.by,
                      skip.order.check=skip.order.check, join=join,
-                     start.table=start.table, return.all.columns=return.all.columns)
+                     start.table=start.table,
+                     return.all.columns=return.all.columns)
+    ## cat("Query: ", Q, "\n")
     return(dbGetQuery(x@con, Q))
 }
 

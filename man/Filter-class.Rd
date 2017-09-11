@@ -1,172 +1,172 @@
 \name{PositionFilter-class}
 \Rdversion{1.1}
 \docType{class}
-\alias{AlignmentidFilter-class}
+\alias{AlignmentIdFilter-class}
 \alias{ArrayFilter-class}
 \alias{DatabaseFilter-class}
 \alias{PositionFilter-class}
-\alias{PremirnaConfidence-class}
-\alias{PremirnaFilter-class}
-\alias{PremirnaidFilter-class}
-\alias{ProbesetidFilter-class}
-\alias{MatmirnaConfidence-class}
-\alias{MatmirnaFilter-class}
-\alias{MatmirnaidFilter-class}
+\alias{PreMirnaConfidence-class}
+\alias{PreMirnaFilter-class}
+\alias{PreMirnaIdFilter-class}
+\alias{ProbesetIdFilter-class}
+\alias{MatMirnaConfidence-class}
+\alias{MatMirnaFilter-class}
+\alias{MatMirnaIdFilter-class}
 \alias{MirfamFilter-class}
-\alias{MirfamidFilter-class}
+\alias{MirfamIdFilter-class}
 \alias{ReadCountFilter-class}
 % column, Filter, MirhostDb, missing
-\alias{column,AlignmentidFilter,MirhostDb,missing-method}
+\alias{column,AlignmentIdFilter,MirhostDb,missing-method}
 \alias{column,ArrayFilter,MirhostDb,missing-method}
 \alias{column,DatabaseFilter,MirhostDb,missing-method}
-\alias{column,MatmirnaConfidence,MirhostDb,missing-method}
-\alias{column,MatmirnaFilter,MirhostDb,missing-method}
-\alias{column,MatmirnaidFilter,MirhostDb,missing-method}
+\alias{column,MatMirnaConfidence,MirhostDb,missing-method}
+\alias{column,MatMirnaFilter,MirhostDb,missing-method}
+\alias{column,MatMirnaIdFilter,MirhostDb,missing-method}
 \alias{column,MirfamFilter,MirhostDb,missing-method}
-\alias{column,MirfamidFilter,MirhostDb,missing-method}
+\alias{column,MirfamIdFilter,MirhostDb,missing-method}
 \alias{column,PositionFilter,MirhostDb,missing-method}
-\alias{column,PremirnaConfidence,MirhostDb,missing-method}
-\alias{column,PremirnaFilter,MirhostDb,missing-method}
-\alias{column,PremirnaidFilter,MirhostDb,missing-method}
-\alias{column,ProbesetidFilter,MirhostDb,missing-method}
+\alias{column,PreMirnaConfidence,MirhostDb,missing-method}
+\alias{column,PreMirnaFilter,MirhostDb,missing-method}
+\alias{column,PreMirnaIdFilter,MirhostDb,missing-method}
+\alias{column,ProbesetIdFilter,MirhostDb,missing-method}
 \alias{column,ReadCountFilter,MirhostDb,missing-method}
 % where, Filter, MirhostDb, missing
-\alias{where,AlignmentidFilter,MirhostDb,missing-method}
+\alias{where,AlignmentIdFilter,MirhostDb,missing-method}
 \alias{where,ArrayFilter,MirhostDb,missing-method}
 \alias{where,DatabaseFilter,MirhostDb,missing-method}
-\alias{where,MatmirnaConfidence,MirhostDb,missing-method}
-\alias{where,MatmirnaFilter,MirhostDb,missing-method}
-\alias{where,MatmirnaidFilter,MirhostDb,missing-method}
+\alias{where,MatMirnaConfidence,MirhostDb,missing-method}
+\alias{where,MatMirnaFilter,MirhostDb,missing-method}
+\alias{where,MatMirnaIdFilter,MirhostDb,missing-method}
 \alias{where,MirfamFilter,MirhostDb,missing-method}
-\alias{where,MirfamidFilter,MirhostDb,missing-method}
+\alias{where,MirfamIdFilter,MirhostDb,missing-method}
 \alias{where,PositionFilter,MirhostDb,missing-method}
-\alias{where,PremirnaConfidence,MirhostDb,missing-method}
-\alias{where,PremirnaFilter,MirhostDb,missing-method}
-\alias{where,PremirnaidFilter,MirhostDb,missing-method}
-\alias{where,ProbesetidFilter,MirhostDb,missing-method}
+\alias{where,PreMirnaConfidence,MirhostDb,missing-method}
+\alias{where,PreMirnaFilter,MirhostDb,missing-method}
+\alias{where,PreMirnaIdFilter,MirhostDb,missing-method}
+\alias{where,ProbesetIdFilter,MirhostDb,missing-method}
 \alias{where,ReadCountFilter,MirhostDb,missing-method}
 % column, Filter, MirhostDb, character
-\alias{column,AlignmentidFilter,MirhostDb,character-method}
+\alias{column,AlignmentIdFilter,MirhostDb,character-method}
 \alias{column,ArrayFilter,MirhostDb,character-method}
 \alias{column,DatabaseFilter,MirhostDb,character-method}
-\alias{column,MatmirnaConfidence,MirhostDb,character-method}
-\alias{column,MatmirnaFilter,MirhostDb,character-method}
-\alias{column,MatmirnaidFilter,MirhostDb,character-method}
+\alias{column,MatMirnaConfidence,MirhostDb,character-method}
+\alias{column,MatMirnaFilter,MirhostDb,character-method}
+\alias{column,MatMirnaIdFilter,MirhostDb,character-method}
 \alias{column,MirfamFilter,MirhostDb,character-method}
-\alias{column,MirfamidFilter,MirhostDb,character-method}
+\alias{column,MirfamIdFilter,MirhostDb,character-method}
 \alias{column,PositionFilter,MirhostDb,character-method}
-\alias{column,PremirnaConfidence,MirhostDb,character-method}
-\alias{column,PremirnaFilter,MirhostDb,character-method}
-\alias{column,PremirnaidFilter,MirhostDb,character-method}
-\alias{column,ProbesetidFilter,MirhostDb,character-method}
+\alias{column,PreMirnaConfidence,MirhostDb,character-method}
+\alias{column,PreMirnaFilter,MirhostDb,character-method}
+\alias{column,PreMirnaIdFilter,MirhostDb,character-method}
+\alias{column,ProbesetIdFilter,MirhostDb,character-method}
 \alias{column,ReadCountFilter,MirhostDb,character-method}
 % where, Filter, MirhostDb, character
-\alias{where,AlignmentidFilter,MirhostDb,character-method}
+\alias{where,AlignmentIdFilter,MirhostDb,character-method}
 \alias{where,ArrayFilter,MirhostDb,character-method}
 \alias{where,DatabaseFilter,MirhostDb,character-method}
-\alias{where,MatmirnaConfidence,MirhostDb,character-method}
-\alias{where,MatmirnaFilter,MirhostDb,character-method}
-\alias{where,MatmirnaidFilter,MirhostDb,character-method}
+\alias{where,MatMirnaConfidence,MirhostDb,character-method}
+\alias{where,MatMirnaFilter,MirhostDb,character-method}
+\alias{where,MatMirnaIdFilter,MirhostDb,character-method}
 \alias{where,MirfamFilter,MirhostDb,character-method}
-\alias{where,MirfamidFilter,MirhostDb,character-method}
+\alias{where,MirfamIdFilter,MirhostDb,character-method}
 \alias{where,PositionFilter,MirhostDb,character-method}
-\alias{where,PremirnaConfidence,MirhostDb,character-method}
-\alias{where,PremirnaFilter,MirhostDb,character-method}
-\alias{where,PremirnaidFilter,MirhostDb,character-method}
-\alias{where,ProbesetidFilter,MirhostDb,character-method}
+\alias{where,PreMirnaConfidence,MirhostDb,character-method}
+\alias{where,PreMirnaFilter,MirhostDb,character-method}
+\alias{where,PreMirnaIdFilter,MirhostDb,character-method}
+\alias{where,ProbesetIdFilter,MirhostDb,character-method}
 \alias{where,ReadCountFilter,MirhostDb,character-method}
 % column
 \alias{where,list,MirhostDb,missing,missing-method}
-\alias{column,AlignmentidFilter,missing,missing-method}
+\alias{column,AlignmentIdFilter,missing,missing-method}
 \alias{column,ArrayFilter,missing,missing-method}
 \alias{column,DatabaseFilter,missing,missing-method}
-\alias{column,MatmirnaConfidence,missing,missing-method}
-\alias{column,MatmirnaFilter,missing,missing-method}
-\alias{column,MatmirnaidFilter,missing,missing-method}
+\alias{column,MatMirnaConfidence,missing,missing-method}
+\alias{column,MatMirnaFilter,missing,missing-method}
+\alias{column,MatMirnaIdFilter,missing,missing-method}
 \alias{column,MirfamFilter,missing,missing-method}
-\alias{column,MirfamidFilter,missing,missing-method}
+\alias{column,MirfamIdFilter,missing,missing-method}
 \alias{column,PositionFilter,missing,missing-method}
-\alias{column,PremirnaConfidence,missing,missing-method}
-\alias{column,PremirnaFilter,missing,missing-method}
-\alias{column,PremirnaidFilter,missing,missing-method}
-\alias{column,ProbesetidFilter,missing,missing-method}
+\alias{column,PreMirnaConfidence,missing,missing-method}
+\alias{column,PreMirnaFilter,missing,missing-method}
+\alias{column,PreMirnaIdFilter,missing,missing-method}
+\alias{column,ProbesetIdFilter,missing,missing-method}
 \alias{column,ReadCountFilter,missing,missing-method}
 % where
-\alias{where,AlignmentidFilter,missing,missing-method}
+\alias{where,AlignmentIdFilter,missing,missing-method}
 \alias{where,ArrayFilter,missing,missing-method}
 \alias{where,DatabaseFilter,missing,missing-method}
-\alias{where,MatmirnaConfidence,missing,missing-method}
-\alias{where,MatmirnaFilter,missing,missing-method}
-\alias{where,MatmirnaidFilter,missing,missing-method}
+\alias{where,MatMirnaConfidence,missing,missing-method}
+\alias{where,MatMirnaFilter,missing,missing-method}
+\alias{where,MatMirnaIdFilter,missing,missing-method}
 \alias{where,MirfamFilter,missing,missing-method}
-\alias{where,MirfamidFilter,missing,missing-method}
+\alias{where,MirfamIdFilter,missing,missing-method}
 \alias{where,PositionFilter,missing,missing-method}
-\alias{where,PremirnaConfidence,missing,missing-method}
-\alias{where,PremirnaFilter,missing,missing-method}
-\alias{where,PremirnaidFilter,missing,missing-method}
-\alias{where,ProbesetidFilter,missing,missing-method}
+\alias{where,PreMirnaConfidence,missing,missing-method}
+\alias{where,PreMirnaFilter,missing,missing-method}
+\alias{where,PreMirnaIdFilter,missing,missing-method}
+\alias{where,ProbesetIdFilter,missing,missing-method}
 \alias{where,ReadCountFilter,missing,missing-method}
 \alias{where,list,MirhostDb,ANY-method}
 % value
-\alias{value,AlignmentidFilter-method}
+\alias{value,AlignmentIdFilter-method}
 \alias{value,ArrayFilter-method}
 \alias{value,DatabaseFilter-method}
-\alias{value,MatmirnaConfidence-method}
-\alias{value,MatmirnaFilter-method}
-\alias{value,MatmirnaidFilter-method}
+\alias{value,MatMirnaConfidence-method}
+\alias{value,MatMirnaFilter-method}
+\alias{value,MatMirnaIdFilter-method}
 \alias{value,MirfamFilter-method}
-\alias{value,MirfamidFilter-method}
+\alias{value,MirfamIdFilter-method}
 \alias{value,PositionFilter-method}
-\alias{value,PremirnaConfidence-method}
-\alias{value,PremirnaFilter-method}
-\alias{value,PremirnaidFilter-method}
-\alias{value,ProbesetidFilter-method}
+\alias{value,PreMirnaConfidence-method}
+\alias{value,PreMirnaFilter-method}
+\alias{value,PreMirnaIdFilter-method}
+\alias{value,ProbesetIdFilter-method}
 \alias{value,ReadCountFilter-method}
-% value<-
-\alias{value<-,AlignmentidFilter-method}
-\alias{value<-,ArrayFilter-method}
-\alias{value<-,DatabaseFilter-method}
-\alias{value<-,MatmirnaConfidence-method}
-\alias{value<-,MatmirnaFilter-method}
-\alias{value<-,MatmirnaidFilter-method}
-\alias{value<-,MirfamFilter-method}
-\alias{value<-,MirfamidFilter-method}
-\alias{value<-,PositionFilter-method}
-\alias{value<-,PremirnaConfidence-method}
-\alias{value<-,PremirnaFilter-method}
-\alias{value<-,PremirnaidFilter-method}
-\alias{value<-,ProbesetidFilter-method}
-\alias{value<-,ReadCountFilter-method}
+%% % value<-
+%% \alias{value<-,AlignmentIdFilter-method}
+%% \alias{value<-,ArrayFilter-method}
+%% \alias{value<-,DatabaseFilter-method}
+%% \alias{value<-,MatMirnaConfidence-method}
+%% \alias{value<-,MatMirnaFilter-method}
+%% \alias{value<-,MatMirnaIdFilter-method}
+%% \alias{value<-,MirfamFilter-method}
+%% \alias{value<-,MirfamIdFilter-method}
+%% \alias{value<-,PositionFilter-method}
+%% \alias{value<-,PreMirnaConfidence-method}
+%% \alias{value<-,PreMirnaFilter-method}
+%% \alias{value<-,PreMirnaIdFilter-method}
+%% \alias{value<-,ProbesetIdFilter-method}
+%% \alias{value<-,ReadCountFilter-method}
 % condition
-\alias{condition,AlignmentidFilter-method}
+\alias{condition,AlignmentIdFilter-method}
 \alias{condition,ArrayFilter-method}
 \alias{condition,DatabaseFilter-method}
-\alias{condition,MatmirnaConfidence-method}
-\alias{condition,MatmirnaFilter-method}
-\alias{condition,MatmirnaidFilter-method}
+\alias{condition,MatMirnaConfidence-method}
+\alias{condition,MatMirnaFilter-method}
+\alias{condition,MatMirnaIdFilter-method}
 \alias{condition,MirfamFilter-method}
-\alias{condition,MirfamidFilter-method}
+\alias{condition,MirfamIdFilter-method}
 \alias{condition,PositionFilter-method}
-\alias{condition,PremirnaConfidence-method}
-\alias{condition,PremirnaFilter-method}
-\alias{condition,PremirnaidFilter-method}
-\alias{condition,ProbesetidFilter-method}
+\alias{condition,PreMirnaConfidence-method}
+\alias{condition,PreMirnaFilter-method}
+\alias{condition,PreMirnaIdFilter-method}
+\alias{condition,ProbesetIdFilter-method}
 \alias{condition,ReadCountFilter-method}
-% condition<-
-\alias{condition<-,AlignmentidFilter-method}
-\alias{condition<-,ArrayFilter-method}
-\alias{condition<-,DatabaseFilter-method}
-\alias{condition<-,MatmirnaConfidence-method}
-\alias{condition<-,MatmirnaFilter-method}
-\alias{condition<-,MatmirnaidFilter-method}
-\alias{condition<-,MirfamFilter-method}
-\alias{condition<-,MirfamidFilter-method}
-\alias{condition<-,PositionFilter-method}
-\alias{condition<-,PremirnaConfidence-method}
-\alias{condition<-,PremirnaFilter-method}
-\alias{condition<-,PremirnaidFilter-method}
-\alias{condition<-,ProbesetidFilter-method}
-\alias{condition<-,ReadCountFilter-method}
+%% % condition<-
+%% \alias{condition<-,AlignmentIdFilter-method}
+%% \alias{condition<-,ArrayFilter-method}
+%% \alias{condition<-,DatabaseFilter-method}
+%% \alias{condition<-,MatMirnaConfidence-method}
+%% \alias{condition<-,MatMirnaFilter-method}
+%% \alias{condition<-,MatMirnaIdFilter-method}
+%% \alias{condition<-,MirfamFilter-method}
+%% \alias{condition<-,MirfamIdFilter-method}
+%% \alias{condition<-,PositionFilter-method}
+%% \alias{condition<-,PreMirnaConfidence-method}
+%% \alias{condition<-,PreMirnaFilter-method}
+%% \alias{condition<-,PreMirnaIdFilter-method}
+%% \alias{condition<-,ProbesetIdFilter-method}
+%% \alias{condition<-,ReadCountFilter-method}
 \alias{column}
 \alias{where}
 
@@ -181,13 +181,13 @@
   While objects can be created by calls
   e.g. of the form \code{new("PositionFilter", ...)} users are strongly
   encouraged to use the specific functions:
-  \code{\link{AlignmentidFilter}}, \code{\link{ArrayFilter}},
-  \code{\link{DatabaseFilter}}, \code{\link{MatmirnaConfidence}},
-  \code{\link{MatmirnaFilter}}, \code{\link{MatmirnaidFilter}},
-  \code{\link{MirfamFilter}} and \code{\link{MirfamidFilter}},
-  \code{\link{PositionFilter}}, \code{\link{PremirnaConfidence}}
-  \code{\link{PremirnaFilter}}, \code{\link{PremirnaidFilter}},
-  \code{\link{ProbesetidFilter}} and \code{\link{ReadCountFilter}}.  See
+  \code{\link{AlignmentIdFilter}}, \code{\link{ArrayFilter}},
+  \code{\link{DatabaseFilter}}, \code{\link{MatMirnaConfidence}},
+  \code{\link{MatMirnaFilter}}, \code{\link{MatMirnaIdFilter}},
+  \code{\link{MirfamFilter}} and \code{\link{MirfamIdFilter}},
+  \code{\link{PositionFilter}}, \code{\link{PreMirnaConfidence}}
+  \code{\link{PreMirnaFilter}}, \code{\link{PreMirnaIdFilter}},
+  \code{\link{ProbesetIdFilter}} and \code{\link{ReadCountFilter}}.  See
   examples below for usage.
 }
 
@@ -205,7 +205,7 @@
 
     \item{match.case}{
       Object of class \code{"logical"}: for
-      \code{PremirnaFilter} and \code{MatmirnaFilter} specifying whether
+      \code{PreMirnaFilter} and \code{MatMirnaFilter} specifying whether
       case sensitive or in-sensitive queries should be performed for
       the pre-miRNA or mature miRNA names.
     }
@@ -245,16 +245,16 @@
       The method returns a character string with the name of the column.
     }
 
-    \item{condition, condition<-}{
-      Get and set the \code{condition} of the filter (i.e. how values
+    \item{condition}{
+      Get the \code{condition} of the filter (i.e. how values
       should be compared).
 
       The \code{condition} method returns a character string
       representing the condition.
     }
 
-    \item{value, value<-}{
-      Get and set the \code{value} of the filter.
+    \item{value}{
+      Get the \code{value} of the filter.
 
       The \code{value} method returns a character vector of the
       value(s).
@@ -281,7 +281,7 @@
   Description of filters (in alphabetical order).
 
   \describe{
-    \item{AlignmentidFilter}{
+    \item{AlignmentIdFilter}{
       Allows to filter results based on the (internal) alignment ID
       for a pre-miRNA. The same pre-miRNA sequence might have multiple
       genomic alignments, thus, the alignment ID was introduced
@@ -317,11 +317,11 @@
       miRNAs.
     }
 
-    \item{MatmirnaFilter}{
+    \item{MatMirnaFilter}{
       Filter on the mature miRNA names (e.g. \code{"hsa-miR-15b-5p"})
     }
 
-    \item{MatmirnaidFilter}{
+    \item{MatMirnaIdFilter}{
       Filter on the mature miRNA identifiers (i.e. mirbase accession
       numbers, e.g. \code{"MIMAT0000062"}).
     }
@@ -332,22 +332,22 @@
       of the transcript, or in an intron.
     }
 
-    \item{PremirnaConfidence}{
-      See \code{MatmirnaConfidence} above for a description. In contrast
+    \item{PreMirnaConfidence}{
+      See \code{MatMirnaConfidence} above for a description. In contrast
       to mature miRNAs, also miRBase versions prior to version 21 did
       provide high confidence information.
     }
 
-    \item{PremirnaFilter}{
+    \item{PreMirnaFilter}{
       Allows to filter on pre-miRNA names (e.g. \code{"hsa-mir-15b"}).
     }
 
-    \item{PremirnaidFilter}{
+    \item{PreMirnaIdFilter}{
       Allows to filter on pre-miRNA identifiers (mirbase accession
       numbers, e.g. \code{"MI0000060"}).
     }
 
-    \item{ProbesetidFilter}{
+    \item{ProbesetIdFilter}{
       Allows to filter on microarray probe set IDs.
     }
 
@@ -365,16 +365,15 @@
 }
 \note{
   All methods for filter classes (also those defined in the
-  \code{ensembldb} package,
-  i.e. \code{\link[ensembldb]{GeneidFilter}},
-  \code{\link[ensembldb]{GenenameFilter}},
-  \code{\link[ensembldb]{GenebiotypeFilter}},
-  \code{\link[ensembldb]{TxidFilter}},
-  \code{\link[ensembldb]{TxbiotypeFilter}},
-  \code{\link[ensembldb]{SeqnameFilter}},
-  \code{\link[ensembldb]{SeqstrandFilter}},
-  \code{\link[ensembldb]{SeqstartFilter}},
-  \code{\link[ensembldb]{SeqendFilter}}) should include the
+  \code{AnnotationFilter} package,
+  i.e. \code{\link[AnnotationFilter]{GeneIdFilter}},
+  \code{\link[AnnotationFilter]{GenenameFilter}},
+  \code{\link[AnnotationFilter]{GeneBiotypeFilter}},
+  \code{\link[AnnotationFilter]{TxIdFilter}},
+  \code{\link[AnnotationFilter]{TxBiotypeFilter}},
+  \code{\link[AnnotationFilter]{SeqNameFilter}},
+  \code{\link[AnnotationFilter]{SeqStrandFilter}},
+  should include the
   \code{MirhostDb} class instance as this will cause the
   methods (\code{column} and \code{where}) to return values
   specific for the layout of the miRNA host genes database. See
@@ -388,9 +387,9 @@
   Johannes Rainer
 }
 \seealso{
-  \code{\link[ensembldb]{GeneidFilter}},
-  \code{\link[ensembldb]{SeqnameFilter}},
-  \code{\link{GeneidFilter}} (in the \code{mirhostgenes} package).
+  \code{\link[AnnotationFilter]{GeneIdFilter}},
+  \code{\link[AnnotationFilter]{SeqNameFilter}},
+  \code{\link{GeneIdFilter}} (in the \code{mirhostgenes} package).
 }
 \examples{
 
@@ -399,29 +398,28 @@ mhdb <- MirhostDb.Hsapiens.v75.v20
 
 ## Create a filter that could be used to retrieve all informations for
 ## the respective gene.
-Gif <- GeneidFilter("ENSG00000012817")
+Gif <- GeneIdFilter("ENSG00000012817")
 Gif
 ## Returns the where clause of the SQL querys specific for the
 ## mirhostgenes database
 where(Gif, mhdb)
 
 ## Create a filter for a chromosomal end position of a gene
-Sef <- SeqendFilter(10000, condition=">", "gene")
+Sef <- SeqEndFilter(10000, condition=">", "gene")
 Sef
 
 ## Get and set the value of a filter.
 value(Sef)
-value(Sef) <- 100001
 
 ## In the miRNA host genes database we are rather interested to get
 ## pre-miRNAs from certain genomic positions, thus we define "pre_mirna"
 ## as the feature and call where by supplying also the MirhostDb
 ## object
-Sef <- SeqendFilter(1000, condition=">", "pre_mirna")
+Sef <- SeqEndFilter(1000, condition=">", "pre_mirna")
 where(Sef, mhdb)
 
 ## Get all high confidence pre-miRNAs.
-premirnas(mhdb, filter=PremirnaConfidence("high"))
+premirnas(mhdb, filter=PreMirnaConfidence("high"))
 
 ## Get all mature miRNAs with more than 1000 reads across all experiments
 matmirnas(mhdb, filter=ReadCountFilter(1000, of="mat_mirna"))

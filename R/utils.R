@@ -7,10 +7,10 @@ checkIsBasicFilter <- function(x){
     if(class(x) != "list")
         x <- list(x)
     notBF <- unlist(lapply(x, function(z){
-        !inherits(z, what="BasicFilter")
+        !inherits(z, what="AnnotationFilter")
     }))
     if(any(notBF))
-        stop("filter should be a list of filter objects or a single filter object (i.e. an object extending BasicFilter)!")
+        stop("filter should be a list of filter objects or a single filter object (i.e. an object extending AnnotationFilter)!")
     return(x)
 }
 

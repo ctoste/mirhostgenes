@@ -1,24 +1,24 @@
 ## testing imported filters from the ensembldb package.
-## GeneifFilter, GenebiotypeFilter, GenenameFilter, TxidFilter, TxbiotypeFilter, ExonidFilter, SeqnameFilter,
-## SeqstartFilter, SeqendFilter, SeqstrandFilter.
+## GeneifFilter, GenebiotypeFilter, GenenameFilter, TxIdFilter, TxbiotypeFilter, ExonIdFilter, SeqNameFilter,
+## SeqStartFilter, SeqEndFilter, SeqstrandFilter.
 
 library("MirhostDb.Hsapiens.v75.v20")
 MHDB <- MirhostDb.Hsapiens.v75.v20
 
 
-## testing GeneidFilter
-test_GeneidFilter <- function(){
-    Filt <- GeneidFilter("a")
+## testing GeneIdFilter
+test_GeneIdFilter <- function(){
+    Filt <- GeneIdFilter("a")
     ## check if column matches the present database.
     checkEquals(column(Filt, MHDB), "host_tx.gene_id")
     ## check error if value is not as expected.
-    checkException(GeneidFilter("ENSG000001", ">"))
+    checkException(GeneIdFilter("ENSG000001", ">"))
 }
 
-test_GenebiotypeFilter <- function(){
-    Filt <- GenebiotypeFilter("protein_coding")
+test_GeneBiotypeFilter <- function(){
+    Filt <- GeneBiotypeFilter("protein_coding")
     checkEquals(column(Filt, MHDB), "host_gene.gene_biotype")
-    checkException(GenebiotypeFilter("protein_coding", ">"))
+    checkException(GeneBiotypeFilter("protein_coding", ">"))
 }
 
 test_GenenameFilter <- function(){
@@ -27,51 +27,54 @@ test_GenenameFilter <- function(){
     checkException(GenenameFilter("genename", ">"))
 }
 
-test_TxidFilter <- function(){
-    Filt <- TxidFilter("a")
+test_TxIdFilter <- function(){
+    Filt <- TxIdFilter("a")
     checkEquals(column(Filt, MHDB), "host_tx.tx_id")
-    checkException(TxidFilter("a", ">"))
+    checkException(TxIdFilter("a", ">"))
 }
 
-test_TxbiotypeFilter <- function(){
-    Filt <- TxbiotypeFilter("a")
+test_TxBiotypeFilter <- function(){
+    Filt <- TxBiotypeFilter("a")
     checkEquals(column(Filt, MHDB), "host_tx.tx_biotype")
-    checkException(TxbiotypeFilter("a", ">"))
+    checkException(TxBiotypeFilter("a", ">"))
 }
 
-test_ExonidFilter <- function(){
-    Filt <- ExonidFilter("a")
+test_ExonIdFilter <- function(){
+    Filt <- ExonIdFilter("a")
     checkEquals(column(Filt, MHDB), "host_tx.exon_id")
-    checkException(ExonidFilter("a", ">"))
+    checkException(ExonIdFilter("a", ">"))
 }
 
-## SeqnameFilter
-test_SeqnameFilter <- function(){
-    Filt <- SeqnameFilter("a")
+## SeqNameFilter
+test_SeqNameFilter <- function(){
+    Filt <- SeqNameFilter("a")
     checkEquals(column(Filt, MHDB), "pre_mirna.seq_name")
-    checkException(SeqnameFilter("a", ">"))
+    checkException(SeqNameFilter("a", ">"))
 }
 
 ## SeqstrandFilter
 test_SeqstrandFilter <- function(){
-    checkException(SeqstrandFilter("a"))
-    Filt <- SeqstrandFilter("-")
+    Filt <- SeqStrandFilter("-")
     checkEquals(column(Filt, MHDB), "pre_mirna.seq_strand")
 }
 
-## SeqstartFilter, feature
-test_SeqstartFilter <- function(){
-    Filt <- SeqstartFilter(123, feature="pre_mirna")
-    checkEquals(column(Filt, MHDB), "pre_mirna.pre_mirna_seq_start")
-    Filt <- SeqstartFilter(123, feature="mat_mirna")
-    checkEquals(column(Filt, MHDB), "mat_mirna.mat_mirna_seq_start")
+## SeqStartFilter, feature
+test_SeqStartFilter <- function(){
+    Filt <- SeqStartFilter(123, feature="pre_mirna")
+    checkEquals(column(Filt, MHDB),
+                "pre_mirna.pre_mirna_seq_start")
+    Filt <- SeqStartFilter(123, feature="mat_mirna")
+    checkEquals(column(Filt, MHDB),
+                "mat_mirna.mat_mirna_seq_start")
 }
 
-## SeqendFilter
-test_SeqendFilter <- function(){
-    Filt <- SeqendFilter(123, feature="pre_mirna")
-    checkEquals(column(Filt, MHDB), "pre_mirna.pre_mirna_seq_end")
-    Filt <- SeqendFilter(123, feature="mat_mirna")
-    checkEquals(column(Filt, MHDB), "mat_mirna.mat_mirna_seq_end")
+## SeqEndFilter
+test_SeqEndFilter <- function(){
+    Filt <- SeqEndFilter(123, feature="pre_mirna")
+    checkEquals(column(Filt, MHDB),
+                "pre_mirna.pre_mirna_seq_end")
+    Filt <- SeqEndFilter(123, feature="mat_mirna")
+    checkEquals(column(Filt, MHDB),
+                "mat_mirna.mat_mirna_seq_end")
 }
 

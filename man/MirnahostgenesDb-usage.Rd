@@ -451,7 +451,7 @@ length(unique(MatMir$mat_mirna_id))
 MatMir <- matmirnas(Mhdb,
                     columns=unique(c(listColumns(Mhdb, "mat_mirna"),
                         listColumns(Mhdb, "pre_mirna"))),
-                    filter=list(MatmirnaidFilter("MIMAT0000062")))
+                    filter=list(MatMirnaIdFilter("MIMAT0000062")))
 MatMir
 ## The same mature miRNA is encoded in 3 different pre-miRNAs.
 
@@ -479,7 +479,7 @@ table(MatMir.inhg$gene_biotype)
 ## Now, get all mature miRNAs for which the gene_biotype!=miRNA.
 MatMir <- matmirnas(Mhdb, columns=c("mat_mirna_id", "mat_mirna_name",
                               "seq_name", "gene_id", "gene_name", "gene_biotype"),
-                    filter=list(GenebiotypeFilter("miRNA", condition="!=")))
+                    filter=list(GeneBiotypeFilter("miRNA", condition="!=")))
 MatMir
 sum(is.na(MatMir$gene_biotype))
 table(MatMir$gene_biotype)
@@ -500,7 +500,7 @@ matmirnasBy(Mhdb, by="mirfam", return.type="GRanges")
 
 ## Get mature miRNAs for pre-miRNA miR-16-1 and miR-16-2.
 matmirnasBy(Mhdb,
-            filter=list(PremirnaFilter(c("hsa-mir-16-2", "hsa-mir-16-1"))))
+            filter=list(PreMirnaFilter(c("hsa-mir-16-2", "hsa-mir-16-1"))))
 
 
 

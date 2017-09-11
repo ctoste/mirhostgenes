@@ -350,7 +350,7 @@ transferValues(miRNA.exprs, mhg, xNamesAre="mat_mirna_name",
 
 ## A "standard" filter that might be useful to map miRNA data to genes.
 df <- list(DatabaseFilter("core"),
-           GenebiotypeFilter("miRNA", condition="!="),
+           GeneBiotypeFilter("miRNA", condition="!="),
            ArrayFilter("HG-U133_Plus_2"))
 
 

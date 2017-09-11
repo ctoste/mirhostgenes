@@ -9,27 +9,29 @@ import(IRanges)
 import(GenomicRanges)
 importFrom(GenomeInfoDb, Seqinfo)
 importFrom(DBI, dbDriver)
-importClassesFrom(ensembldb, BasicFilter, EntrezidFilter, GeneidFilter,
-                  GenebiotypeFilter, GenenameFilter,TxidFilter, TxbiotypeFilter,
-                  ExonidFilter, SeqnameFilter, SeqstartFilter,
-                  SeqendFilter, SeqstrandFilter)
-importMethodsFrom(ensembldb, ensemblVersion, where, column, listColumns, listTables,
-                  condition, listGenebiotypes, listTxbiotypes, value, "value<-",
-                  "condition<-")
-importFrom(ensembldb, EntrezidFilter, GeneidFilter, GenebiotypeFilter,
-           GenenameFilter, TxidFilter, TxbiotypeFilter, ExonidFilter,
-           SeqnameFilter, SeqstartFilter, SeqendFilter, SeqstrandFilter)
+importFrom(utils, "read.table", "write.table", "str")
+importClassesFrom(AnnotationFilter, AnnotationFilter, CharacterFilter,
+                  IntegerFilter, EntrezFilter, GeneIdFilter,
+                  GeneBiotypeFilter, GenenameFilter, TxIdFilter,
+                  TxBiotypeFilter, ExonIdFilter, SeqNameFilter, SeqStrandFilter)
+importMethodsFrom(AnnotationFilter, value, condition, field)
+importMethodsFrom(ensembldb, ensemblVersion, listColumns,
+                  listTables, listGenebiotypes, listTxbiotypes)
+importFrom(AnnotationFilter, AnnotationFilter, EntrezFilter, GeneIdFilter,
+           GeneBiotypeFilter, GenenameFilter, TxIdFilter, TxBiotypeFilter,
+           ExonIdFilter, SeqNameFilter, SeqStrandFilter)
 
 ## classes:
-exportClasses(MirhostDb, AlignmentidFilter, ArrayFilter, DatabaseFilter,
-              PositionFilter, PremirnaFilter, PremirnaidFilter,
-              PremirnaConfidence, ProbesetidFilter, MatmirnaFilter, MatmirnaidFilter,
-              MatmirnaConfidence, MirfamFilter, MirfamidFilter, ReadCountFilter)
+exportClasses(MirhostDb, AlignmentIdFilter, ArrayFilter, DatabaseFilter,
+              PositionFilter, PreMirnaFilter, PreMirnaIdFilter,
+              PreMirnaConfidence, ProbesetIdFilter, MatMirnaFilter, MatMirnaIdFilter,
+              MatMirnaConfidence, MirfamFilter, MirfamIdFilter, ReadCountFilter)
 ## constructors for Filters
-export(AlignmentidFilter, ArrayFilter, DatabaseFilter,
-       ProbesetidFilter, PositionFilter, PremirnaFilter, PremirnaidFilter,
-       PremirnaConfidence, MatmirnaConfidence, MatmirnaFilter, MatmirnaidFilter,
-       MirfamFilter, MirfamidFilter, ReadCountFilter)
+export(AlignmentIdFilter, ArrayFilter, DatabaseFilter,
+       ProbesetIdFilter, PositionFilter, PreMirnaFilter, PreMirnaIdFilter,
+       PreMirnaConfidence, MatMirnaConfidence, MatMirnaFilter, MatMirnaIdFilter,
+       MirfamFilter, MirfamIdFilter, ReadCountFilter, SeqStartFilter,
+       SeqEndFilter)
 ## export utils to fetch the data.
 export(MirhostDb, downloadMirbase,
        defineMirhostgenes, fetchAdditionalInformation, getArrayFeaturesForTx,
@@ -43,7 +45,7 @@ exportMethods(column, dbconn, hostgenes, hostgenesBy, hosttx,
               matmirnas, matmirnasBy, metadata, mirbaseVersion,
               organism, premirnas, premirnasBy, show, where, version,
               listGenebiotypes, listTxbiotypes, probesets, probesetsBy,
-              value, "value<-", "condition<-")
+              value)
 ## summary methods:
 exportMethods(matmirnasInMultiplePremirnas, premirnasWithMultipleAlignments)
 ## pairing values
