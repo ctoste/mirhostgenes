@@ -224,7 +224,7 @@
   }
 }
 \section{Extends}{
-  Class \code{"BasicFilter"} defined in the \code{ensembldb} package, directly.
+  Class \code{"AnnotationFilter"} defined in the \code{AnnotationFilter} package.
 }
 \section{Methods}{
 

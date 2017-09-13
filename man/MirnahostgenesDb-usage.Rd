@@ -129,7 +129,7 @@
   \item{filter}{
     A single filter instance or \code{list} of filter instances to be
     used to fetch specific elements from the database. See help for
-    \code{\linkS4class{PositionFilter}} or \code{BasicFilter} in package
+    \code{\linkS4class{PositionFilter}} or \code{AnnotationFilter} in package
     \code{ensembldb} for information on filter objects and their use.
   }
 
