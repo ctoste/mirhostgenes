@@ -14,8 +14,7 @@ importClassesFrom(ensembldb, BasicFilter, EntrezidFilter, GeneidFilter,
                   ExonidFilter, SeqnameFilter, SeqstartFilter,
                   SeqendFilter, SeqstrandFilter)
 importMethodsFrom(ensembldb, ensemblVersion, where, column, listColumns, listTables,
-                  condition, listGenebiotypes, listTxbiotypes, value, "value<-",
-                  "condition<-")
+                  condition, listGenebiotypes, listTxbiotypes)
 importFrom(ensembldb, EntrezidFilter, GeneidFilter, GenebiotypeFilter,
            GenenameFilter, TxidFilter, TxbiotypeFilter, ExonidFilter,
            SeqnameFilter, SeqstartFilter, SeqendFilter, SeqstrandFilter)

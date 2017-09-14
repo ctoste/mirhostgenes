@@ -12,7 +12,17 @@ setMethod("where", signature(object="list",db="MirhostDb"),
                                                   collapse=" and "))
               return(wherequery)
           })
-
+setMethod("value", "BasicFilter", function(x) {
+    x@value
+})
+setReplaceMethod("value", "BasicFilter", function(x, value) {
+    x@value <- as.character(value)
+    x
+})
+setReplaceMethod("condition", "BasicFilter", function(x, value) {
+    x@condition <- as.character(value)
+    x
+})
 
 
 

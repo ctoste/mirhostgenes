@@ -96,6 +96,13 @@ if(!isGeneric("version")){
                standardGeneric("version"))
 }
 
+setGeneric("value<-", function(x, value)
+    standardGeneric("value<-"))
+setGeneric("value", function(x, ...)
+    standardGeneric("value"))
+setGeneric("condition<-", function(x, value)
+    standardGeneric("condition<-"))
+
 ####
 ## private methods
 setGeneric("cleanColumns", function(x, columns, ...)

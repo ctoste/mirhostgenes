@@ -1,5 +1,7 @@
-CHANGES IN VERSION 0.99.1
+CHANGES IN VERSION 0.99.2
 --------------
+
+o Fix for Bioconductor 3.2 (R-3.2).
 
 
 CHANGES IN VERSION 0.99.0

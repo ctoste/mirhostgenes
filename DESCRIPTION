@@ -1,7 +1,7 @@
 Package: mirhostgenes
 Type: Package
 Title: mirhostgenes: putting miRNAs into genomic context
-Version: 0.99.1
+Version: 0.99.2
 Author: J. Rainer
 Maintainer: Johannes Rainer <johannes.rainer@eurac.edu>
 URL: https://github.com/jotsetung/mirhostgenes
